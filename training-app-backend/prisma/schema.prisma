@@ -29,8 +29,44 @@ model User {
   instructor   User?   @relation("InstructorClients", fields: [instructorId], references: [id])
   clients      User[]  @relation("InstructorClients")
 
+  // Rutinas
+  routinesAsInstructor Routine[] @relation("InstructorRoutines")
+  routinesAsClient     Routine[] @relation("ClientRoutines")
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([instructorId])
+}
+
+model Routine {
+  id         String   @id @default(uuid())
+  title      String
+  date       DateTime?
+  isTemplate Boolean  @default(false)
+
+  instructorId String
+  instructor   User   @relation("InstructorRoutines", fields: [instructorId], references: [id])
+
+  clientId String?
+  client   User?   @relation("ClientRoutines", fields: [clientId], references: [id])
+
+  exercises Exercise[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([instructorId])
+  @@index([clientId])
+}
+
+model Exercise {
+  id        String  @id @default(uuid())
+  routineId String
+  routine   Routine @relation(fields: [routineId], references: [id], onDelete: Cascade)
+
+  name  String
+  sets  Int
+  reps  Int
+  order Int @default(0)
 }
