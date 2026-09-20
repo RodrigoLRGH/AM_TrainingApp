@@ -41,6 +41,9 @@ model User {
   attendancesAsInstructor Attendance[] @relation("InstructorAttendance")
   attendancesAsClient     Attendance[] @relation("ClientAttendance")
 
+  // Running
+  runSessions RunSession[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -99,4 +102,35 @@ model Attendance {
 
   @@index([instructorId])
   @@index([clientId])
+}
+
+model RunSession {
+  id       String @id @default(uuid())
+  clientId String
+  client   User   @relation(fields: [clientId], references: [id])
+
+  startedAt DateTime  @default(now())
+  endedAt   DateTime?
+
+  distanceMeters  Float?
+  durationSeconds Int?
+
+  points RunPoint[]
+
+  createdAt DateTime @default(now())
+
+  @@index([clientId])
+}
+
+model RunPoint {
+  id           String     @id @default(uuid())
+  runSessionId String
+  runSession   RunSession @relation(fields: [runSessionId], references: [id], onDelete: Cascade)
+
+  latitude  Float
+  longitude Float
+  order     Int
+  timestamp DateTime
+
+  @@index([runSessionId])
 }
