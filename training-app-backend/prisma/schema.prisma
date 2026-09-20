@@ -1,7 +1,6 @@
 generator client {
   provider = "prisma-client-js"
 }
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -24,7 +23,7 @@ model User {
   clientCode String? @unique
   active     Boolean @default(true)
 
-  // Relaciones
+  // Relación instructor -> clientes
   instructorId String?
   instructor   User?   @relation("InstructorClients", fields: [instructorId], references: [id])
   clients      User[]  @relation("InstructorClients")
@@ -33,6 +32,15 @@ model User {
   routinesAsInstructor Routine[] @relation("InstructorRoutines")
   routinesAsClient     Routine[] @relation("ClientRoutines")
 
+  // Configuración de asistencia 
+  gymLatitude     Float?
+  gymLongitude    Float?
+  gymRadiusMeters Int?
+  gymQrCode       String? @unique
+
+  attendancesAsInstructor Attendance[] @relation("InstructorAttendance")
+  attendancesAsClient     Attendance[] @relation("ClientAttendance")
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -40,10 +48,10 @@ model User {
 }
 
 model Routine {
-  id         String   @id @default(uuid())
+  id         String    @id @default(uuid())
   title      String
   date       DateTime?
-  isTemplate Boolean  @default(false)
+  isTemplate Boolean   @default(false)
 
   instructorId String
   instructor   User   @relation("InstructorRoutines", fields: [instructorId], references: [id])
@@ -69,4 +77,26 @@ model Exercise {
   sets  Int
   reps  Int
   order Int @default(0)
+}
+
+enum AttendanceMethod {
+  GEO
+  QR
+}
+
+model Attendance {
+  id     String           @id @default(uuid())
+  method AttendanceMethod
+  date   DateTime         @default(now())
+
+  clientId String
+  client   User   @relation("ClientAttendance", fields: [clientId], references: [id])
+
+  instructorId String
+  instructor   User   @relation("InstructorAttendance", fields: [instructorId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([instructorId])
+  @@index([clientId])
 }
