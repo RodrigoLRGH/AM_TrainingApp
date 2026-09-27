@@ -7,6 +7,7 @@ import { RoutinesModule } from './routines/routines.module';
 import { AttendanceModule } from './attendance/attendance.module';
 import { RunningModule } from './running/running.module';
 import { TrackingModule } from './tracking/tracking.module';
+import { PushModule } from './push/push.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { TrackingModule } from './tracking/tracking.module';
     AttendanceModule,
     RunningModule,
     TrackingModule,
+    PushModule,
   ],
 })
 export class AppModule {}
