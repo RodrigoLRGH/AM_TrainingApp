@@ -1,0 +1,11 @@
+import { Module } from '@nestjs/common';
+import { AuthModule } from '../auth/auth.module';
+import { TrackingService } from './tracking.service';
+import { TrackingController } from './tracking.controller';
+
+@Module({
+  imports: [AuthModule],
+  providers: [TrackingService],
+  controllers: [TrackingController],
+})
+export class TrackingModule {}

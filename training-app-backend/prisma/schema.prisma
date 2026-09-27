@@ -1,6 +1,7 @@
 generator client {
   provider = "prisma-client-js"
 }
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -10,14 +11,15 @@ enum Role {
   INSTRUCTOR
   CLIENTE
 }
+
 model User {
-  id        String   @id @default(uuid())
-  role      Role
-  name      String
+  id   String @id @default(uuid())
+  role Role
+  name String
 
   // Solo para instructores
-  email     String?  @unique
-  password  String?
+  email    String? @unique
+  password String?
 
   // Solo para clientes
   clientCode String? @unique
@@ -44,10 +46,82 @@ model User {
   // Running
   runSessions RunSession[]
 
+  measurements   Measurement[]
+  sessionRatings SessionRating[]
+  pushToken      String?
+  announcements  Announcement[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([instructorId])
+}
+
+model Measurement {
+  id       String @id @default(uuid())
+  clientId String
+  client   User   @relation(fields: [clientId], references: [id])
+
+  weightKg Float?
+  chestCm  Float?
+  waistCm  Float?
+  hipsCm   Float?
+  armCm    Float?
+  legCm    Float?
+
+  recordedAt DateTime @default(now())
+
+  @@index([clientId])
+}
+
+model SessionRating {
+  id       String @id @default(uuid())
+  clientId String
+  client   User   @relation(fields: [clientId], references: [id])
+
+  routineId String?
+  effort    Int
+  note      String?
+
+  createdAt DateTime @default(now())
+
+  @@index([clientId])
+}
+
+
+model Announcement {
+  id      String @id @default(uuid())
+  title   String
+  message String
+
+  instructorId String
+  instructor   User   @relation(fields: [instructorId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([instructorId])
+}
+
+enum AttendanceMethod {
+  GEO
+  QR
+}
+
+model Attendance {
+  id     String           @id @default(uuid())
+  method AttendanceMethod
+  date   DateTime         @default(now())
+
+  clientId String
+  client   User   @relation("ClientAttendance", fields: [clientId], references: [id])
+
+  instructorId String
+  instructor   User   @relation("InstructorAttendance", fields: [instructorId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([instructorId])
+  @@index([clientId])
 }
 
 model Routine {
@@ -79,29 +153,7 @@ model Exercise {
   name  String
   sets  Int
   reps  Int
-  order Int @default(0)
-}
-
-enum AttendanceMethod {
-  GEO
-  QR
-}
-
-model Attendance {
-  id     String           @id @default(uuid())
-  method AttendanceMethod
-  date   DateTime         @default(now())
-
-  clientId String
-  client   User   @relation("ClientAttendance", fields: [clientId], references: [id])
-
-  instructorId String
-  instructor   User   @relation("InstructorAttendance", fields: [instructorId], references: [id])
-
-  createdAt DateTime @default(now())
-
-  @@index([instructorId])
-  @@index([clientId])
+  order Int    @default(0)
 }
 
 model RunSession {
