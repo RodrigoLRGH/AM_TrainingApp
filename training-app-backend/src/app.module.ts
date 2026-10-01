@@ -8,7 +8,8 @@ import { AttendanceModule } from './attendance/attendance.module';
 import { RunningModule } from './running/running.module';
 import { TrackingModule } from './tracking/tracking.module';
 import { PushModule } from './push/push.module';
-
+import { AnnouncementsModule } from './announcements/announcements.module';
+import { StatsModule } from './stats/stats.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -20,6 +21,8 @@ import { PushModule } from './push/push.module';
     RunningModule,
     TrackingModule,
     PushModule,
+    AnnouncementsModule,
+    StatsModule,
   ],
 })
 export class AppModule {}
