@@ -3,6 +3,7 @@ import { View, Text, TextInput, Pressable, StyleSheet, Alert } from 'react-nativ
 import { router } from 'expo-router';
 import { api } from '../../api/client';
 import { saveSession } from '../../auth/storage';
+import { Button } from 'react-native-paper';
 
 type Mode = 'instructor' | 'client';
 
@@ -82,9 +83,9 @@ export default function LoginScreen() {
         </>
       )}
 
-      <Pressable style={styles.button} onPress={handleLogin} disabled={loading}>
-        <Text style={styles.buttonText}>{loading ? 'Entrando...' : 'Entrar'}</Text>
-      </Pressable>
+      <Button mode="contained" onPress={handleLogin} loading={loading} disabled={loading}>
+        Entrar
+      </Button>
     </View>
   );
 }
