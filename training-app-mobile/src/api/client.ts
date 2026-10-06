@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getToken } from '../auth/storage';
 
-const API_URL = 'http://10.41.6.111:3000';
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 export const api = axios.create({
   baseURL: API_URL,
@@ -10,7 +10,6 @@ export const api = axios.create({
   },
 });
 
-// Antes de cada petición, si hay un token guardado, lo agrega automáticamente
 api.interceptors.request.use(async (config) => {
   const token = await getToken();
   if (token) {
