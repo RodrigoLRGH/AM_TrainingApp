@@ -1,8 +1,10 @@
 import { View, FlatList, StyleSheet } from 'react-native';
 import { Text, Button, ActivityIndicator } from 'react-native-paper';
 import { useTemplates } from '../../features/routines/useTemplates';
+import { useAssignTemplate } from '../../features/routines/useAssignTemplate';
 import { TemplateCard } from '../../components/TemplateCard';
 import { NewTemplateModal } from '../../components/NewTemplateModal';
+import { AssignTemplateModal } from '../../components/AssignTemplateModal';
 
 export default function RoutinesScreen() {
   const {
@@ -19,6 +21,8 @@ export default function RoutinesScreen() {
     saving,
     handleCreate,
   } = useTemplates();
+
+  const assign = useAssignTemplate();
 
   if (loading) {
     return (
@@ -39,7 +43,7 @@ export default function RoutinesScreen() {
             Todavía no tienes plantillas. Crea la primera con el botón de abajo.
           </Text>
         }
-        renderItem={({ item }) => <TemplateCard template={item} />}
+        renderItem={({ item }) => <TemplateCard template={item} onAssign={assign.open} />}
       />
 
       <View style={styles.footer}>
@@ -59,6 +63,20 @@ export default function RoutinesScreen() {
         onAddExercise={addExerciseField}
         onSubmit={handleCreate}
         saving={saving}
+      />
+
+      <AssignTemplateModal
+        visible={assign.template !== null}
+        templateTitle={assign.template?.title ?? ''}
+        onDismiss={assign.close}
+        clients={assign.clients}
+        loadingClients={assign.loadingClients}
+        selectedIds={assign.selectedIds}
+        onToggleClient={assign.toggleClient}
+        date={assign.date}
+        onDateChange={assign.setDate}
+        onSubmit={assign.submit}
+        saving={assign.saving}
       />
     </View>
   );
