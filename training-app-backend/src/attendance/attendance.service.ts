@@ -12,7 +12,7 @@ import { CheckinQrDto } from './dto/checkin-qr.dto';
 
 @Injectable()
 export class AttendanceService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   setGymLocation(instructorId: string, dto: SetGymLocationDto) {
     return this.prisma.user.update({
@@ -119,5 +119,17 @@ export class AttendanceService {
     if (existing) {
       throw new ConflictException('Ya registraste tu asistencia hoy.');
     }
+  }
+
+  getGymConfig(instructorId: string) {
+    return this.prisma.user.findUnique({
+      where: { id: instructorId },
+      select: {
+        gymLatitude: true,
+        gymLongitude: true,
+        gymRadiusMeters: true,
+        gymQrCode: true,
+      },
+    });
   }
 }

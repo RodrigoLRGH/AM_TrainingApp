@@ -11,7 +11,13 @@ import { CheckinQrDto } from './dto/checkin-qr.dto';
 @Controller('attendance')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class AttendanceController {
-  constructor(private attendanceService: AttendanceService) {}
+  constructor(private attendanceService: AttendanceService) { }
+
+  @Roles('INSTRUCTOR')
+  @Get('gym')
+  getGymConfig(@CurrentUser() user: AuthenticatedUser) {
+    return this.attendanceService.getGymConfig(user.userId);
+  }
 
   @Roles('INSTRUCTOR')
   @Post('gym-location')

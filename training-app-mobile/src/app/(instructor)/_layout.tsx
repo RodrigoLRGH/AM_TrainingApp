@@ -6,6 +6,7 @@ export default function InstructorLayout() {
       <Tabs.Screen name="clients" options={{ title: 'Clientes' }} />
       <Tabs.Screen name="routines" options={{ title: 'Rutinas' }} />
       <Tabs.Screen name="stats" options={{ title: 'Estadísticas' }} />
+      <Tabs.Screen name="attendance" options={{ title: 'Asistencia' }} />
     </Tabs>
   );
 }
