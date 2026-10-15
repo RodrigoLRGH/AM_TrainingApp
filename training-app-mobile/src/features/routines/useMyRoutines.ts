@@ -1,9 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { getMyRoutines } from '../../api/routines';
-
-export type Exercise = { id: string; name: string; sets: number; reps: number };
-export type Routine = { id: string; title: string; date: string; exercises: Exercise[] };
+import type { Routine } from '../../api/types';
 
 export function useMyRoutines() {
     const [routines, setRoutines] = useState<Routine[]>([]);

@@ -1,13 +1,9 @@
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from 'expo-router';
-import { getRoutines, createRoutine } from '../../api/routines';
+import { getTemplates, createTemplate } from '../../api/routines';
+import type { Template } from '../../api/types';
 
 export type ExerciseDraft = { name: string; sets: string; reps: string };
-export type Template = {
-    id: string;
-    title: string;
-    exercises: { id: string; name: string; sets: number; reps: number }[];
-};
 
 export function useTemplates() {
     const [templates, setTemplates] = useState<Template[]>([]);
@@ -22,7 +18,7 @@ export function useTemplates() {
     const load = useCallback(async () => {
         setLoading(true);
         try {
-            const data = await getRoutines(true);
+            const data = await getTemplates();
             setTemplates(data);
         } catch (error) {
             console.error(error);
@@ -69,7 +65,7 @@ export function useTemplates() {
 
         setSaving(true);
         try {
-            await createRoutine({ title: title.trim(), isTemplate: true, exercises: validExercises });
+            await createTemplate({ title: title.trim(), exercises: validExercises });
             resetForm();
             setModalVisible(false);
             load();

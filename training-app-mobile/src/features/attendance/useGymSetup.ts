@@ -3,13 +3,8 @@ import { Alert } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import * as Location from 'expo-location';
 import { getGymConfig, setGymLocation, generateGymQr } from '../../api/attendance';
+import type { GymConfig } from '../../api/types';
 
-export type GymConfig = {
-    gymLatitude: number | null;
-    gymLongitude: number | null;
-    gymRadiusMeters: number | null;
-    gymQrCode: string | null;
-};
 
 export function useGymSetup() {
     const [config, setConfig] = useState<GymConfig | null>(null);

@@ -1,13 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { getClients, createClient } from '../../api/clients';
-
-export type Client = {
-    id: string;
-    name: string;
-    clientCode: string;
-    active: boolean;
-};
+import type { Client } from '../../api/types';
 
 export function useClients() {
     const [clients, setClients] = useState<Client[]>([]);

@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Alert } from 'react-native';
 import { getClients } from '../../api/clients';
 import { assignTemplate } from '../../api/routines';
-import type { Client } from '../clients/useClients';
-import type { Template } from './useTemplates';
+import type { Client } from '../../api/types';
+import type { Template } from '../../api/types';
 
 function todayString() {
     const now = new Date();
@@ -27,7 +27,7 @@ export function useAssignTemplate() {
         setLoadingClients(true);
         try {
             const data = await getClients();
-            setClients(data.filter((client: Client) => client.active));
+            setClients(data.filter((client) => client.active));
         } catch (error) {
             console.error(error);
         } finally {
