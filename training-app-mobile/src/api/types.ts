@@ -69,3 +69,41 @@ export type CheckinResult = {
     clientId: string;
     instructorId: string;
 };
+
+export type DashboardStats = {
+    period: {
+        from: string;
+        to: string;
+    };
+    clients: {
+        active: number;
+        total: number;
+    };
+    attendanceRatePercent: number;
+    routinesAssigned: number;
+    templatesCreated: number;
+};
+
+export type Coordinate = {
+    latitude: number;
+    longitude: number;
+};
+
+export type RunPointInput = Coordinate & {
+    timestamp: string;
+};
+
+export type RunPoint = Coordinate & {
+    id: string;
+    order: number;
+    timestamp: string;
+};
+
+export type RunSession = {
+    id: string;
+    startedAt: string;
+    endedAt: string | null;
+    distanceMeters: number | null;
+    durationSeconds: number | null;
+    points?: RunPoint[];
+};

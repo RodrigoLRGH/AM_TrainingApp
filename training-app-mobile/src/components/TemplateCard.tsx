@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { Card, Text, Button } from 'react-native-paper';
-import type { Template } from '../features/routines/useTemplates';
+import type { Template } from '../api/types';
 
 type Props = {
     template: Template;

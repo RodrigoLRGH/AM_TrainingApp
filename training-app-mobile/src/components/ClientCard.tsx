@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { Card, Chip } from 'react-native-paper';
-import type { Client } from '../features/clients/useClients';
+import type { Client } from '../api/types';
 
 type Props = {
     client: Client;

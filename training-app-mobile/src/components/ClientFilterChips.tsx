@@ -1,6 +1,6 @@
 import { ScrollView, StyleSheet } from 'react-native';
 import { Chip } from 'react-native-paper';
-import type { Client } from '../features/clients/useClients';
+import type { Client } from '../api/types';
 
 type Props = {
     clients: Client[];

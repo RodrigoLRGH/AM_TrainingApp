@@ -1,6 +1,6 @@
 import { View, StyleSheet } from 'react-native';
 import { Text, Checkbox } from 'react-native-paper';
-import type { Exercise } from '../features/routines/useMyRoutines';
+import type { Exercise } from '../api/types';
 
 type Props = {
     exercise: Exercise;

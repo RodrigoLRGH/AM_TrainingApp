@@ -1,5 +1,5 @@
 import { Card } from 'react-native-paper';
-import type { Routine } from '../features/routines/useMyRoutines';
+import type { Routine } from '../api/types';
 import { ExerciseRow } from './ExerciseRow';
 
 type Props = {
