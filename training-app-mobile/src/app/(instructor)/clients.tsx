@@ -1,8 +1,10 @@
 import { View, FlatList, StyleSheet } from 'react-native';
 import { Text, Button, ActivityIndicator } from 'react-native-paper';
+import { router } from 'expo-router';
 import { useClients } from '../../features/clients/useClients';
 import { ClientCard } from '../../components/ClientCard';
 import { NewClientModal } from '../../components/NewClientModal';
+import type { Client } from '../../api/types';
 
 export default function ClientsScreen() {
   const {
@@ -15,6 +17,13 @@ export default function ClientsScreen() {
     saving,
     handleCreate,
   } = useClients();
+
+  function openClient(client: Client) {
+    router.push({
+      pathname: '/client-detail/[id]',
+      params: { id: client.id, name: client.name },
+    });
+  }
 
   if (loading) {
     return (
@@ -35,7 +44,7 @@ export default function ClientsScreen() {
             Todavía no tienes clientes. Crea el primero con el botón de abajo.
           </Text>
         }
-        renderItem={({ item }) => <ClientCard client={item} />}
+        renderItem={({ item }) => <ClientCard client={item} onViewRatings={openClient} />}
       />
 
       <View style={styles.footer}>

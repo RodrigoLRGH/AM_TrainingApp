@@ -29,3 +29,10 @@ export function formatPace(meters: number, seconds: number) {
 
     return `${minutes}:${pad(rest)}`;
 }
+
+export function formatDateTime(iso: string) {
+    const date = new Date(iso);
+    const day = date.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' });
+    const time = date.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+    return `${day}, ${time}`;
+}

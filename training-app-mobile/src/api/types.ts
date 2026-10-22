@@ -117,3 +117,18 @@ export type Measurement = Record<MeasureKey, number | null> & {
 };
 
 export type NewMeasurement = Partial<Record<MeasureKey, number>>;
+
+export type SessionRating = {
+    id: string;
+    clientId: string;
+    routineId: string | null;
+    effort: number;
+    note: string | null;
+    createdAt: string;
+};
+
+export type NewSessionRating = {
+    effort: number;
+    note?: string;
+    routineId?: string;
+};

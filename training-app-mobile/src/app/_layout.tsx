@@ -9,6 +9,7 @@ export default function RootLayout() {
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="(instructor)" />
         <Stack.Screen name="(client)" />
+        <Stack.Screen name="client-detail/[id]" options={{ headerShown: true, title: 'Cliente' }} />
       </Stack>
     </PaperProvider>
   );
