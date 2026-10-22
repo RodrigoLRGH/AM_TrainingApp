@@ -107,3 +107,13 @@ export type RunSession = {
     durationSeconds: number | null;
     points?: RunPoint[];
 };
+
+export type MeasureKey = 'weightKg' | 'chestCm' | 'waistCm' | 'hipsCm' | 'armCm' | 'legCm';
+
+export type Measurement = Record<MeasureKey, number | null> & {
+    id: string;
+    clientId: string;
+    recordedAt: string;
+};
+
+export type NewMeasurement = Partial<Record<MeasureKey, number>>;
