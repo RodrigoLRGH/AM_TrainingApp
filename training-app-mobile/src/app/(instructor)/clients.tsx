@@ -44,7 +44,7 @@ export default function ClientsScreen() {
             Todavía no tienes clientes. Crea el primero con el botón de abajo.
           </Text>
         }
-        renderItem={({ item }) => <ClientCard client={item} onViewRatings={openClient} />}
+        renderItem={({ item }) => <ClientCard client={item} onOpen={openClient} />}
       />
 
       <View style={styles.footer}>

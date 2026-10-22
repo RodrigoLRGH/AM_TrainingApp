@@ -4,10 +4,10 @@ import type { Client } from '../api/types';
 
 type Props = {
     client: Client;
-    onViewRatings: (client: Client) => void;
+    onOpen: (client: Client) => void;
 };
 
-export function ClientCard({ client, onViewRatings }: Props) {
+export function ClientCard({ client, onOpen }: Props) {
     return (
         <Card style={styles.card}>
             <Card.Title
@@ -16,7 +16,7 @@ export function ClientCard({ client, onViewRatings }: Props) {
                 right={() => <Chip style={styles.chip}>{client.active ? 'Activo' : 'Inactivo'}</Chip>}
             />
             <Card.Actions>
-                <Button onPress={() => onViewRatings(client)}>Calificaciones</Button>
+                <Button onPress={() => onOpen(client)}>Ver cliente</Button>
             </Card.Actions>
         </Card>
     );

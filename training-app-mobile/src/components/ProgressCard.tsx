@@ -10,7 +10,7 @@ type Props = {
 
 function changeText(points: ChartPoint[], unit: string) {
     if (points.length < 2) {
-        return 'Registra otra medición para ver tu evolución.';
+        return 'Se necesitan al menos dos registros para ver la evolución.';
     }
 
     const change = points[points.length - 1].value - points[0].value;
@@ -24,7 +24,7 @@ export function ProgressCard({ metric, points }: Props) {
             <Card style={styles.card}>
                 <Card.Content>
                     <Text variant="bodyLarge" style={styles.empty}>
-                        Todavía no registras {metric.label.toLowerCase()}.
+                        Todavía no hay registros de {metric.label.toLowerCase()}.
                     </Text>
                 </Card.Content>
             </Card>
