@@ -54,3 +54,9 @@ export function formatDayLabel(iso: string) {
     });
     return text.charAt(0).toUpperCase() + text.slice(1);
 }
+
+export function initials(name: string) {
+    const parts = name.trim().split(/\s+/).filter(Boolean);
+    const letters = parts.slice(0, 2).map((part) => part.charAt(0));
+    return letters.join('').toUpperCase() || '?';
+}

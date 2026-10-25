@@ -24,6 +24,10 @@ export default function RootLayout() {
           name="routine-detail/[id]"
           options={{ headerShown: true, headerTransparent: false, title: 'Detalle de rutina' }}
         />
+        <Stack.Screen
+          name="edit-template/[id]"
+          options={{ headerShown: true, headerTransparent: false, title: 'Editar plantilla' }}
+        />
       </Stack>
     </PaperProvider>
   );

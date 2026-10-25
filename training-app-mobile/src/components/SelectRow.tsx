@@ -1,10 +1,5 @@
 import { Pressable, View, StyleSheet } from 'react-native';
-import { Text, Icon } from 'react-native-paper';
-
-const GREEN = '#2E5D4F';
-const GREEN_LIGHT = '#DCEDE3';
-const BORDER = '#C9D1CD';
-const BOX_BORDER = '#8A9A93';
+import { Text, Icon, useTheme } from 'react-native-paper';
 
 type Props = {
     title: string;
@@ -21,25 +16,39 @@ export function SelectRow({
     strikeWhenSelected = false,
     onPress,
 }: Props) {
+    const { colors } = useTheme();
     const struck = selected && strikeWhenSelected;
 
     return (
         <Pressable
-            style={[styles.row, selected && styles.rowSelected]}
+            style={[
+                styles.row,
+                { backgroundColor: colors.surface, borderColor: colors.outlineVariant },
+                selected && { backgroundColor: colors.primaryContainer, borderColor: colors.primary },
+            ]}
             onPress={onPress}
             accessibilityRole="checkbox"
             accessibilityState={{ checked: selected }}
         >
-            <View style={[styles.box, selected && styles.boxSelected]}>
-                {selected ? <Icon source="check" size={20} color="#FFFFFF" /> : null}
+            <View
+                style={[
+                    styles.box,
+                    { backgroundColor: colors.surface, borderColor: colors.outline },
+                    selected && { backgroundColor: colors.primary, borderColor: colors.primary },
+                ]}
+            >
+                {selected ? <Icon source="check" size={20} color={colors.onPrimary} /> : null}
             </View>
 
             <View style={styles.textContainer}>
-                <Text variant="bodyLarge" style={struck ? styles.done : styles.title}>
+                <Text
+                    variant="bodyLarge"
+                    style={[styles.title, struck && styles.done, struck && { color: colors.onSurfaceVariant }]}
+                >
                     {title}
                 </Text>
                 {subtitle ? (
-                    <Text variant="bodySmall" style={styles.subtitle}>
+                    <Text variant="bodySmall" style={{ color: colors.onSurfaceVariant }}>
                         {subtitle}
                     </Text>
                 ) : null}
@@ -52,32 +61,20 @@ const styles = StyleSheet.create({
     row: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#FFFFFF',
         borderWidth: 1,
-        borderColor: BORDER,
         borderRadius: 12,
         paddingVertical: 12,
         paddingHorizontal: 12,
         marginBottom: 10,
-    },
-    rowSelected: {
-        backgroundColor: GREEN_LIGHT,
-        borderColor: GREEN,
     },
     box: {
         width: 28,
         height: 28,
         borderRadius: 8,
         borderWidth: 2,
-        borderColor: BOX_BORDER,
-        backgroundColor: '#FFFFFF',
         alignItems: 'center',
         justifyContent: 'center',
         marginRight: 12,
-    },
-    boxSelected: {
-        backgroundColor: GREEN,
-        borderColor: GREEN,
     },
     textContainer: {
         flex: 1,
@@ -86,11 +83,6 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     done: {
-        fontWeight: '600',
         textDecorationLine: 'line-through',
-        color: '#6B7A73',
-    },
-    subtitle: {
-        color: '#555',
     },
 });

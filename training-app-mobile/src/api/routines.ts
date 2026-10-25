@@ -34,3 +34,16 @@ export async function setExerciseCompleted(exerciseId: string, completed: boolea
     });
     return data;
 }
+
+export async function updateTemplate(
+    templateId: string,
+    payload: { title: string; exercises: NewExercise[] },
+) {
+    const { data } = await api.patch<Template>(`/routines/${templateId}`, payload);
+    return data;
+}
+
+export async function deleteTemplate(templateId: string) {
+    const { data } = await api.delete<{ id: string }>(`/routines/${templateId}`);
+    return data;
+}

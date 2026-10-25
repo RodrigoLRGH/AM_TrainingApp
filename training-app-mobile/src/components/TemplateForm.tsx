@@ -1,6 +1,6 @@
 import { ScrollView, StyleSheet } from 'react-native';
 import { Text, TextInput, Button } from 'react-native-paper';
-import type { ExerciseDraft } from '../features/routines/useNewTemplate';
+import type { ExerciseDraft } from '../features/routines/useTemplateDraft';
 import { ExerciseFormRow } from './ExerciseFormRow';
 
 type Props = {
@@ -12,6 +12,7 @@ type Props = {
     onAddExercise: () => void;
     onSubmit: () => void;
     saving: boolean;
+    submitLabel?: string;
 };
 
 export function TemplateForm({
@@ -23,6 +24,7 @@ export function TemplateForm({
     onAddExercise,
     onSubmit,
     saving,
+    submitLabel = "Guardar plantilla",
 }: Props) {
     return (
         <ScrollView

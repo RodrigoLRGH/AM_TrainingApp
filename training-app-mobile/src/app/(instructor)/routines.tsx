@@ -1,18 +1,26 @@
 import { View, FlatList, StyleSheet } from 'react-native';
-import { Text, Button, ActivityIndicator } from 'react-native-paper';
+import { Text, Button, ActivityIndicator, Icon } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { useTemplates } from '../../features/routines/useTemplates';
 import { TemplateCard } from '../../components/TemplateCard';
+import { SectionHeader } from '../../components/SectionHeader';
 import type { Template } from '../../api/types';
 
 export default function RoutinesScreen() {
   const router = useRouter();
-  const { templates, loading } = useTemplates();
+  const { templates, loading, confirmDelete } = useTemplates();
 
   function openAssign(template: Template) {
     router.push({
       pathname: '/assign-template/[id]',
       params: { id: template.id, title: template.title },
+    });
+  }
+
+  function openEdit(template: Template) {
+    router.push({
+      pathname: '/edit-template/[id]',
+      params: { id: template.id },
     });
   }
 
@@ -31,15 +39,28 @@ export default function RoutinesScreen() {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
         ListEmptyComponent={
-          <Text variant="bodyLarge" style={styles.empty}>
-            Todavía no tienes plantillas. Crea la primera con el botón de abajo.
-          </Text>
+          <View style={styles.emptyBox}>
+            <Icon source="clipboard-text-outline" size={48} color="#9AA7A0" />
+            <Text variant="bodyLarge" style={styles.empty}>
+              Todavía no tienes plantillas.
+            </Text>
+            <Text variant="bodySmall" style={styles.emptyHint}>
+              Crea la primera con el botón de abajo.
+            </Text>
+          </View>
         }
-        renderItem={({ item }) => <TemplateCard template={item} onAssign={openAssign} />}
+        renderItem={({ item }) => (
+          <TemplateCard
+            template={item}
+            onAssign={openAssign}
+            onEdit={openEdit}
+            onDelete={confirmDelete}
+          />
+        )}
       />
 
       <View style={styles.footer}>
-        <Button mode="contained" onPress={() => router.push('/new-template')}>
+        <Button mode="contained" icon="plus" onPress={() => router.push('/new-template')}>
           Nueva plantilla
         </Button>
       </View>
@@ -59,9 +80,16 @@ const styles = StyleSheet.create({
   list: {
     padding: 16,
   },
+  emptyBox: {
+    alignItems: 'center',
+    marginTop: 48,
+  },
   empty: {
-    textAlign: 'center',
-    marginTop: 32,
+    marginTop: 12,
+    color: '#444',
+  },
+  emptyHint: {
+    marginTop: 4,
     color: '#999',
   },
   footer: {

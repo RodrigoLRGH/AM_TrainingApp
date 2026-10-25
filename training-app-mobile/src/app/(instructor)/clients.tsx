@@ -1,9 +1,10 @@
 import { View, FlatList, StyleSheet } from 'react-native';
-import { Text, Button, ActivityIndicator } from 'react-native-paper';
+import { Text, Button, ActivityIndicator, Icon } from 'react-native-paper';
 import { router } from 'expo-router';
 import { useClients } from '../../features/clients/useClients';
 import { ClientCard } from '../../components/ClientCard';
 import { NewClientModal } from '../../components/NewClientModal';
+import { SectionHeader } from '../../components/SectionHeader';
 import type { Client } from '../../api/types';
 
 export default function ClientsScreen() {
@@ -40,15 +41,21 @@ export default function ClientsScreen() {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
         ListEmptyComponent={
-          <Text variant="bodyLarge" style={styles.empty}>
-            Todavía no tienes clientes. Crea el primero con el botón de abajo.
-          </Text>
+          <View style={styles.emptyBox}>
+            <Icon source="account-group-outline" size={48} color="#9AA7A0" />
+            <Text variant="bodyLarge" style={styles.empty}>
+              Todavía no tienes clientes.
+            </Text>
+            <Text variant="bodySmall" style={styles.emptyHint}>
+              Crea el primero con el botón de abajo.
+            </Text>
+          </View>
         }
         renderItem={({ item }) => <ClientCard client={item} onOpen={openClient} />}
       />
 
       <View style={styles.footer}>
-        <Button mode="contained" onPress={() => setModalVisible(true)}>
+        <Button mode="contained" icon="account-plus" onPress={() => setModalVisible(true)}>
           Nuevo cliente
         </Button>
       </View>
@@ -77,9 +84,16 @@ const styles = StyleSheet.create({
   list: {
     padding: 16,
   },
+  emptyBox: {
+    alignItems: 'center',
+    marginTop: 48,
+  },
   empty: {
-    textAlign: 'center',
-    marginTop: 32,
+    marginTop: 12,
+    color: '#444',
+  },
+  emptyHint: {
+    marginTop: 4,
     color: '#999',
   },
   footer: {

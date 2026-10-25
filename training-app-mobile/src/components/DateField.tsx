@@ -1,14 +1,11 @@
 import { useState } from 'react';
 import { Platform, View, StyleSheet } from 'react-native';
-import { Portal, Modal, Button, IconButton } from 'react-native-paper';
+import { Portal, Modal, Button, IconButton, useTheme } from 'react-native-paper';
 import DateTimePicker, {
     DateTimePickerAndroid,
     type DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
 import { RoutineDateBadge } from './RoutineDateBadge';
-
-const GREEN = '#2E5D4F';
-const GREEN_LIGHT = '#DCEDE3';
 
 type Props = {
     value: Date;
@@ -17,6 +14,7 @@ type Props = {
 };
 
 export function DateField({ value, onChange, minimumDate }: Props) {
+    const { colors } = useTheme();
     const [iosPickerOpen, setIosPickerOpen] = useState(false);
 
     function handleChange(event: DateTimePickerEvent, selected?: Date) {
@@ -48,8 +46,8 @@ export function DateField({ value, onChange, minimumDate }: Props) {
                 <IconButton
                     icon="calendar-edit"
                     mode="contained"
-                    containerColor={GREEN_LIGHT}
-                    iconColor={GREEN}
+                    containerColor={colors.primaryContainer}
+                    iconColor={colors.primary}
                     size={24}
                     onPress={openPicker}
                     accessibilityLabel="Cambiar fecha"
@@ -62,14 +60,14 @@ export function DateField({ value, onChange, minimumDate }: Props) {
                     <Modal
                         visible={iosPickerOpen}
                         onDismiss={() => setIosPickerOpen(false)}
-                        contentContainerStyle={styles.modal}
+                        contentContainerStyle={[styles.modal, { backgroundColor: colors.surface }]}
                     >
                         <DateTimePicker
                             value={value}
                             mode="date"
                             display="inline"
                             minimumDate={minimumDate}
-                            accentColor={GREEN}
+                            accentColor={colors.primary}
                             themeVariant="light"
                             onChange={handleChange}
                         />
@@ -93,7 +91,6 @@ const styles = StyleSheet.create({
         marginLeft: 8,
     },
     modal: {
-        backgroundColor: '#FFFFFF',
         padding: 16,
         margin: 24,
         borderRadius: 12,

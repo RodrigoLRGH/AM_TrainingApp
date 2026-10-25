@@ -1,19 +1,18 @@
 import { View, StyleSheet } from 'react-native';
-import { Text, Icon } from 'react-native-paper';
+import { Text, Icon, useTheme } from 'react-native-paper';
 import { formatDayLabel } from '../utils/format';
-
-const BADGE_COLOR = '#2E5D4F';
-const BADGE_TEXT_COLOR = '#FFFFFF';
 
 type Props = {
     date: string;
 };
 
 export function RoutineDateBadge({ date }: Props) {
+    const { colors } = useTheme();
+
     return (
-        <View style={styles.badge}>
-            <Icon source="calendar" size={18} color={BADGE_TEXT_COLOR} />
-            <Text variant="labelLarge" style={styles.text}>
+        <View style={[styles.badge, { backgroundColor: colors.primary }]}>
+            <Icon source="calendar" size={18} color={colors.onPrimary} />
+            <Text variant="labelLarge" style={[styles.text, { color: colors.onPrimary }]}>
                 {formatDayLabel(date)}
             </Text>
         </View>
@@ -25,7 +24,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         alignSelf: 'flex-start',
-        backgroundColor: BADGE_COLOR,
         paddingHorizontal: 12,
         paddingVertical: 6,
         borderRadius: 16,
@@ -33,6 +31,5 @@ const styles = StyleSheet.create({
     text: {
         marginLeft: 6,
         fontWeight: 'bold',
-        color: BADGE_TEXT_COLOR,
     },
 });

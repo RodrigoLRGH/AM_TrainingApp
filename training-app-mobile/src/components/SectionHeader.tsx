@@ -1,13 +1,15 @@
 import { StyleSheet } from 'react-native';
-import { Text } from 'react-native-paper';
+import { Text, useTheme } from 'react-native-paper';
 
 type Props = {
     title: string;
 };
 
 export function SectionHeader({ title }: Props) {
+    const { colors } = useTheme();
+
     return (
-        <Text variant="titleMedium" style={styles.title}>
+        <Text variant="titleMedium" style={[styles.title, { color: colors.onSurface }]}>
             {title}
         </Text>
     );
@@ -16,7 +18,6 @@ export function SectionHeader({ title }: Props) {
 const styles = StyleSheet.create({
     title: {
         fontWeight: '700',
-        color: '#1F2A25',
         marginBottom: 12,
     },
 });
