@@ -10,3 +10,12 @@ export async function loginClient(clientCode: string) {
     const { data } = await api.post<AuthResponse>('/auth/client/login', { clientCode });
     return data;
 }
+
+export async function registerInstructor(name: string, email: string, password: string) {
+    const { data } = await api.post<AuthResponse>('/auth/instructor/register', {
+        name,
+        email,
+        password,
+    });
+    return data;
+}

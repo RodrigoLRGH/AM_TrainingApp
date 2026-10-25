@@ -4,7 +4,7 @@ import type { Client } from '../api/types';
 import { SectionHeader } from './SectionHeader';
 import { SelectRow } from './SelectRow';
 import { DateField } from './DateField';
-console.log({ SectionHeader, SelectRow, DateField });
+
 type Props = {
     clients: Client[];
     loadingClients: boolean;

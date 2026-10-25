@@ -57,7 +57,7 @@ export function TemplateForm({
             </Button>
 
             <Button mode="contained" onPress={onSubmit} loading={saving} disabled={saving}>
-                Guardar plantilla
+                {submitLabel}
             </Button>
         </ScrollView>
     );

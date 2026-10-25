@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 import Constants from 'expo-constants';
 import { getToken } from '../auth/storage';
 
@@ -33,3 +33,27 @@ api.interceptors.request.use(async (config) => {
   }
   return config;
 });
+
+let onUnauthorized: (() => void) | null = null;
+
+export function setUnauthorizedHandler(handler: (() => void) | null) {
+  onUnauthorized = handler;
+}
+
+api.interceptors.response.use(
+  (response) => response,
+  (error: unknown) => {
+    const sessionExpired =
+      isAxiosError(error) &&
+      error.response?.status === 401 &&
+      !!error.config?.headers?.Authorization;
+
+    if (sessionExpired) {
+      onUnauthorized?.();
+
+      return new Promise<never>(() => { });
+    }
+
+    return Promise.reject(error);
+  },
+);

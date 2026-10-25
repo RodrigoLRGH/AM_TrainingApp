@@ -3,6 +3,7 @@ import { Button } from 'react-native-paper';
 import { useLogin } from '../../features/auth/useLogin';
 import { RoleTabs } from '../../components/RoleTabs';
 import { LoginForm } from '../../components/LoginForm';
+import { useRouter } from 'expo-router';
 
 export default function LoginScreen() {
   const {
@@ -17,6 +18,7 @@ export default function LoginScreen() {
     loading,
     handleLogin,
   } = useLogin();
+  const router = useRouter();
 
   return (
     <View style={styles.container}>
@@ -37,6 +39,11 @@ export default function LoginScreen() {
       <Button mode="contained" onPress={handleLogin} loading={loading} disabled={loading}>
         Entrar
       </Button>
+      {mode === 'instructor' ? (
+        <Button mode="text" onPress={() => router.push('/(auth)/register')} style={styles.link}>
+          ¿No tienes cuenta? Regístrate
+        </Button>
+      ) : null}
     </View>
   );
 }
@@ -52,5 +59,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 32,
+  },
+  link: {
+    marginTop: 12,
   },
 });
