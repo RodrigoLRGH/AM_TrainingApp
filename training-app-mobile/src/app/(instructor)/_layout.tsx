@@ -2,6 +2,7 @@ import { Tabs } from 'expo-router';
 import { useTheme } from 'react-native-paper';
 import { LogoutButton } from '../../components/LogoutButton';
 import { tabIcon } from '../../components/tabIcon';
+import { HeaderActions } from '../../components/HeaderActions';
 
 export default function InstructorLayout() {
   const { colors } = useTheme();
@@ -10,7 +11,7 @@ export default function InstructorLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: colors.primary,
-        headerRight: () => <LogoutButton />,
+        headerRight: () => <HeaderActions />,
       }}
     >
       <Tabs.Screen

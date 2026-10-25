@@ -12,6 +12,7 @@ import { useRouter } from 'expo-router';
 import { setUnauthorizedHandler } from '../api/client';
 import type { Role } from '../api/types';
 import { clearSession, getRole, getToken, saveSession } from './storage';
+import { usePushRegistration } from '../features/notifications/usePushRegistration';
 
 type Session = {
     role: Role;
@@ -36,6 +37,7 @@ export function AuthProvider({ children }: ProviderProps) {
     const [loading, setLoading] = useState(true);
 
     const expiredRef = useRef(false);
+    usePushRegistration(session !== null);
 
     useEffect(() => {
         let cancelled = false;

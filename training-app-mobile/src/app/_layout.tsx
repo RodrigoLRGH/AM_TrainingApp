@@ -1,7 +1,9 @@
+import '../features/notifications/handler';
 import { Stack } from 'expo-router';
 import { PaperProvider } from 'react-native-paper';
 import { theme } from '../theme/theme';
 import { AuthProvider } from '../auth/AuthContext';
+import { NotificationObserver } from '../components/NotificationObserver';
 
 const detailOptions = {
   headerShown: true,
@@ -30,7 +32,13 @@ export default function RootLayout() {
             name="routine-detail/[id]"
             options={{ ...detailOptions, title: 'Detalle de rutina' }}
           />
+          <Stack.Screen name="announcements" options={{ ...detailOptions, title: 'Avisos' }} />
+          <Stack.Screen
+            name="new-announcement"
+            options={{ ...detailOptions, title: 'Nuevo aviso' }}
+          />
         </Stack>
+        <NotificationObserver />
       </AuthProvider>
     </PaperProvider>
   );

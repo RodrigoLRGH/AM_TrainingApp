@@ -133,3 +133,11 @@ export type NewSessionRating = {
     note?: string;
     routineId?: string;
 };
+
+export type Announcement = {
+    id: string;
+    title: string;
+    message: string;
+    instructorId: string;
+    createdAt: string;
+};

@@ -3,10 +3,11 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateRoutineDto } from './dto/create-routine.dto';
 import { UpdateRoutineDto } from './dto/update-routine.dto';
 import { AssignTemplateDto } from './dto/assign-template.dto';
+import { PushService } from '../push/push.service';
 
 @Injectable()
 export class RoutinesService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService, private push: PushService) { }
 
   create(instructorId: string, dto: CreateRoutineDto) {
     return this.prisma.routine.create({
@@ -126,6 +127,18 @@ export class RoutinesService {
           include: { exercises: true },
         }),
       ),
+    );
+
+    const clients = await this.prisma.user.findMany({
+      where: { id: { in: dto.clientIds } },
+      select: { pushToken: true },
+    });
+
+    await this.push.sendToTokens(
+      clients.map((c) => c.pushToken),
+      'Nueva rutina asignada',
+      `Tu instructor te asigno: ${template.title}`,
+      { type: 'routine' },
     );
 
     return created;

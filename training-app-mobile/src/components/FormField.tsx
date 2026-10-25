@@ -9,6 +9,7 @@ type Props = {
     onBlur: () => void;
     error?: string;
     secure?: boolean;
+    multiline?: boolean;
     keyboardType?: KeyboardTypeOptions;
     autoCapitalize?: TextInputProps['autoCapitalize'];
 };
@@ -20,6 +21,7 @@ export function FormField({
     onBlur,
     error,
     secure = false,
+    multiline = false,
     keyboardType,
     autoCapitalize,
 }: Props) {
@@ -35,6 +37,8 @@ export function FormField({
                 onBlur={onBlur}
                 error={!!error}
                 secureTextEntry={hidden}
+                multiline={multiline}
+                style={multiline ? styles.multiline : undefined}
                 keyboardType={keyboardType}
                 autoCapitalize={autoCapitalize}
                 autoCorrect={false}
@@ -55,5 +59,8 @@ export function FormField({
 const styles = StyleSheet.create({
     container: {
         marginBottom: 8,
+    },
+    multiline: {
+        minHeight: 120,
     },
 });

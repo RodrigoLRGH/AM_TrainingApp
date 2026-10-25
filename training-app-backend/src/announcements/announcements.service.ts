@@ -9,7 +9,7 @@ export class AnnouncementsService {
   constructor(
     private prisma: PrismaService,
     private push: PushService,
-  ) {}
+  ) { }
 
   registerPushToken(userId: string, dto: RegisterPushTokenDto) {
     return this.prisma.user.update({
@@ -33,6 +33,7 @@ export class AnnouncementsService {
       clients.map((c) => c.pushToken),
       dto.title,
       dto.message,
+      { type: 'announcement' },
     );
 
     return announcement;
