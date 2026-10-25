@@ -17,11 +17,12 @@ import { RoutinesService } from './routines.service';
 import { CreateRoutineDto } from './dto/create-routine.dto';
 import { UpdateRoutineDto } from './dto/update-routine.dto';
 import { AssignTemplateDto } from './dto/assign-template.dto';
+import { SetExerciseCompletedDto } from './dto/set-exercise-completed.dto';
 
 @Controller('routines')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class RoutinesController {
-  constructor(private routinesService: RoutinesService) {}
+  constructor(private routinesService: RoutinesService) { }
 
   @Roles('INSTRUCTOR')
   @Post()
@@ -69,5 +70,15 @@ export class RoutinesController {
     @Body() dto: AssignTemplateDto,
   ) {
     return this.routinesService.assignTemplate(user.userId, id, dto);
+  }
+
+  @Roles('CLIENTE')
+  @Patch('exercises/:exerciseId/completed')
+  setExerciseCompleted(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('exerciseId') exerciseId: string,
+    @Body() dto: SetExerciseCompletedDto,
+  ) {
+    return this.routinesService.setExerciseCompleted(user.userId, exerciseId, dto.completed);
   }
 }

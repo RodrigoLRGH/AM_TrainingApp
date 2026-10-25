@@ -20,6 +20,10 @@ export default function RootLayout() {
           name="assign-template/[id]"
           options={{ headerShown: true, headerTransparent: false, title: 'Asignar rutina' }}
         />
+        <Stack.Screen
+          name="routine-detail/[id]"
+          options={{ headerShown: true, headerTransparent: false, title: 'Detalle de rutina' }}
+        />
       </Stack>
     </PaperProvider>
   );

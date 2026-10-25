@@ -37,15 +37,6 @@ export function formatDateTime(iso: string) {
     return `${day}, ${time}`;
 }
 
-export function formatLongDate(date: Date) {
-    return date.toLocaleDateString('es-MX', {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-    });
-}
-
 export function startOfToday() {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -53,4 +44,13 @@ export function startOfToday() {
 
 export function toNoonIso(date: Date) {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12, 0, 0).toISOString();
+}
+
+export function formatDayLabel(iso: string) {
+    const text = new Date(iso).toLocaleDateString('es-MX', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+    });
+    return text.charAt(0).toUpperCase() + text.slice(1);
 }

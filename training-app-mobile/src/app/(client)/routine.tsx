@@ -1,13 +1,20 @@
-import { View, ScrollView, StyleSheet } from 'react-native';
+import { View, FlatList, StyleSheet } from 'react-native';
 import { Text, ActivityIndicator } from 'react-native-paper';
+import { useRouter } from 'expo-router';
 import { useMyRoutines } from '../../features/routines/useMyRoutines';
-import { useRateSession } from '../../features/ratings/useRateSession';
-import { RoutineCard } from '../../components/RoutineCard';
-import { RateSessionModal } from '../../components/RateSessionModal';
+import { RoutineSummaryCard } from '../../components/RoutineSummaryCard';
+import type { Routine } from '../../api/types';
 
 export default function RoutineScreen() {
-  const { routines, loading, completed, toggleExercise } = useMyRoutines();
-  const rating = useRateSession();
+  const router = useRouter();
+  const { routines, loading } = useMyRoutines();
+
+  function openRoutine(routine: Routine) {
+    router.push({
+      pathname: '/routine-detail/[id]',
+      params: { id: routine.id, title: routine.title },
+    });
+  }
 
   if (loading) {
     return (
@@ -26,45 +33,24 @@ export default function RoutineScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.list}>
-        {routines.map((routine) => (
-          <RoutineCard
-            key={routine.id}
-            routine={routine}
-            completed={completed}
-            onToggleExercise={toggleExercise}
-            rated={rating.ratedIds.includes(routine.id)}
-            onRate={rating.open}
-          />
-        ))}
-      </ScrollView>
-
-      <RateSessionModal
-        visible={rating.routine !== null}
-        routineTitle={rating.routine?.title ?? ''}
-        onDismiss={rating.close}
-        effort={rating.effort}
-        onEffortChange={rating.setEffort}
-        note={rating.note}
-        onNoteChange={rating.setNote}
-        onSubmit={rating.submit}
-        saving={rating.saving}
-      />
-    </View>
+    <FlatList
+      data={routines}
+      keyExtractor={(item) => item.id}
+      contentContainerStyle={styles.list}
+      renderItem={({ item }) => (
+        <RoutineSummaryCard routine={item} onPress={() => openRoutine(item)} />
+      )}
+    />
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  list: {
-    padding: 16,
-  },
   center: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  list: {
+    padding: 16,
   },
 });

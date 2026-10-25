@@ -1,6 +1,5 @@
-import { View, StyleSheet } from 'react-native';
-import { Text, Checkbox } from 'react-native-paper';
 import type { Exercise } from '../api/types';
+import { SelectRow } from './SelectRow';
 
 type Props = {
     exercise: Exercise;
@@ -10,34 +9,12 @@ type Props = {
 
 export function ExerciseRow({ exercise, completed, onToggle }: Props) {
     return (
-        <View style={styles.row}>
-            <Checkbox
-                status={completed ? 'checked' : 'unchecked'}
-                onPress={() => onToggle(exercise.id)}
-            />
-            <View style={styles.textContainer}>
-                <Text variant="bodyLarge" style={completed ? styles.done : undefined}>
-                    {exercise.name}
-                </Text>
-                <Text variant="bodySmall">
-                    {exercise.sets} series x {exercise.reps} repeticiones
-                </Text>
-            </View>
-        </View>
+        <SelectRow
+            title={exercise.name}
+            subtitle={`${exercise.sets} series x ${exercise.reps} repeticiones`}
+            selected={completed}
+            strikeWhenSelected
+            onPress={() => onToggle(exercise.id)}
+        />
     );
 }
-
-const styles = StyleSheet.create({
-    row: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 4,
-    },
-    textContainer: {
-        flex: 1,
-    },
-    done: {
-        textDecorationLine: 'line-through',
-        color: '#999',
-    },
-});

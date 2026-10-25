@@ -88,7 +88,6 @@ model SessionRating {
   @@index([clientId])
 }
 
-
 model Announcement {
   id      String @id @default(uuid())
   title   String
@@ -154,6 +153,8 @@ model Exercise {
   sets  Int
   reps  Int
   order Int    @default(0)
+
+  completed Boolean @default(false)
 }
 
 model RunSession {

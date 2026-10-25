@@ -2,17 +2,17 @@ import { useCallback, useState } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { getMyRoutines } from '../../api/routines';
 import type { Routine } from '../../api/types';
+import { sortRoutines } from './sortRoutines';
 
 export function useMyRoutines() {
     const [routines, setRoutines] = useState<Routine[]>([]);
     const [loading, setLoading] = useState(true);
-    const [completed, setCompleted] = useState<Record<string, boolean>>({});
 
     const load = useCallback(async () => {
         setLoading(true);
         try {
             const data = await getMyRoutines();
-            setRoutines(data);
+            setRoutines(sortRoutines(data));
         } catch (error) {
             console.error(error);
         } finally {
@@ -26,9 +26,5 @@ export function useMyRoutines() {
         }, [load]),
     );
 
-    function toggleExercise(id: string) {
-        setCompleted((prev) => ({ ...prev, [id]: !prev[id] }));
-    }
-
-    return { routines, loading, completed, toggleExercise };
+    return { routines, loading };
 }

@@ -1,5 +1,5 @@
 import { api } from './client';
-import type { NewExercise, Routine, Template } from './types';
+import type { Exercise, NewExercise, Routine, Template } from './types';
 
 export async function getMyRoutines(date?: string) {
     const { data } = await api.get<Routine[]>('/routines/me', {
@@ -25,5 +25,12 @@ export async function assignTemplate(
     payload: { clientIds: string[]; date: string },
 ) {
     const { data } = await api.post<Routine[]>(`/routines/${templateId}/assign`, payload);
+    return data;
+}
+
+export async function setExerciseCompleted(exerciseId: string, completed: boolean) {
+    const { data } = await api.patch<Exercise>(`/routines/exercises/${exerciseId}/completed`, {
+        completed,
+    });
     return data;
 }

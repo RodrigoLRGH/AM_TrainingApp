@@ -52,4 +52,10 @@ export class TrackingController {
     await this.trackingService.assertClientBelongsToInstructor(user.userId, clientId);
     return this.trackingService.getSessionRatings(clientId);
   }
+
+  @Roles('CLIENTE')
+  @Get('session-ratings/me')
+  getMySessionRatings(@CurrentUser() user: AuthenticatedUser) {
+    return this.trackingService.getMyRatings(user.userId);
+  }
 }

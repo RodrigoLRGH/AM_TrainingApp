@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateMeasurementDto } from './dto/create-measurement.dto';
 import { CreateSessionRatingDto } from './dto/create-session-rating.dto';
@@ -30,13 +30,34 @@ export class TrackingService {
     }
   }
 
-  createSessionRating(clientId: string, dto: CreateSessionRatingDto) {
+  async createSessionRating(clientId: string, dto: CreateSessionRatingDto) {
+    if (dto.routineId) {
+      const routine = await this.prisma.routine.findUnique({ where: { id: dto.routineId } });
+      if (!routine || routine.clientId !== clientId) {
+        throw new NotFoundException('Rutina no encontrada.');
+      }
+
+      const existing = await this.prisma.sessionRating.findFirst({
+        where: { clientId, routineId: dto.routineId },
+      });
+      if (existing) {
+        throw new ConflictException('Ya calificaste esta sesión.');
+      }
+    }
+
     return this.prisma.sessionRating.create({
       data: { clientId, effort: dto.effort, note: dto.note, routineId: dto.routineId },
     });
   }
 
   getSessionRatings(clientId: string) {
+    return this.prisma.sessionRating.findMany({
+      where: { clientId },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  getMyRatings(clientId: string) {
     return this.prisma.sessionRating.findMany({
       where: { clientId },
       orderBy: { createdAt: 'desc' },

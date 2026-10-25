@@ -1,10 +1,14 @@
+import { useState } from 'react';
 import { Platform, View, StyleSheet } from 'react-native';
-import { Button, Text, useTheme } from 'react-native-paper';
+import { Portal, Modal, Button, IconButton } from 'react-native-paper';
 import DateTimePicker, {
     DateTimePickerAndroid,
     type DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
-import { formatLongDate } from '../utils/format';
+import { RoutineDateBadge } from './RoutineDateBadge';
+
+const GREEN = '#2E5D4F';
+const GREEN_LIGHT = '#DCEDE3';
 
 type Props = {
     value: Date;
@@ -13,7 +17,7 @@ type Props = {
 };
 
 export function DateField({ value, onChange, minimumDate }: Props) {
-    const theme = useTheme();
+    const [iosPickerOpen, setIosPickerOpen] = useState(false);
 
     function handleChange(event: DateTimePickerEvent, selected?: Date) {
         if (selected && event.type !== 'dismissed') {
@@ -21,45 +25,77 @@ export function DateField({ value, onChange, minimumDate }: Props) {
         }
     }
 
-    function openAndroidCalendar() {
-        DateTimePickerAndroid.open({
-            value,
-            mode: 'date',
-            display: 'calendar',
-            minimumDate,
-            onChange: handleChange,
-        });
-    }
-
-    if (Platform.OS === 'android') {
-        return (
-            <Button mode="outlined" icon="calendar" onPress={openAndroidCalendar}>
-                {formatLongDate(value)}
-            </Button>
-        );
+    function openPicker() {
+        if (Platform.OS === 'android') {
+            DateTimePickerAndroid.open({
+                value,
+                mode: 'date',
+                display: 'calendar',
+                minimumDate,
+                onChange: handleChange,
+            });
+        } else {
+            setIosPickerOpen(true);
+        }
     }
 
     return (
         <View>
-            <Text variant="bodyLarge" style={styles.selected}>
-                {formatLongDate(value)}
-            </Text>
-            <DateTimePicker
-                value={value}
-                mode="date"
-                display="inline"
-                minimumDate={minimumDate}
-                accentColor={theme.colors.primary}
-                themeVariant="light"
-                onChange={handleChange}
-            />
+            <View style={styles.row}>
+                <View>
+                    <RoutineDateBadge date={value.toISOString()} />
+                </View>
+                <IconButton
+                    icon="calendar-edit"
+                    mode="contained"
+                    containerColor={GREEN_LIGHT}
+                    iconColor={GREEN}
+                    size={24}
+                    onPress={openPicker}
+                    accessibilityLabel="Cambiar fecha"
+                    style={styles.iconButton}
+                />
+            </View>
+
+            {Platform.OS === 'ios' ? (
+                <Portal>
+                    <Modal
+                        visible={iosPickerOpen}
+                        onDismiss={() => setIosPickerOpen(false)}
+                        contentContainerStyle={styles.modal}
+                    >
+                        <DateTimePicker
+                            value={value}
+                            mode="date"
+                            display="inline"
+                            minimumDate={minimumDate}
+                            accentColor={GREEN}
+                            themeVariant="light"
+                            onChange={handleChange}
+                        />
+                        <Button mode="contained" onPress={() => setIosPickerOpen(false)}>
+                            Listo
+                        </Button>
+                    </Modal>
+                </Portal>
+            ) : null}
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    selected: {
-        textTransform: 'capitalize',
-        marginBottom: 8,
+    row: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    iconButton: {
+        margin: 0,
+        marginLeft: 8,
+    },
+    modal: {
+        backgroundColor: '#FFFFFF',
+        padding: 16,
+        margin: 24,
+        borderRadius: 12,
     },
 });

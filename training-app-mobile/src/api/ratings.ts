@@ -10,3 +10,8 @@ export async function getClientRatings(clientId: string) {
     const { data } = await api.get<SessionRating[]>(`/clients/${clientId}/session-ratings`);
     return data;
 }
+
+export async function getMyRatings() {
+    const { data } = await api.get<SessionRating[]>('/session-ratings/me');
+    return data;
+}

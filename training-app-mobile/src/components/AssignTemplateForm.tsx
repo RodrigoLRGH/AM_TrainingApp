@@ -1,10 +1,11 @@
-import { ScrollView, StyleSheet } from 'react-native';
-import { Text, Button, Checkbox, ActivityIndicator } from 'react-native-paper';
+import { ScrollView, View, StyleSheet } from 'react-native';
+import { Text, Button, ActivityIndicator } from 'react-native-paper';
 import type { Client } from '../api/types';
+import { SectionHeader } from './SectionHeader';
+import { SelectRow } from './SelectRow';
 import { DateField } from './DateField';
-
+console.log({ SectionHeader, SelectRow, DateField });
 type Props = {
-    templateTitle: string;
     clients: Client[];
     loadingClients: boolean;
     selectedIds: string[];
@@ -17,7 +18,6 @@ type Props = {
 };
 
 export function AssignTemplateForm({
-    templateTitle,
     clients,
     loadingClients,
     selectedIds,
@@ -30,13 +30,7 @@ export function AssignTemplateForm({
 }: Props) {
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <Text variant="titleLarge" style={styles.title}>
-                {templateTitle}
-            </Text>
-
-            <Text variant="labelLarge" style={styles.sectionLabel}>
-                Clientes activos
-            </Text>
+            <SectionHeader title="Clientes activos" />
             {loadingClients ? (
                 <ActivityIndicator style={styles.loader} />
             ) : clients.length === 0 ? (
@@ -45,19 +39,19 @@ export function AssignTemplateForm({
                 </Text>
             ) : (
                 clients.map((client) => (
-                    <Checkbox.Item
+                    <SelectRow
                         key={client.id}
-                        label={client.name}
-                        status={selectedIds.includes(client.id) ? 'checked' : 'unchecked'}
+                        title={client.name}
+                        selected={selectedIds.includes(client.id)}
                         onPress={() => onToggleClient(client.id)}
                     />
                 ))
             )}
 
-            <Text variant="labelLarge" style={[styles.sectionLabel, styles.dateLabel]}>
-                Fecha
-            </Text>
-            <DateField value={date} onChange={onDateChange} minimumDate={minimumDate} />
+            <View style={styles.dateSection}>
+                <SectionHeader title="Fecha" />
+                <DateField value={date} onChange={onDateChange} minimumDate={minimumDate} />
+            </View>
 
             <Button
                 mode="contained"
@@ -77,20 +71,14 @@ const styles = StyleSheet.create({
         padding: 16,
         paddingBottom: 32,
     },
-    title: {
-        marginBottom: 24,
-    },
-    sectionLabel: {
-        marginBottom: 8,
-    },
-    dateLabel: {
-        marginTop: 24,
-    },
     loader: {
         marginVertical: 16,
     },
     empty: {
         color: '#999',
+    },
+    dateSection: {
+        marginTop: 20,
     },
     submit: {
         marginTop: 24,

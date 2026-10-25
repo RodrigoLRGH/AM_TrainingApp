@@ -130,4 +130,23 @@ export class RoutinesService {
 
     return created;
   }
+
+  async setExerciseCompleted(clientId: string, exerciseId: string, completed: boolean) {
+    const exercise = await this.prisma.exercise.findUnique({
+      where: { id: exerciseId },
+      include: { routine: { select: { clientId: true } } },
+    });
+
+    if (!exercise) {
+      throw new NotFoundException('Ejercicio no encontrado.');
+    }
+    if (exercise.routine.clientId !== clientId) {
+      throw new ForbiddenException('Este ejercicio no pertenece a tu rutina.');
+    }
+
+    return this.prisma.exercise.update({
+      where: { id: exerciseId },
+      data: { completed },
+    });
+  }
 }

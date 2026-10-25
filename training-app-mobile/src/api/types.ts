@@ -22,6 +22,7 @@ export type Exercise = {
     name: string;
     sets: number;
     reps: number;
+    completed: boolean;
 };
 
 export type NewExercise = {
