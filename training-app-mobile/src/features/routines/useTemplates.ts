@@ -1,19 +1,11 @@
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from 'expo-router';
-import { getTemplates, createTemplate } from '../../api/routines';
+import { getTemplates } from '../../api/routines';
 import type { Template } from '../../api/types';
-
-export type ExerciseDraft = { name: string; sets: string; reps: string };
 
 export function useTemplates() {
     const [templates, setTemplates] = useState<Template[]>([]);
     const [loading, setLoading] = useState(true);
-    const [modalVisible, setModalVisible] = useState(false);
-    const [title, setTitle] = useState('');
-    const [exercises, setExercises] = useState<ExerciseDraft[]>([
-        { name: '', sets: '', reps: '' },
-    ]);
-    const [saving, setSaving] = useState(false);
 
     const load = useCallback(async () => {
         setLoading(true);
@@ -33,61 +25,5 @@ export function useTemplates() {
         }, [load]),
     );
 
-    function addExerciseField() {
-        setExercises((prev) => [...prev, { name: '', sets: '', reps: '' }]);
-    }
-
-    function updateExercise(index: number, field: keyof ExerciseDraft, value: string) {
-        setExercises((prev) =>
-            prev.map((ex, i) => (i === index ? { ...ex, [field]: value } : ex)),
-        );
-    }
-
-    function removeExercise(index: number) {
-        setExercises((prev) => prev.filter((_, i) => i !== index));
-    }
-
-    function resetForm() {
-        setTitle('');
-        setExercises([{ name: '', sets: '', reps: '' }]);
-    }
-
-    async function handleCreate() {
-        const validExercises = exercises
-            .filter((ex) => ex.name.trim())
-            .map((ex) => ({
-                name: ex.name.trim(),
-                sets: Number(ex.sets) || 1,
-                reps: Number(ex.reps) || 1,
-            }));
-
-        if (!title.trim() || validExercises.length === 0) return;
-
-        setSaving(true);
-        try {
-            await createTemplate({ title: title.trim(), exercises: validExercises });
-            resetForm();
-            setModalVisible(false);
-            load();
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setSaving(false);
-        }
-    }
-
-    return {
-        templates,
-        loading,
-        modalVisible,
-        setModalVisible,
-        title,
-        setTitle,
-        exercises,
-        addExerciseField,
-        updateExercise,
-        removeExercise,
-        saving,
-        handleCreate,
-    };
+    return { templates, loading };
 }

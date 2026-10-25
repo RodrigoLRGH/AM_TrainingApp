@@ -1,43 +1,47 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert } from 'react-native';
+import { useRouter } from 'expo-router';
 import { getClients } from '../../api/clients';
 import { assignTemplate } from '../../api/routines';
+import { getErrorMessage } from '../../api/errors';
 import type { Client } from '../../api/types';
-import type { Template } from '../../api/types';
+import { startOfToday, toNoonIso } from '../../utils/format';
 
-function todayString() {
-    const now = new Date();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    return `${now.getFullYear()}-${month}-${day}`;
-}
-
-export function useAssignTemplate() {
-    const [template, setTemplate] = useState<Template | null>(null);
+export function useAssignTemplate(templateId: string) {
+    const router = useRouter();
     const [clients, setClients] = useState<Client[]>([]);
+    const [loadingClients, setLoadingClients] = useState(true);
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
-    const [date, setDate] = useState(todayString());
-    const [loadingClients, setLoadingClients] = useState(false);
+    const [minimumDate] = useState(() => startOfToday());
+    const [date, setDate] = useState(() => new Date());
     const [saving, setSaving] = useState(false);
 
-    async function open(selected: Template) {
-        setTemplate(selected);
-        setSelectedIds([]);
-        setDate(todayString());
-        setLoadingClients(true);
-        try {
-            const data = await getClients();
-            setClients(data.filter((client) => client.active));
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoadingClients(false);
-        }
-    }
+    useEffect(() => {
+        let cancelled = false;
 
-    function close() {
-        setTemplate(null);
-    }
+        async function load() {
+            try {
+                const data = await getClients();
+                if (!cancelled) {
+                    setClients(data.filter((client) => client.active));
+                }
+            } catch (error) {
+                if (!cancelled) {
+                    Alert.alert(getErrorMessage(error, 'No se pudieron cargar tus clientes.'));
+                }
+            } finally {
+                if (!cancelled) {
+                    setLoadingClients(false);
+                }
+            }
+        }
+
+        load();
+
+        return () => {
+            cancelled = true;
+        };
+    }, []);
 
     function toggleClient(id: string) {
         setSelectedIds((prev) =>
@@ -46,43 +50,36 @@ export function useAssignTemplate() {
     }
 
     async function submit() {
-        if (!template) return;
-
         if (selectedIds.length === 0) {
             Alert.alert('Selecciona al menos un cliente.');
-            return;
-        }
-        if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-            Alert.alert('La fecha debe tener formato AAAA-MM-DD.');
             return;
         }
 
         setSaving(true);
         try {
-            await assignTemplate(template.id, {
+            await assignTemplate(templateId, {
                 clientIds: selectedIds,
-                date: `${date}T12:00:00`,
+                date: toNoonIso(date),
             });
-            Alert.alert('Rutina asignada');
-            close();
+            Alert.alert('Rutina asignada', undefined, [
+                { text: 'Listo', onPress: () => router.back() },
+            ]);
         } catch (error) {
-            Alert.alert('No se pudo asignar la rutina.');
+            Alert.alert(getErrorMessage(error, 'No se pudo asignar la rutina.'));
         } finally {
             setSaving(false);
         }
     }
 
     return {
-        template,
         clients,
+        loadingClients,
         selectedIds,
+        toggleClient,
         date,
         setDate,
-        loadingClients,
+        minimumDate,
         saving,
-        open,
-        close,
-        toggleClient,
         submit,
     };
 }

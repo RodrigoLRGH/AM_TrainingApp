@@ -1,28 +1,20 @@
 import { View, FlatList, StyleSheet } from 'react-native';
 import { Text, Button, ActivityIndicator } from 'react-native-paper';
+import { useRouter } from 'expo-router';
 import { useTemplates } from '../../features/routines/useTemplates';
-import { useAssignTemplate } from '../../features/routines/useAssignTemplate';
 import { TemplateCard } from '../../components/TemplateCard';
-import { NewTemplateModal } from '../../components/NewTemplateModal';
-import { AssignTemplateModal } from '../../components/AssignTemplateModal';
+import type { Template } from '../../api/types';
 
 export default function RoutinesScreen() {
-  const {
-    templates,
-    loading,
-    modalVisible,
-    setModalVisible,
-    title,
-    setTitle,
-    exercises,
-    addExerciseField,
-    updateExercise,
-    removeExercise,
-    saving,
-    handleCreate,
-  } = useTemplates();
+  const router = useRouter();
+  const { templates, loading } = useTemplates();
 
-  const assign = useAssignTemplate();
+  function openAssign(template: Template) {
+    router.push({
+      pathname: '/assign-template/[id]',
+      params: { id: template.id, title: template.title },
+    });
+  }
 
   if (loading) {
     return (
@@ -43,41 +35,14 @@ export default function RoutinesScreen() {
             Todavía no tienes plantillas. Crea la primera con el botón de abajo.
           </Text>
         }
-        renderItem={({ item }) => <TemplateCard template={item} onAssign={assign.open} />}
+        renderItem={({ item }) => <TemplateCard template={item} onAssign={openAssign} />}
       />
 
       <View style={styles.footer}>
-        <Button mode="contained" onPress={() => setModalVisible(true)}>
+        <Button mode="contained" onPress={() => router.push('/new-template')}>
           Nueva plantilla
         </Button>
       </View>
-
-      <NewTemplateModal
-        visible={modalVisible}
-        onDismiss={() => setModalVisible(false)}
-        title={title}
-        onTitleChange={setTitle}
-        exercises={exercises}
-        onExerciseChange={updateExercise}
-        onExerciseRemove={removeExercise}
-        onAddExercise={addExerciseField}
-        onSubmit={handleCreate}
-        saving={saving}
-      />
-
-      <AssignTemplateModal
-        visible={assign.template !== null}
-        templateTitle={assign.template?.title ?? ''}
-        onDismiss={assign.close}
-        clients={assign.clients}
-        loadingClients={assign.loadingClients}
-        selectedIds={assign.selectedIds}
-        onToggleClient={assign.toggleClient}
-        date={assign.date}
-        onDateChange={assign.setDate}
-        onSubmit={assign.submit}
-        saving={assign.saving}
-      />
     </View>
   );
 }

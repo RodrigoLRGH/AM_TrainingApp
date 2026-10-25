@@ -36,3 +36,21 @@ export function formatDateTime(iso: string) {
     const time = date.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
     return `${day}, ${time}`;
 }
+
+export function formatLongDate(date: Date) {
+    return date.toLocaleDateString('es-MX', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+    });
+}
+
+export function startOfToday() {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+}
+
+export function toNoonIso(date: Date) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12, 0, 0).toISOString();
+}

@@ -1,6 +1,6 @@
 import { View, StyleSheet } from 'react-native';
 import { TextInput, IconButton } from 'react-native-paper';
-import type { ExerciseDraft } from '../features/routines/useTemplates';
+import type { ExerciseDraft } from '../features/routines/useNewTemplate';
 
 type Props = {
     exercise: ExerciseDraft;
