@@ -104,6 +104,13 @@ export class RoutinesService {
       throw new ForbiddenException('Esta plantilla no pertenece a tu cuenta.');
     }
 
+    const ownClients = await this.prisma.user.count({
+      where: { id: { in: dto.clientIds }, instructorId, role: 'CLIENTE', active: true },
+    });
+    if (ownClients !== new Set(dto.clientIds).size) {
+      throw new ForbiddenException('Solo puedes asignar rutinas a tus clientes activos.');
+    }
+
     const exercisesToUse = dto.exercises ?? template.exercises;
 
     const created = await this.prisma.$transaction(

@@ -34,22 +34,26 @@ api.interceptors.request.use(async (config) => {
   return config;
 });
 
-let onUnauthorized: (() => void) | null = null;
+let onUnauthorized: ((message?: string) => void) | null = null;
 
-export function setUnauthorizedHandler(handler: (() => void) | null) {
+export function setUnauthorizedHandler(handler: ((message?: string) => void) | null) {
   onUnauthorized = handler;
 }
+
+type ErrorBody = {
+  message?: string | string[];
+};
 
 api.interceptors.response.use(
   (response) => response,
   (error: unknown) => {
-    const sessionExpired =
-      isAxiosError(error) &&
+    if (
+      isAxiosError<ErrorBody>(error) &&
       error.response?.status === 401 &&
-      !!error.config?.headers?.Authorization;
-
-    if (sessionExpired) {
-      onUnauthorized?.();
+      !!error.config?.headers?.Authorization
+    ) {
+      const message = error.response.data?.message;
+      onUnauthorized?.(typeof message === 'string' ? message : undefined);
 
       return new Promise<never>(() => { });
     }

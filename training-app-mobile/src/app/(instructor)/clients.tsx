@@ -17,6 +17,7 @@ export default function ClientsScreen() {
     setNewName,
     saving,
     handleCreate,
+    confirmToggle,
   } = useClients();
 
   function openClient(client: Client) {
@@ -51,7 +52,9 @@ export default function ClientsScreen() {
             </Text>
           </View>
         }
-        renderItem={({ item }) => <ClientCard client={item} onOpen={openClient} />}
+        renderItem={({ item }) => (
+          <ClientCard client={item} onOpen={openClient} onToggleActive={confirmToggle} />
+        )} 
       />
 
       <View style={styles.footer}>

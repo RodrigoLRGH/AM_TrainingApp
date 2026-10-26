@@ -13,6 +13,7 @@ import { setUnauthorizedHandler } from '../api/client';
 import type { Role } from '../api/types';
 import { clearSession, getRole, getToken, saveSession } from './storage';
 import { usePushRegistration } from '../features/notifications/usePushRegistration';
+import { Alert } from 'react-native';
 
 type Session = {
     role: Role;
@@ -74,7 +75,7 @@ export function AuthProvider({ children }: ProviderProps) {
     }, []);
 
     useEffect(() => {
-        setUnauthorizedHandler(async () => {
+        setUnauthorizedHandler(async (message?: string) => {
             if (expiredRef.current) {
                 return;
             }
@@ -82,6 +83,10 @@ export function AuthProvider({ children }: ProviderProps) {
             expiredRef.current = true;
             await signOut();
             router.replace('/(auth)/login');
+
+            if (message && message !== 'Unauthorized') {
+                Alert.alert('Sesión terminada', message);
+            }
         });
 
         return () => setUnauthorizedHandler(null);

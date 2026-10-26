@@ -1,6 +1,8 @@
 import { useCallback, useState } from 'react';
+import { Alert } from 'react-native';
 import { useFocusEffect } from 'expo-router';
-import { getClients, createClient } from '../../api/clients';
+import { getClients, createClient, setClientActive } from '../../api/clients';
+import { getErrorMessage } from '../../api/errors';
 import type { Client } from '../../api/types';
 
 export function useClients() {
@@ -37,10 +39,37 @@ export function useClients() {
             setModalVisible(false);
             load();
         } catch (error) {
-            console.error(error);
+            Alert.alert(getErrorMessage(error, 'No se pudo crear el cliente.'));
         } finally {
             setSaving(false);
         }
+    }
+
+    async function applyActive(client: Client, active: boolean) {
+        try {
+            await setClientActive(client.id, active);
+            setClients((prev) =>
+                prev.map((item) => (item.id === client.id ? { ...item, active } : item)),
+            );
+        } catch (error) {
+            Alert.alert(getErrorMessage(error, 'No se pudo actualizar al cliente.'));
+        }
+    }
+
+    function confirmToggle(client: Client) {
+        if (!client.active) {
+            applyActive(client, true);
+            return;
+        }
+
+        Alert.alert(
+            'Desactivar cliente',
+            `${client.name} no podrá iniciar sesión ni recibirá avisos. Sus datos se conservan y puedes activarlo cuando quieras.`,
+            [
+                { text: 'Cancelar', style: 'cancel' },
+                { text: 'Desactivar', style: 'destructive', onPress: () => applyActive(client, false) },
+            ],
+        );
     }
 
     return {
@@ -52,5 +81,6 @@ export function useClients() {
         setNewName,
         saving,
         handleCreate,
+        confirmToggle,
     };
 }

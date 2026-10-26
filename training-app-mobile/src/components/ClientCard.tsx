@@ -1,18 +1,26 @@
+import { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Card, Text, Icon, useTheme } from 'react-native-paper';
+import { Card, Text, IconButton, Menu, useTheme } from 'react-native-paper';
 import type { Client } from '../api/types';
 import { ClientAvatar } from './ClientAvatar';
 
 type Props = {
     client: Client;
     onOpen: (client: Client) => void;
+    onToggleActive: (client: Client) => void;
 };
 
-export function ClientCard({ client, onOpen }: Props) {
+export function ClientCard({ client, onOpen, onToggleActive }: Props) {
     const { colors } = useTheme();
+    const [menuVisible, setMenuVisible] = useState(false);
 
     const accentBackground = client.active ? colors.secondaryContainer : colors.surfaceVariant;
     const accentText = client.active ? colors.onSecondaryContainer : colors.onSurfaceVariant;
+
+    function toggle() {
+        setMenuVisible(false);
+        onToggleActive(client);
+    }
 
     return (
         <Card style={styles.card} onPress={() => onOpen(client)}>
@@ -54,7 +62,25 @@ export function ClientCard({ client, onOpen }: Props) {
                     </View>
                 </View>
 
-                <Icon source="chevron-right" size={24} color={colors.onSurfaceVariant} />
+                <Menu
+                    visible={menuVisible}
+                    onDismiss={() => setMenuVisible(false)}
+                    anchorPosition="bottom"
+                    anchor={
+                        <IconButton
+                            icon="dots-vertical"
+                            onPress={() => setMenuVisible(true)}
+                            accessibilityLabel="Opciones del cliente"
+                        />
+                    }
+                >
+                    <Menu.Item
+                        leadingIcon={client.active ? 'account-off' : 'account-check'}
+                        title={client.active ? 'Desactivar' : 'Activar'}
+                        titleStyle={client.active ? { color: colors.error } : undefined}
+                        onPress={toggle}
+                    />
+                </Menu>
             </View>
         </Card>
     );
@@ -67,7 +93,9 @@ const styles = StyleSheet.create({
     row: {
         flexDirection: 'row',
         alignItems: 'center',
-        padding: 14,
+        paddingVertical: 14,
+        paddingLeft: 14,
+        paddingRight: 4,
     },
     info: {
         flex: 1,
