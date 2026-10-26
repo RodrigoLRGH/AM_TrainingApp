@@ -1,23 +1,33 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Alert } from 'react-native';
-import { getMyRoutines, setExerciseCompleted } from '../../api/routines';
 import { getMyRatings } from '../../api/ratings';
-import { getErrorMessage } from '../../api/errors';
 import type { Routine } from '../../api/types';
+import { loadMyRoutines } from '../../offline/routines';
+import { useSync } from '../../offline/SyncContext';
 
 export function useRoutineDetail(routineId: string) {
+    const { queueExercise } = useSync();
     const [routine, setRoutine] = useState<Routine | null>(null);
     const [rated, setRated] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [fromCache, setFromCache] = useState(false);
 
     const load = useCallback(async () => {
         setLoading(true);
         try {
-            const [routines, ratings] = await Promise.all([getMyRoutines(), getMyRatings()]);
-            setRoutine(routines.find((item) => item.id === routineId) ?? null);
-            setRated(ratings.some((rating) => rating.routineId === routineId));
+            const loaded = await loadMyRoutines();
+            setRoutine(loaded.routines.find((item) => item.id === routineId) ?? null);
+            setFromCache(loaded.fromCache);
+
+            if (!loaded.fromCache) {
+                try {
+                    const ratings = await getMyRatings();
+                    setRated(ratings.some((rating) => rating.routineId === routineId));
+                } catch (error) {
+                    console.warn('No se pudieron cargar tus calificaciones.', error);
+                }
+            }
         } catch (error) {
-            console.error(error);
+            console.warn('No se pudo cargar la rutina.', error);
         } finally {
             setLoading(false);
         }
@@ -46,14 +56,10 @@ export function useRoutineDetail(routineId: string) {
             return;
         }
 
-        markExercise(exerciseId, !current.completed);
-        try {
-            await setExerciseCompleted(exerciseId, !current.completed);
-        } catch (error) {
-            markExercise(exerciseId, current.completed);
-            Alert.alert(getErrorMessage(error, 'No se pudo guardar el cambio.'));
-        }
+        const next = !current.completed;
+        markExercise(exerciseId, next);
+        await queueExercise(exerciseId, next);
     }
 
-    return { routine, loading, rated, toggleExercise };
+    return { routine, loading, rated, fromCache, toggleExercise };
 }

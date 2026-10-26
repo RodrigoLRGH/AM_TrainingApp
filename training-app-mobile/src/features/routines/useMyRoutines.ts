@@ -1,20 +1,24 @@
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from 'expo-router';
-import { getMyRoutines } from '../../api/routines';
 import type { Routine } from '../../api/types';
+import { loadMyRoutines } from '../../offline/routines';
 import { sortRoutines } from './sortRoutines';
 
 export function useMyRoutines() {
     const [routines, setRoutines] = useState<Routine[]>([]);
     const [loading, setLoading] = useState(true);
+    const [failed, setFailed] = useState(false);
+    const [fromCache, setFromCache] = useState(false);
 
     const load = useCallback(async () => {
         setLoading(true);
         try {
-            const data = await getMyRoutines();
-            setRoutines(sortRoutines(data));
+            const loaded = await loadMyRoutines();
+            setRoutines(sortRoutines(loaded.routines));
+            setFromCache(loaded.fromCache);
+            setFailed(false);
         } catch (error) {
-            console.error(error);
+            setFailed(true);
         } finally {
             setLoading(false);
         }
@@ -26,5 +30,5 @@ export function useMyRoutines() {
         }, [load]),
     );
 
-    return { routines, loading };
+    return { routines, loading, failed, fromCache };
 }

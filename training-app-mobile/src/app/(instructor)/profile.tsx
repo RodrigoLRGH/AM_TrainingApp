@@ -2,7 +2,7 @@ import { useLogout } from '../../features/auth/useLogout';
 import { ProfileView } from '../../components/ProfileView';
 
 export default function InstructorProfileScreen() {
-    const { logout } = useLogout();
+    const { confirmLogout } = useLogout();
 
-    return <ProfileView roleLabel="instructor" onLogout={logout} />;
+    return <ProfileView roleLabel="instructor" onLogout={confirmLogout} />;
 }

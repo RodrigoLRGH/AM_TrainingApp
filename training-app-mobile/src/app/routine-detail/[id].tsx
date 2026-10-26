@@ -5,15 +5,17 @@ import { useRoutineDetail } from '../../features/routines/useRoutineDetail';
 import { useRateSession } from '../../features/ratings/useRateSession';
 import { RoutineDetailView } from '../../components/RoutineDetailView';
 import { RateSessionModal } from '../../components/RateSessionModal';
+import { SyncBanner } from '../../components/SyncBanner';
 
 export default function RoutineDetailScreen() {
     const { id, title } = useLocalSearchParams<{ id: string; title: string }>();
-    const { routine, loading, rated, toggleExercise } = useRoutineDetail(id);
+    const { routine, loading, rated, fromCache, toggleExercise } = useRoutineDetail(id);
     const rating = useRateSession(id, rated);
 
     return (
         <View style={styles.container}>
             <Stack.Screen options={{ title }} />
+            <SyncBanner fromCache={fromCache} />
 
             {loading ? (
                 <View style={styles.center}>

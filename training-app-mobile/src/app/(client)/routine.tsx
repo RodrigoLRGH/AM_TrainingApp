@@ -1,13 +1,14 @@
 import { View, FlatList, StyleSheet } from 'react-native';
 import { Text, ActivityIndicator } from 'react-native-paper';
 import { useRouter } from 'expo-router';
+import type { Routine } from '../../api/types';
 import { useMyRoutines } from '../../features/routines/useMyRoutines';
 import { RoutineSummaryCard } from '../../components/RoutineSummaryCard';
-import type { Routine } from '../../api/types';
+import { SyncBanner } from '../../components/SyncBanner';
 
 export default function RoutineScreen() {
   const router = useRouter();
-  const { routines, loading } = useMyRoutines();
+  const { routines, loading, failed, fromCache } = useMyRoutines();
 
   function openRoutine(routine: Routine) {
     router.push({
@@ -16,39 +17,73 @@ export default function RoutineScreen() {
     });
   }
 
-  if (loading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
+  function renderBody() {
+    if (loading) {
+      return (
+        <View style={styles.center}>
+          <ActivityIndicator size="large" />
+        </View>
+      );
+    }
 
-  if (routines.length === 0) {
+    if (failed) {
+      return (
+        <View style={styles.center}>
+          <Text variant="bodyLarge" style={styles.message}>
+            No pudimos cargar tus rutinas.
+          </Text>
+          <Text variant="bodySmall" style={styles.hint}>
+            Conéctate a internet al menos una vez para guardarlas en tu teléfono.
+          </Text>
+        </View>
+      );
+    }
+
+    if (routines.length === 0) {
+      return (
+        <View style={styles.center}>
+          <Text variant="bodyLarge">No tienes rutinas asignadas todavía.</Text>
+        </View>
+      );
+    }
+
     return (
-      <View style={styles.center}>
-        <Text variant="bodyLarge">No tienes rutinas asignadas todavía.</Text>
-      </View>
+      <FlatList
+        data={routines}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.list}
+        renderItem={({ item }) => (
+          <RoutineSummaryCard routine={item} onPress={() => openRoutine(item)} />
+        )}
+      />
     );
   }
 
   return (
-    <FlatList
-      data={routines}
-      keyExtractor={(item) => item.id}
-      contentContainerStyle={styles.list}
-      renderItem={({ item }) => (
-        <RoutineSummaryCard routine={item} onPress={() => openRoutine(item)} />
-      )}
-    />
+    <View style={styles.container}>
+      <SyncBanner fromCache={fromCache} />
+      {renderBody()}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   center: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    padding: 24,
+  },
+  message: {
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  hint: {
+    textAlign: 'center',
+    color: '#999',
   },
   list: {
     padding: 16,

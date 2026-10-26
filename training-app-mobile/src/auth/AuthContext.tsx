@@ -14,6 +14,7 @@ import type { Role } from '../api/types';
 import { clearSession, getRole, getToken, saveSession } from './storage';
 import { usePushRegistration } from '../features/notifications/usePushRegistration';
 import { Alert } from 'react-native';
+import { resetOffline } from '../offline/sync';
 
 type Session = {
     role: Role;
@@ -71,6 +72,7 @@ export function AuthProvider({ children }: ProviderProps) {
 
     const signOut = useCallback(async () => {
         await clearSession();
+        await resetOffline();
         setSession(null);
     }, []);
 

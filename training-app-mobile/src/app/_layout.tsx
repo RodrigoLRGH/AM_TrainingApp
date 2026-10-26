@@ -3,6 +3,7 @@ import { Stack } from 'expo-router';
 import { PaperProvider } from 'react-native-paper';
 import { theme } from '../theme/theme';
 import { AuthProvider } from '../auth/AuthContext';
+import { SyncProvider } from '../offline/SyncContext';
 import { NotificationObserver } from '../components/NotificationObserver';
 
 const detailOptions = {
@@ -14,31 +15,39 @@ export default function RootLayout() {
   return (
     <PaperProvider theme={theme}>
       <AuthProvider>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(auth)" />
-          <Stack.Screen name="(instructor)" />
-          <Stack.Screen name="(client)" />
-          <Stack.Screen name="client-detail/[id]" options={{ ...detailOptions, title: 'Cliente' }} />
-          <Stack.Screen name="new-template" options={{ ...detailOptions, title: 'Nueva plantilla' }} />
-          <Stack.Screen
-            name="edit-template/[id]"
-            options={{ ...detailOptions, title: 'Editar plantilla' }}
-          />
-          <Stack.Screen
-            name="assign-template/[id]"
-            options={{ ...detailOptions, title: 'Asignar rutina' }}
-          />
-          <Stack.Screen
-            name="routine-detail/[id]"
-            options={{ ...detailOptions, title: 'Detalle de rutina' }}
-          />
-          <Stack.Screen name="announcements" options={{ ...detailOptions, title: 'Avisos' }} />
-          <Stack.Screen
-            name="new-announcement"
-            options={{ ...detailOptions, title: 'Nuevo aviso' }}
-          />
-        </Stack>
-        <NotificationObserver />
+        <SyncProvider>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(auth)" />
+            <Stack.Screen name="(instructor)" />
+            <Stack.Screen name="(client)" />
+            <Stack.Screen
+              name="client-detail/[id]"
+              options={{ ...detailOptions, title: 'Cliente' }}
+            />
+            <Stack.Screen
+              name="new-template"
+              options={{ ...detailOptions, title: 'Nueva plantilla' }}
+            />
+            <Stack.Screen
+              name="edit-template/[id]"
+              options={{ ...detailOptions, title: 'Editar plantilla' }}
+            />
+            <Stack.Screen
+              name="assign-template/[id]"
+              options={{ ...detailOptions, title: 'Asignar rutina' }}
+            />
+            <Stack.Screen
+              name="routine-detail/[id]"
+              options={{ ...detailOptions, title: 'Detalle de rutina' }}
+            />
+            <Stack.Screen name="announcements" options={{ ...detailOptions, title: 'Avisos' }} />
+            <Stack.Screen
+              name="new-announcement"
+              options={{ ...detailOptions, title: 'Nuevo aviso' }}
+            />
+          </Stack>
+          <NotificationObserver />
+        </SyncProvider>
       </AuthProvider>
     </PaperProvider>
   );
