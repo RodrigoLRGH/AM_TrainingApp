@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { Alert } from 'react-native';
+import { AppAlert } from '../../components/AppAlert';
 import { useFocusEffect } from 'expo-router';
 import * as Location from 'expo-location';
 import { getGymConfig, setGymLocation, generateGymQr } from '../../api/attendance';
@@ -37,7 +37,7 @@ export function useGymSetup() {
     async function saveCurrentLocation() {
         const radiusMeters = Number(radius);
         if (!Number.isInteger(radiusMeters) || radiusMeters < 10) {
-            Alert.alert('El radio debe ser un número entero de al menos 10 metros.');
+            AppAlert.alert('El radio debe ser un número entero de al menos 10 metros.');
             return;
         }
 
@@ -45,7 +45,7 @@ export function useGymSetup() {
         try {
             const { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
-                Alert.alert('Necesitamos permiso de ubicación para guardar la ubicación del gimnasio.');
+                AppAlert.alert('Necesitamos permiso de ubicación para guardar la ubicación del gimnasio.');
                 return;
             }
 
@@ -56,9 +56,9 @@ export function useGymSetup() {
                 radiusMeters,
             });
             await refresh();
-            Alert.alert('Ubicación del gimnasio guardada');
+            AppAlert.alert('Ubicación del gimnasio guardada');
         } catch (error) {
-            Alert.alert('No se pudo guardar la ubicación.');
+            AppAlert.alert('No se pudo guardar la ubicación.');
         } finally {
             setSaving(false);
         }
@@ -70,7 +70,7 @@ export function useGymSetup() {
             await generateGymQr();
             await refresh();
         } catch (error) {
-            Alert.alert('No se pudo generar el código QR.');
+            AppAlert.alert('No se pudo generar el código QR.');
         } finally {
             setSaving(false);
         }

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Alert } from 'react-native';
+import { AppAlert } from '../../components/AppAlert';
 import * as Location from 'expo-location';
 import { startRun, addRunPoints, finishRun } from '../../api/running';
 import { getErrorMessage } from '../../api/errors';
@@ -85,7 +85,7 @@ export function useRunTracker() {
     async function start() {
         const permission = await Location.requestForegroundPermissionsAsync();
         if (permission.status !== 'granted') {
-            Alert.alert('Necesitamos permiso de ubicación para registrar tu recorrido.');
+            AppAlert.alert('Necesitamos permiso de ubicación para registrar tu recorrido.');
             return;
         }
 
@@ -115,7 +115,7 @@ export function useRunTracker() {
             );
             setStatus('running');
         } catch (error) {
-            Alert.alert(getErrorMessage(error, 'No se pudo iniciar la corrida.'));
+            AppAlert.alert(getErrorMessage(error, 'No se pudo iniciar la corrida.'));
             setStatus('idle');
         }
     }
@@ -147,7 +147,7 @@ export function useRunTracker() {
                 pendingRef.current = [...batch, ...pendingRef.current];
             }
             setStatus('running');
-            Alert.alert(getErrorMessage(error, 'No se pudo terminar la corrida.'));
+            AppAlert.alert(getErrorMessage(error, 'No se pudo terminar la corrida.'));
         }
     }
 

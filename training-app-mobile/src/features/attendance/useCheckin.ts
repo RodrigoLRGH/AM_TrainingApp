@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Alert } from 'react-native';
+import { AppAlert } from '../../components/AppAlert';
 import * as Location from 'expo-location';
 import { useCameraPermissions } from 'expo-camera';
 import { checkinGeo, checkinQr } from '../../api/attendance';
@@ -22,7 +22,7 @@ export function useCheckin() {
         try {
             const { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
-                Alert.alert('Necesitamos permiso de ubicación para registrar tu asistencia.');
+                AppAlert.alert('Necesitamos permiso de ubicación para registrar tu asistencia.');
                 return;
             }
 
@@ -31,9 +31,9 @@ export function useCheckin() {
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
             });
-            Alert.alert('Asistencia registrada');
+            AppAlert.alert('Asistencia registrada');
         } catch (error) {
-            Alert.alert(getErrorMessage(error, 'No se pudo registrar la asistencia.'));
+            AppAlert.alert(getErrorMessage(error, 'No se pudo registrar la asistencia.'));
         } finally {
             lockRef.current = false;
             setBusy(false);
@@ -44,7 +44,7 @@ export function useCheckin() {
         if (!permission?.granted) {
             const result = await requestPermission();
             if (!result.granted) {
-                Alert.alert('Necesitamos permiso de la cámara para escanear el código QR.');
+                AppAlert.alert('Necesitamos permiso de la cámara para escanear el código QR.');
                 return;
             }
         }
@@ -65,9 +65,9 @@ export function useCheckin() {
         setScanning(false);
         try {
             await checkinQr(qrCode);
-            Alert.alert('Asistencia registrada');
+            AppAlert.alert('Asistencia registrada');
         } catch (error) {
-            Alert.alert(getErrorMessage(error, 'No se pudo registrar la asistencia.'));
+            AppAlert.alert(getErrorMessage(error, 'No se pudo registrar la asistencia.'));
         } finally {
             lockRef.current = false;
             setBusy(false);

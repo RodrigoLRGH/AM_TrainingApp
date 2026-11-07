@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Alert } from 'react-native';
+import { AppAlert } from '../../components/AppAlert';
 import { useRouter } from 'expo-router';
 import { getTemplates, updateTemplate } from '../../api/routines';
 import { getErrorMessage } from '../../api/errors';
@@ -30,7 +30,7 @@ export function useEditTemplate(templateId: string) {
                 }
             } catch (error) {
                 if (!cancelled) {
-                    Alert.alert(getErrorMessage(error, 'No se pudo cargar la plantilla.'));
+                    AppAlert.alert(getErrorMessage(error, 'No se pudo cargar la plantilla.'));
                 }
             } finally {
                 if (!cancelled) {
@@ -57,7 +57,7 @@ export function useEditTemplate(templateId: string) {
             await updateTemplate(templateId, payload);
             router.back();
         } catch (error) {
-            Alert.alert(getErrorMessage(error, 'No se pudieron guardar los cambios.'));
+            AppAlert.alert(getErrorMessage(error, 'No se pudieron guardar los cambios.'));
         } finally {
             setSaving(false);
         }

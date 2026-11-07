@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Alert } from 'react-native';
+import { AppAlert } from '../../components/AppAlert';
 import { useFocusEffect } from 'expo-router';
 import { getClientRatings } from '../../api/ratings';
 import { getErrorMessage } from '../../api/errors';
@@ -15,7 +15,7 @@ export function useClientRatings(clientId: string) {
             const data = await getClientRatings(clientId);
             setRatings(data);
         } catch (error) {
-            Alert.alert(getErrorMessage(error, 'No se pudieron cargar las calificaciones.'));
+            AppAlert.alert(getErrorMessage(error, 'No se pudieron cargar las calificaciones.'));
         } finally {
             setLoading(false);
         }

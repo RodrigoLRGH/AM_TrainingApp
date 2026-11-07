@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Alert } from 'react-native';
+import { AppAlert } from '../../components/AppAlert';
 import { useRouter } from 'expo-router';
 import { getClients } from '../../api/clients';
 import { assignTemplate } from '../../api/routines';
@@ -27,7 +27,7 @@ export function useAssignTemplate(templateId: string) {
                 }
             } catch (error) {
                 if (!cancelled) {
-                    Alert.alert(getErrorMessage(error, 'No se pudieron cargar tus clientes.'));
+                    AppAlert.alert(getErrorMessage(error, 'No se pudieron cargar tus clientes.'));
                 }
             } finally {
                 if (!cancelled) {
@@ -51,7 +51,7 @@ export function useAssignTemplate(templateId: string) {
 
     async function submit() {
         if (selectedIds.length === 0) {
-            Alert.alert('Selecciona al menos un cliente.');
+            AppAlert.alert('Selecciona al menos un cliente.');
             return;
         }
 
@@ -61,11 +61,11 @@ export function useAssignTemplate(templateId: string) {
                 clientIds: selectedIds,
                 date: toNoonIso(date),
             });
-            Alert.alert('Rutina asignada', undefined, [
+            AppAlert.alert('Rutina asignada', undefined, [
                 { text: 'Listo', onPress: () => router.back() },
             ]);
         } catch (error) {
-            Alert.alert(getErrorMessage(error, 'No se pudo asignar la rutina.'));
+            AppAlert.alert(getErrorMessage(error, 'No se pudo asignar la rutina.'));
         } finally {
             setSaving(false);
         }

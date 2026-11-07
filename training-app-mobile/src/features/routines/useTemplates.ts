@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { Alert } from 'react-native';
+import { AppAlert } from '../../components/AppAlert';
 import { useFocusEffect } from 'expo-router';
 import { getTemplates, deleteTemplate } from '../../api/routines';
 import { getErrorMessage } from '../../api/errors';
@@ -32,12 +32,12 @@ export function useTemplates() {
             await deleteTemplate(templateId);
             setTemplates((prev) => prev.filter((template) => template.id !== templateId));
         } catch (error) {
-            Alert.alert(getErrorMessage(error, 'No se pudo eliminar la plantilla.'));
+            AppAlert.alert(getErrorMessage(error, 'No se pudo eliminar la plantilla.'));
         }
     }
 
     function confirmDelete(template: Template) {
-        Alert.alert(
+        AppAlert.alert(
             'Eliminar plantilla',
             `¿Eliminar "${template.title}"? Las rutinas que ya asignaste a tus clientes no se borran.`,
             [

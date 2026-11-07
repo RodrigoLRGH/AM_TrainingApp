@@ -13,7 +13,8 @@ export function CheckinCard({ onCheckinLocation, onScanQr, busy }: Props) {
             <Card.Title title="Registrar asistencia" />
             <Card.Content>
                 <Text variant="bodyMedium" style={styles.hint}>
-                    Usa tu ubicación si estás en el gimnasio, o escanea el código QR de la entrada.
+                    Tu asistencia se registra sola cuando abres la app dentro del gimnasio. Si no se
+                    registró, hazlo aquí con tu ubicación o con el código QR de la entrada.
                 </Text>
                 <Button
                     mode="contained"

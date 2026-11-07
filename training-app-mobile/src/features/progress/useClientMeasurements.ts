@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Alert } from 'react-native';
+import { AppAlert } from '../../components/AppAlert';
 import { useFocusEffect } from 'expo-router';
 import { getClientMeasurements } from '../../api/measurements';
 import { getErrorMessage } from '../../api/errors';
@@ -17,7 +17,7 @@ export function useClientMeasurements(clientId: string) {
             const data = await getClientMeasurements(clientId);
             setMeasurements(data);
         } catch (error) {
-            Alert.alert(getErrorMessage(error, 'No se pudieron cargar las mediciones.'));
+            AppAlert.alert(getErrorMessage(error, 'No se pudieron cargar las mediciones.'));
         } finally {
             setLoading(false);
         }

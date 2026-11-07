@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Alert } from 'react-native';
+import { AppAlert } from '../../components/AppAlert';
 import { createSessionRating } from '../../api/ratings';
 import { getErrorMessage } from '../../api/errors';
 import type { NewSessionRating } from '../../api/types';
@@ -23,7 +23,7 @@ export function useRateSession(routineId: string, alreadyRated: boolean) {
 
     async function submit() {
         if (effort === null) {
-            Alert.alert('Elige qué tan pesada te pareció la sesión.');
+            AppAlert.alert('Elige qué tan pesada te pareció la sesión.');
             return;
         }
 
@@ -38,9 +38,9 @@ export function useRateSession(routineId: string, alreadyRated: boolean) {
             await createSessionRating(payload);
             setJustRated(true);
             close();
-            Alert.alert('Gracias, tu instructor verá tu calificación.');
+            AppAlert.alert('Gracias, tu instructor verá tu calificación.');
         } catch (error) {
-            Alert.alert(getErrorMessage(error, 'No se pudo guardar la calificación.'));
+            AppAlert.alert(getErrorMessage(error, 'No se pudo guardar la calificación.'));
         } finally {
             setSaving(false);
         }

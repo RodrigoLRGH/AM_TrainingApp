@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Alert } from 'react-native';
+import { AppAlert } from '../../components/AppAlert';
 import { useRouter } from 'expo-router';
 import { createAnnouncement } from '../../api/announcements';
 import { getErrorMessage } from '../../api/errors';
@@ -42,13 +42,13 @@ export function useNewAnnouncement() {
                 title: form.values.title.trim(),
                 message: form.values.message.trim(),
             });
-            Alert.alert(
+            AppAlert.alert(
                 'Aviso publicado',
                 'Tus clientes activos recibirán una notificación.',
                 [{ text: 'Listo', onPress: () => router.back() }],
             );
         } catch (error) {
-            Alert.alert(getErrorMessage(error, 'No se pudo publicar el aviso.'));
+            AppAlert.alert(getErrorMessage(error, 'No se pudo publicar el aviso.'));
         } finally {
             setSaving(false);
         }

@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Alert } from 'react-native';
+import { AppAlert } from '../../components/AppAlert';
 import { useFocusEffect } from 'expo-router';
 import { getMyMeasurements, createMeasurement } from '../../api/measurements';
 import { getErrorMessage } from '../../api/errors';
@@ -61,14 +61,14 @@ export function useMeasurements() {
             // Acepta coma o punto como separador decimal
             const value = Number(raw.replace(',', '.'));
             if (!Number.isFinite(value) || value <= 0) {
-                Alert.alert(`"${item.label}" debe ser un número mayor a cero.`);
+                AppAlert.alert(`"${item.label}" debe ser un número mayor a cero.`);
                 return;
             }
             payload[item.key] = value;
         }
 
         if (Object.keys(payload).length === 0) {
-            Alert.alert('Escribe al menos una medida.');
+            AppAlert.alert('Escribe al menos una medida.');
             return;
         }
 
@@ -79,7 +79,7 @@ export function useMeasurements() {
             setModalVisible(false);
             await load();
         } catch (error) {
-            Alert.alert(getErrorMessage(error, 'No se pudo guardar la medición.'));
+            AppAlert.alert(getErrorMessage(error, 'No se pudo guardar la medición.'));
         } finally {
             setSaving(false);
         }

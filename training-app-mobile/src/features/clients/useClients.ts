@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { Alert } from 'react-native';
+import { AppAlert } from '../../components/AppAlert';
 import { useFocusEffect } from 'expo-router';
 import { getClients, createClient, setClientActive } from '../../api/clients';
 import { getErrorMessage } from '../../api/errors';
@@ -39,7 +39,7 @@ export function useClients() {
             setModalVisible(false);
             load();
         } catch (error) {
-            Alert.alert(getErrorMessage(error, 'No se pudo crear el cliente.'));
+            AppAlert.alert(getErrorMessage(error, 'No se pudo crear el cliente.'));
         } finally {
             setSaving(false);
         }
@@ -52,7 +52,7 @@ export function useClients() {
                 prev.map((item) => (item.id === client.id ? { ...item, active } : item)),
             );
         } catch (error) {
-            Alert.alert(getErrorMessage(error, 'No se pudo actualizar al cliente.'));
+            AppAlert.alert(getErrorMessage(error, 'No se pudo actualizar al cliente.'));
         }
     }
 
@@ -62,7 +62,7 @@ export function useClients() {
             return;
         }
 
-        Alert.alert(
+        AppAlert.alert(
             'Desactivar cliente',
             `${client.name} no podrá iniciar sesión ni recibirá avisos. Sus datos se conservan y puedes activarlo cuando quieras.`,
             [

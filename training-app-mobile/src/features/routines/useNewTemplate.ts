@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Alert } from 'react-native';
+import { AppAlert } from '../../components/AppAlert';
 import { useRouter } from 'expo-router';
 import { createTemplate } from '../../api/routines';
 import { getErrorMessage } from '../../api/errors';
@@ -21,7 +21,7 @@ export function useNewTemplate() {
             await createTemplate(payload);
             router.back();
         } catch (error) {
-            Alert.alert(getErrorMessage(error, 'No se pudo guardar la plantilla.'));
+            AppAlert.alert(getErrorMessage(error, 'No se pudo guardar la plantilla.'));
         } finally {
             setSaving(false);
         }

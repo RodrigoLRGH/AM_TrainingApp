@@ -13,7 +13,7 @@ import { setUnauthorizedHandler } from '../api/client';
 import type { Role } from '../api/types';
 import { clearSession, getRole, getToken, saveSession } from './storage';
 import { usePushRegistration } from '../features/notifications/usePushRegistration';
-import { Alert } from 'react-native';
+import { AppAlert } from '../components/AppAlert';
 import { resetOffline } from '../offline/sync';
 
 type Session = {
@@ -87,7 +87,7 @@ export function AuthProvider({ children }: ProviderProps) {
             router.replace('/(auth)/login');
 
             if (message && message !== 'Unauthorized') {
-                Alert.alert('Sesión terminada', message);
+                AppAlert.alert('Sesión terminada', message);
             }
         });
 

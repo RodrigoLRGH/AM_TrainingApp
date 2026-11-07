@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Alert } from 'react-native';
+import { AppAlert } from '../../components/AppAlert';
 import { useRouter } from 'expo-router';
 import { registerInstructor } from '../../api/auth';
 import { getErrorMessage } from '../../api/errors';
@@ -57,7 +57,7 @@ export function useRegister() {
             await signIn(data.accessToken, 'INSTRUCTOR');
             router.replace('/(instructor)/clients');
         } catch (error) {
-            Alert.alert(getErrorMessage(error, 'No se pudo crear la cuenta.'));
+            AppAlert.alert(getErrorMessage(error, 'No se pudo crear la cuenta.'));
         } finally {
             setSaving(false);
         }

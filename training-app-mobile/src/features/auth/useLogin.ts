@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Alert } from 'react-native';
+import { AppAlert } from '../../components/AppAlert';
 import { useRouter } from 'expo-router';
 import { loginInstructor, loginClient } from '../../api/auth';
 import { getErrorMessage } from '../../api/errors';
@@ -29,7 +29,7 @@ export function useLogin() {
                 router.replace('/(client)/routine');
             }
         } catch (error) {
-            Alert.alert(getErrorMessage(error, 'Algo salió mal, intenta de nuevo.'));
+            AppAlert.alert(getErrorMessage(error, 'Algo salió mal, intenta de nuevo.'));
         } finally {
             setLoading(false);
         }

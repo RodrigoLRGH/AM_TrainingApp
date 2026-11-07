@@ -5,6 +5,8 @@ import { theme } from '../theme/theme';
 import { AuthProvider } from '../auth/AuthContext';
 import { SyncProvider } from '../offline/SyncContext';
 import { NotificationObserver } from '../components/NotificationObserver';
+import { AutoCheckinHost } from '../components/AutoCheckinHost';
+import { AppAlertHost } from '../components/AppAlert';
 
 const detailOptions = {
   headerShown: true,
@@ -47,6 +49,8 @@ export default function RootLayout() {
             />
           </Stack>
           <NotificationObserver />
+          <AutoCheckinHost />
+          <AppAlertHost />
         </SyncProvider>
       </AuthProvider>
     </PaperProvider>

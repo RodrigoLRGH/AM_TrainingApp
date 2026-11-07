@@ -1,4 +1,4 @@
-import { Alert } from 'react-native';
+import { AppAlert } from '../../components/AppAlert';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../auth/AuthContext';
 import { useSync } from '../../offline/SyncContext';
@@ -19,7 +19,7 @@ export function useLogout() {
                 ? `Tienes ${pending} ${pending === 1 ? 'cambio' : 'cambios'} sin enviar al servidor. Si cierras sesión ahora, se perderán.`
                 : '¿Quieres cerrar tu sesión?';
 
-        Alert.alert('Cerrar sesión', message, [
+        AppAlert.alert('Cerrar sesión', message, [
             { text: 'Cancelar', style: 'cancel' },
             { text: 'Cerrar sesión', style: 'destructive', onPress: logout },
         ]);

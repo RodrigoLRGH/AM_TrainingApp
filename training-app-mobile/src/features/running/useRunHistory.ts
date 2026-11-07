@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { Alert } from 'react-native';
+import { AppAlert } from '../../components/AppAlert';
 import { useFocusEffect } from 'expo-router';
 import { getRuns, getRun } from '../../api/running';
 import { getErrorMessage } from '../../api/errors';
@@ -33,7 +33,7 @@ export function useRunHistory() {
             const run = await getRun(id);
             setSelected(run);
         } catch (error) {
-            Alert.alert(getErrorMessage(error, 'No se pudo cargar la corrida.'));
+            AppAlert.alert(getErrorMessage(error, 'No se pudo cargar la corrida.'));
         }
     }
 

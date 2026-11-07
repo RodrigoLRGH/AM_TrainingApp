@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { Alert } from 'react-native';
+import { AppAlert } from '../../components/AppAlert';
 import type { NewExercise, Template } from '../../api/types';
 
 export type ExerciseDraft = { name: string; sets: string; reps: string };
@@ -47,17 +47,17 @@ export function useTemplateDraft() {
     function buildPayload(): TemplatePayload | null {
         const trimmedTitle = title.trim();
         if (trimmedTitle.length < 2) {
-            Alert.alert('El título debe tener al menos 2 caracteres.');
+            AppAlert.alert('El título debe tener al menos 2 caracteres.');
             return null;
         }
 
         const filled = exercises.filter((exercise) => exercise.name.trim() !== '');
         if (filled.length === 0) {
-            Alert.alert('Agrega al menos un ejercicio.');
+            AppAlert.alert('Agrega al menos un ejercicio.');
             return null;
         }
         if (filled.some((exercise) => exercise.name.trim().length < 2)) {
-            Alert.alert('El nombre de cada ejercicio debe tener al menos 2 caracteres.');
+            AppAlert.alert('El nombre de cada ejercicio debe tener al menos 2 caracteres.');
             return null;
         }
 
