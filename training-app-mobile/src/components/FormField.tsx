@@ -6,7 +6,8 @@ type Props = {
     label: string;
     value: string;
     onChangeText: (value: string) => void;
-    onBlur: () => void;
+    onBlur?: () => void;
+    placeholder?: string;
     error?: string;
     secure?: boolean;
     multiline?: boolean;
@@ -19,6 +20,7 @@ export function FormField({
     value,
     onChangeText,
     onBlur,
+    placeholder,
     error,
     secure = false,
     multiline = false,
@@ -32,6 +34,7 @@ export function FormField({
             <TextInput
                 mode="outlined"
                 label={label}
+                placeholder={placeholder}
                 value={value}
                 onChangeText={onChangeText}
                 onBlur={onBlur}

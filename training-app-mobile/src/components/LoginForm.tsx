@@ -1,5 +1,5 @@
-import { TextInput, StyleSheet } from 'react-native';
 import type { LoginMode } from '../features/auth/useLogin';
+import { FormField } from './FormField';
 
 type Props = {
     mode: LoginMode;
@@ -22,9 +22,9 @@ export function LoginForm({
 }: Props) {
     if (mode === 'client') {
         return (
-            <TextInput
-                style={styles.input}
-                placeholder="Código de cliente"
+            <FormField
+                label="Código de cliente"
+                placeholder="Ej. ABC123"
                 value={clientCode}
                 onChangeText={onClientCodeChange}
                 autoCapitalize="characters"
@@ -34,32 +34,22 @@ export function LoginForm({
 
     return (
         <>
-            <TextInput
-                style={styles.input}
-                placeholder="Correo electrónico"
+            <FormField
+                label="Correo electrónico"
+                placeholder="tucorreo@ejemplo.com"
                 value={email}
                 onChangeText={onEmailChange}
-                autoCapitalize="none"
                 keyboardType="email-address"
+                autoCapitalize="none"
             />
-            <TextInput
-                style={styles.input}
-                placeholder="Contraseña"
+            <FormField
+                label="Contraseña"
+                placeholder="Escribe tu contraseña"
                 value={password}
                 onChangeText={onPasswordChange}
-                secureTextEntry
+                secure
+                autoCapitalize="none"
             />
         </>
     );
 }
-
-const styles = StyleSheet.create({
-    input: {
-        borderWidth: 1,
-        borderColor: '#ddd',
-        borderRadius: 8,
-        padding: 14,
-        marginBottom: 16,
-        fontSize: 16,
-    },
-});

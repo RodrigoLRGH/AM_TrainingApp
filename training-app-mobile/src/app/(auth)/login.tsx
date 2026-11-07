@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { ScrollView, Text, StyleSheet } from 'react-native';
 import { Button } from 'react-native-paper';
 import { useLogin } from '../../features/auth/useLogin';
 import { RoleTabs } from '../../components/RoleTabs';
@@ -21,7 +21,12 @@ export default function LoginScreen() {
   const router = useRouter();
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      keyboardShouldPersistTaps="handled"
+      keyboardDismissMode="on-drag"
+      automaticallyAdjustKeyboardInsets
+    >
       <Text style={styles.title}>Training App</Text>
 
       <RoleTabs mode={mode} onChange={setMode} />
@@ -36,7 +41,13 @@ export default function LoginScreen() {
         onClientCodeChange={setClientCode}
       />
 
-      <Button mode="contained" onPress={handleLogin} loading={loading} disabled={loading}>
+      <Button
+        mode="contained"
+        onPress={handleLogin}
+        loading={loading}
+        disabled={loading}
+        style={styles.submit}
+      >
         Entrar
       </Button>
       {mode === 'instructor' ? (
@@ -44,13 +55,13 @@ export default function LoginScreen() {
           ¿No tienes cuenta? Regístrate
         </Button>
       ) : null}
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: 'center',
     padding: 24,
   },
@@ -59,6 +70,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 32,
+  },
+  submit: {
+    marginTop: 16,
   },
   link: {
     marginTop: 12,
