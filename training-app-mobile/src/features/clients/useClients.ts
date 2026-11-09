@@ -4,12 +4,22 @@ import { useFocusEffect } from 'expo-router';
 import { getClients, createClient, setClientActive } from '../../api/clients';
 import { getErrorMessage } from '../../api/errors';
 import type { Client } from '../../api/types';
+import { useForm } from '../forms/useForm';
+import { compose, minLength, required } from '../forms/rules';
 
 export function useClients() {
     const [clients, setClients] = useState<Client[]>([]);
     const [loading, setLoading] = useState(true);
     const [modalVisible, setModalVisible] = useState(false);
-    const [newName, setNewName] = useState('');
+    const newClientForm = useForm(
+        { name: '' },
+        {
+            name: compose(
+                required('Escribe el nombre del cliente.'),
+                minLength(2, 'El nombre debe tener al menos 2 caracteres.'),
+            ),
+        },
+    );
     const [saving, setSaving] = useState(false);
 
     const load = useCallback(async () => {
@@ -30,13 +40,18 @@ export function useClients() {
         }, [load]),
     );
 
+    function openModal() {
+        newClientForm.reset();
+        setModalVisible(true);
+    }
+
     async function handleCreate() {
-        if (!newName.trim()) return;
+        if (!newClientForm.validate()) return;
         setSaving(true);
         try {
-            await createClient(newName.trim());
-            setNewName('');
+            await createClient(newClientForm.values.name.trim());
             setModalVisible(false);
+            newClientForm.reset();
             load();
         } catch (error) {
             AppAlert.alert(getErrorMessage(error, 'No se pudo crear el cliente.'));
@@ -77,8 +92,8 @@ export function useClients() {
         loading,
         modalVisible,
         setModalVisible,
-        newName,
-        setNewName,
+        openModal,
+        newClientForm,
         saving,
         handleCreate,
         confirmToggle,

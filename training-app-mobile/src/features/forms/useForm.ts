@@ -36,5 +36,11 @@ export function useForm<T extends Record<string, string>>(initial: T, rules: Rul
         return keys.every((key) => !errors[key]);
     }
 
-    return { values, setValue, handleBlur, errorFor, validate };
+    function reset() {
+        setValues(initial);
+        setTouched({});
+        setSubmitted(false);
+    }
+
+    return { values, setValue, handleBlur, errorFor, validate, reset };
 }

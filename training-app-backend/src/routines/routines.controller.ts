@@ -35,9 +35,10 @@ export class RoutinesController {
   findAllForInstructor(
     @CurrentUser() user: AuthenticatedUser,
     @Query('isTemplate') isTemplate?: string,
+    @Query('clientId') clientId?: string,
   ) {
     const filter = isTemplate === undefined ? undefined : isTemplate === 'true';
-    return this.routinesService.findAllForInstructor(user.userId, filter);
+    return this.routinesService.findAllForInstructor(user.userId, filter, clientId);
   }
 
   @Roles('CLIENTE')

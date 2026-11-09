@@ -13,8 +13,8 @@ export default function ClientsScreen() {
     loading,
     modalVisible,
     setModalVisible,
-    newName,
-    setNewName,
+    openModal,
+    newClientForm,
     saving,
     handleCreate,
     confirmToggle,
@@ -58,7 +58,7 @@ export default function ClientsScreen() {
       />
 
       <View style={styles.footer}>
-        <Button mode="contained" icon="account-plus" onPress={() => setModalVisible(true)}>
+        <Button mode="contained" icon="account-plus" onPress={openModal}>
           Nuevo cliente
         </Button>
       </View>
@@ -66,8 +66,7 @@ export default function ClientsScreen() {
       <NewClientModal
         visible={modalVisible}
         onDismiss={() => setModalVisible(false)}
-        name={newName}
-        onNameChange={setNewName}
+        form={newClientForm}
         onSubmit={handleCreate}
         saving={saving}
       />

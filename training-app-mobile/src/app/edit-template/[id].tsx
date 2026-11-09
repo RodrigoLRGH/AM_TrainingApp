@@ -1,16 +1,21 @@
 import { View, StyleSheet } from 'react-native';
 import { Text, ActivityIndicator } from 'react-native-paper';
-import { useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams } from 'expo-router';
 import { useEditTemplate } from '../../features/routines/useEditTemplate';
 import { TemplateForm } from '../../components/TemplateForm';
+import { DateField } from '../../components/DateField';
+import { SectionHeader } from '../../components/SectionHeader';
 
 export default function EditTemplateScreen() {
-    const { id } = useLocalSearchParams<{ id: string }>();
-    const edit = useEditTemplate(id);
+    // Con clientId se edita una rutina ya asignada a ese cliente; sin él, una plantilla.
+    const { id, clientId } = useLocalSearchParams<{ id: string; clientId?: string }>();
+    const edit = useEditTemplate(id, clientId);
+    const screenTitle = edit.isAssigned ? 'Editar rutina' : 'Editar plantilla';
 
     if (edit.loading) {
         return (
             <View style={styles.center}>
+                <Stack.Screen options={{ title: screenTitle }} />
                 <ActivityIndicator size="large" />
             </View>
         );
@@ -19,23 +24,32 @@ export default function EditTemplateScreen() {
     if (edit.notFound) {
         return (
             <View style={styles.center}>
-                <Text variant="bodyLarge">No encontramos esta plantilla.</Text>
+                <Stack.Screen options={{ title: screenTitle }} />
+                <Text variant="bodyLarge">
+                    {edit.isAssigned ? 'No encontramos esta rutina.' : 'No encontramos esta plantilla.'}
+                </Text>
             </View>
         );
     }
 
     return (
-        <TemplateForm
-            title={edit.title}
-            onTitleChange={edit.setTitle}
-            exercises={edit.exercises}
-            onExerciseChange={edit.updateExercise}
-            onExerciseRemove={edit.removeExercise}
-            onAddExercise={edit.addExercise}
-            onSubmit={edit.submit}
-            saving={edit.saving}
-            submitLabel="Guardar cambios"
-        />
+        <>
+            <Stack.Screen options={{ title: screenTitle }} />
+            <TemplateForm
+                draft={edit.draft}
+                onSubmit={edit.submit}
+                saving={edit.saving}
+                submitLabel="Guardar cambios"
+                extra={
+                    edit.isAssigned ? (
+                        <>
+                            <SectionHeader title="Fecha" />
+                            <DateField value={edit.date} onChange={edit.setDate} />
+                        </>
+                    ) : undefined
+                }
+            />
+        </>
     );
 }
 

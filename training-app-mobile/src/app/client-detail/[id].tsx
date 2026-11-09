@@ -4,15 +4,16 @@ import { SegmentedButtons } from 'react-native-paper';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { ClientRatingsView } from '../../components/ClientRatingsView';
 import { ClientProgressView } from '../../components/ClientProgressView';
+import { ClientRoutinesView } from '../../components/ClientRoutinesView';
 
-type Tab = 'ratings' | 'progress';
+type Tab = 'routines' | 'ratings' | 'progress';
 
 export default function ClientDetailScreen() {
     const { id, name } = useLocalSearchParams<{ id: string; name: string }>();
-    const [tab, setTab] = useState<Tab>('ratings');
+    const [tab, setTab] = useState<Tab>('routines');
 
     function handleChange(value: string) {
-        if (value === 'ratings' || value === 'progress') {
+        if (value === 'routines' || value === 'ratings' || value === 'progress') {
             setTab(value);
         }
     }
@@ -25,13 +26,16 @@ export default function ClientDetailScreen() {
                 value={tab}
                 onValueChange={handleChange}
                 buttons={[
+                    { value: 'routines', label: 'Rutinas' },
                     { value: 'ratings', label: 'Calificaciones' },
                     { value: 'progress', label: 'Progreso' },
                 ]}
                 style={styles.tabs}
             />
 
-            {tab === 'ratings' ? <ClientRatingsView clientId={id} /> : <ClientProgressView clientId={id} />}
+            {tab === 'routines' ? <ClientRoutinesView clientId={id} /> : null}
+            {tab === 'ratings' ? <ClientRatingsView clientId={id} /> : null}
+            {tab === 'progress' ? <ClientProgressView clientId={id} /> : null}
         </View>
     );
 }

@@ -25,7 +25,7 @@ export function ClientRatingsView({ clientId }: Props) {
             keyExtractor={(item) => item.id}
             contentContainerStyle={styles.list}
             ListHeaderComponent={
-                average !== null ? <RatingsSummary average={average} count={ratings.length} /> : null
+                average !== null ? <RatingsSummary average={average} count={ratings.length} /> : undefined
             }
             ListEmptyComponent={
                 <Text variant="bodyLarge" style={styles.empty}>

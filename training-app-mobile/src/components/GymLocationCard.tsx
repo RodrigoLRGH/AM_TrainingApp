@@ -1,16 +1,26 @@
 import { StyleSheet } from 'react-native';
-import { Card, Text, TextInput, Button } from 'react-native-paper';
-import type { GymConfig } from '../features/attendance/useGymSetup';
+import { Card, Text, TextInput, Button, HelperText } from 'react-native-paper';
+import type { GymConfig } from '../api/types';
 
 type Props = {
     config: GymConfig | null;
     radius: string;
     onRadiusChange: (value: string) => void;
+    onRadiusBlur: () => void;
+    radiusError?: string;
     onSave: () => void;
     saving: boolean;
 };
 
-export function GymLocationCard({ config, radius, onRadiusChange, onSave, saving }: Props) {
+export function GymLocationCard({
+    config,
+    radius,
+    onRadiusChange,
+    onRadiusBlur,
+    radiusError,
+    onSave,
+    saving,
+}: Props) {
     const configured = config?.gymLatitude != null && config?.gymLongitude != null;
 
     return (
@@ -25,10 +35,13 @@ export function GymLocationCard({ config, radius, onRadiusChange, onSave, saving
                 <TextInput
                     label="Radio permitido (metros)"
                     value={radius}
+                    mode="outlined"
                     onChangeText={onRadiusChange}
-                    keyboardType="numeric"
-                    style={styles.input}
+                    onBlur={onRadiusBlur}
+                    error={!!radiusError}
+                    keyboardType="number-pad"
                 />
+                {radiusError ? <HelperText type="error">{radiusError}</HelperText> : null}
             </Card.Content>
             <Card.Actions>
                 <Button mode="contained" onPress={onSave} loading={saving} disabled={saving}>
@@ -46,8 +59,5 @@ const styles = StyleSheet.create({
     status: {
         marginBottom: 12,
         color: '#666',
-    },
-    input: {
-        marginBottom: 8,
     },
 });

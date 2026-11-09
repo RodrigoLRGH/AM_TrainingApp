@@ -1,31 +1,45 @@
 import { StyleSheet } from 'react-native';
-import { Text, Portal, Modal, TextInput, Button } from 'react-native-paper';
+import { Text, Portal, Modal, Button, useTheme } from 'react-native-paper';
+import type { useForm } from '../features/forms/useForm';
+import { FormField } from './FormField';
 
 type Props = {
     visible: boolean;
     onDismiss: () => void;
-    name: string;
-    onNameChange: (value: string) => void;
+    form: ReturnType<typeof useForm<{ name: string }>>;
     onSubmit: () => void;
     saving: boolean;
 };
 
-export function NewClientModal({
-    visible,
-    onDismiss,
-    name,
-    onNameChange,
-    onSubmit,
-    saving,
-}: Props) {
+export function NewClientModal({ visible, onDismiss, form, onSubmit, saving }: Props) {
+    const { colors } = useTheme();
+
     return (
         <Portal>
-            <Modal visible={visible} onDismiss={onDismiss} contentContainerStyle={styles.modal}>
+            <Modal
+                visible={visible}
+                onDismiss={onDismiss}
+                contentContainerStyle={[styles.modal, { backgroundColor: colors.surface }]}
+            >
                 <Text variant="titleMedium" style={styles.title}>
                     Nuevo cliente
                 </Text>
-                <TextInput label="Nombre" value={name} onChangeText={onNameChange} style={styles.input} />
-                <Button mode="contained" onPress={onSubmit} loading={saving} disabled={saving}>
+                <FormField
+                    label="Nombre"
+                    placeholder="Nombre completo del cliente"
+                    value={form.values.name}
+                    onChangeText={(value) => form.setValue('name', value)}
+                    onBlur={() => form.handleBlur('name')}
+                    error={form.errorFor('name')}
+                    autoCapitalize="words"
+                />
+                <Button
+                    mode="contained"
+                    onPress={onSubmit}
+                    loading={saving}
+                    disabled={saving}
+                    style={styles.submit}
+                >
                     Crear
                 </Button>
             </Modal>
@@ -35,7 +49,6 @@ export function NewClientModal({
 
 const styles = StyleSheet.create({
     modal: {
-        backgroundColor: 'white',
         padding: 24,
         margin: 24,
         borderRadius: 8,
@@ -43,7 +56,7 @@ const styles = StyleSheet.create({
     title: {
         marginBottom: 16,
     },
-    input: {
-        marginBottom: 16,
+    submit: {
+        marginTop: 8,
     },
 });

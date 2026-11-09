@@ -29,3 +29,25 @@ export function compose(...rules: Rule[]): Rule {
         return null;
     };
 }
+export function exactLength(length: number, message: string): Rule {
+    return (value) => (value.trim().length === length ? null : message);
+}
+
+export function integerAtLeast(min: number, message: string): Rule {
+    return (value) => {
+        const trimmed = value.trim();
+        return /^\d+$/.test(trimmed) && Number(trimmed) >= min ? null : message;
+    };
+}
+
+/** Campo opcional: vacío es válido; si tiene algo, debe ser un número mayor a cero (acepta coma). */
+export function optionalPositiveNumber(message: string): Rule {
+    return (value) => {
+        const trimmed = value.trim();
+        if (trimmed === '') {
+            return null;
+        }
+        const parsed = Number(trimmed.replace(',', '.'));
+        return Number.isFinite(parsed) && parsed > 0 ? null : message;
+    };
+}

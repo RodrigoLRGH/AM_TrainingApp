@@ -6,18 +6,8 @@ import { LoginForm } from '../../components/LoginForm';
 import { useRouter } from 'expo-router';
 
 export default function LoginScreen() {
-  const {
-    mode,
-    setMode,
-    email,
-    setEmail,
-    password,
-    setPassword,
-    clientCode,
-    setClientCode,
-    loading,
-    handleLogin,
-  } = useLogin();
+  const login = useLogin();
+  const { mode, setMode, loading, handleLogin } = login;
   const router = useRouter();
 
   return (
@@ -31,15 +21,7 @@ export default function LoginScreen() {
 
       <RoleTabs mode={mode} onChange={setMode} />
 
-      <LoginForm
-        mode={mode}
-        email={email}
-        onEmailChange={setEmail}
-        password={password}
-        onPasswordChange={setPassword}
-        clientCode={clientCode}
-        onClientCodeChange={setClientCode}
-      />
+      <LoginForm login={login} />
 
       <Button
         mode="contained"

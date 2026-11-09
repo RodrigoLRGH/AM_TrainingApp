@@ -1,62 +1,57 @@
-import { ScrollView, StyleSheet } from 'react-native';
-import { Text, TextInput, Button } from 'react-native-paper';
-import type { ExerciseDraft } from '../features/routines/useTemplateDraft';
-import { ExerciseFormRow } from './ExerciseFormRow';
+import type { ReactNode } from 'react';
+import { ScrollView, View, StyleSheet } from 'react-native';
+import { Text, Button } from 'react-native-paper';
+import type { TemplateDraftApi } from '../features/routines/useTemplateDraft';
+import { ExerciseListEditor } from './ExerciseListEditor';
+import { FormField } from './FormField';
 
 type Props = {
-    title: string;
-    onTitleChange: (value: string) => void;
-    exercises: ExerciseDraft[];
-    onExerciseChange: (index: number, field: keyof ExerciseDraft, value: string) => void;
-    onExerciseRemove: (index: number) => void;
-    onAddExercise: () => void;
+    draft: TemplateDraftApi;
     onSubmit: () => void;
     saving: boolean;
     submitLabel?: string;
+    /** Contenido extra entre el título y los ejercicios (p. ej. la fecha de una rutina asignada). */
+    extra?: ReactNode;
 };
 
 export function TemplateForm({
-    title,
-    onTitleChange,
-    exercises,
-    onExerciseChange,
-    onExerciseRemove,
-    onAddExercise,
+    draft,
     onSubmit,
     saving,
-    submitLabel = "Guardar plantilla",
+    submitLabel = 'Guardar plantilla',
+    extra,
 }: Props) {
     return (
         <ScrollView
             contentContainerStyle={styles.container}
             contentInsetAdjustmentBehavior="automatic"
             keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="on-drag"
             automaticallyAdjustKeyboardInsets
         >
-            <TextInput
+            <FormField
                 label="Título de la rutina"
-                value={title}
-                onChangeText={onTitleChange}
-                style={styles.input}
+                value={draft.title}
+                onChangeText={draft.setTitle}
+                onBlur={draft.onTitleBlur}
+                error={draft.titleError}
+                autoCapitalize="sentences"
             />
+
+            {extra ? <View style={styles.extra}>{extra}</View> : null}
 
             <Text variant="labelLarge" style={styles.sectionLabel}>
                 Ejercicios
             </Text>
-            {exercises.map((exercise, index) => (
-                <ExerciseFormRow
-                    key={index}
-                    exercise={exercise}
-                    onChange={(field, value) => onExerciseChange(index, field, value)}
-                    onRemove={() => onExerciseRemove(index)}
-                />
-            ))}
+            <ExerciseListEditor drafts={draft.drafts} />
 
-            <Button onPress={onAddExercise} style={styles.addButton}>
-                + Agregar ejercicio
-            </Button>
-
-            <Button mode="contained" onPress={onSubmit} loading={saving} disabled={saving}>
+            <Button
+                mode="contained"
+                onPress={onSubmit}
+                loading={saving}
+                disabled={saving}
+                style={styles.submit}
+            >
                 {submitLabel}
             </Button>
         </ScrollView>
@@ -68,13 +63,13 @@ const styles = StyleSheet.create({
         padding: 16,
         paddingBottom: 32,
     },
-    input: {
+    extra: {
         marginBottom: 16,
     },
     sectionLabel: {
         marginBottom: 8,
     },
-    addButton: {
-        marginBottom: 16,
+    submit: {
+        marginTop: 16,
     },
 });

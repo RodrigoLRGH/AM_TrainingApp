@@ -27,14 +27,5 @@ export function useNewTemplate() {
         }
     }
 
-    return {
-        title: draft.title,
-        setTitle: draft.setTitle,
-        exercises: draft.exercises,
-        addExercise: draft.addExercise,
-        updateExercise: draft.updateExercise,
-        removeExercise: draft.removeExercise,
-        saving,
-        submit,
-    };
+    return { draft, saving, submit };
 }

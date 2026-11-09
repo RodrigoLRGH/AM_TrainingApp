@@ -4,12 +4,17 @@ import { useFocusEffect } from 'expo-router';
 import * as Location from 'expo-location';
 import { getGymConfig, setGymLocation, generateGymQr } from '../../api/attendance';
 import type { GymConfig } from '../../api/types';
+import { useForm } from '../forms/useForm';
+import { integerAtLeast } from '../forms/rules';
 
 
 export function useGymSetup() {
     const [config, setConfig] = useState<GymConfig | null>(null);
     const [loading, setLoading] = useState(true);
-    const [radius, setRadius] = useState('100');
+    const radiusForm = useForm(
+        { radius: '100' },
+        { radius: integerAtLeast(10, 'El radio debe ser un número entero de al menos 10 metros.') },
+    );
     const [saving, setSaving] = useState(false);
 
     const refresh = useCallback(async () => {
@@ -35,11 +40,10 @@ export function useGymSetup() {
     );
 
     async function saveCurrentLocation() {
-        const radiusMeters = Number(radius);
-        if (!Number.isInteger(radiusMeters) || radiusMeters < 10) {
-            AppAlert.alert('El radio debe ser un número entero de al menos 10 metros.');
+        if (!radiusForm.validate()) {
             return;
         }
+        const radiusMeters = Number(radiusForm.values.radius.trim());
 
         setSaving(true);
         try {
@@ -79,8 +83,10 @@ export function useGymSetup() {
     return {
         config,
         loading,
-        radius,
-        setRadius,
+        radius: radiusForm.values.radius,
+        setRadius: (value: string) => radiusForm.setValue('radius', value),
+        onRadiusBlur: () => radiusForm.handleBlur('radius'),
+        radiusError: radiusForm.errorFor('radius'),
         saving,
         saveCurrentLocation,
         generateQr,

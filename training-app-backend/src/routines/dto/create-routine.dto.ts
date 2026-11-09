@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+  ArrayMinSize,
   IsArray,
   IsBoolean,
   IsDateString,
@@ -21,7 +22,7 @@ export class CreateRoutineDto {
   date?: string;
 
   @IsOptional()
-  @IsUUID()
+  @IsUUID('4', { message: 'El cliente no es válido.' })
   clientId?: string;
 
   @IsOptional()
@@ -29,6 +30,7 @@ export class CreateRoutineDto {
   isTemplate?: boolean;
 
   @IsArray()
+  @ArrayMinSize(1, { message: 'Agrega al menos un ejercicio.' })
   @ValidateNested({ each: true })
   @Type(() => ExerciseDto)
   exercises: ExerciseDto[];

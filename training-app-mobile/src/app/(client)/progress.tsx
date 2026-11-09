@@ -14,8 +14,10 @@ export default function ProgressScreen() {
     series,
     modalVisible,
     setModalVisible,
+    openModal,
     form,
     setField,
+    emptyError,
     saving,
     submit,
   } = useMeasurements();
@@ -38,7 +40,7 @@ export default function ProgressScreen() {
       </ScrollView>
 
       <View style={styles.footer}>
-        <Button mode="contained" onPress={() => setModalVisible(true)}>
+        <Button mode="contained" onPress={openModal}>
           Registrar medición
         </Button>
       </View>
@@ -48,6 +50,7 @@ export default function ProgressScreen() {
         onDismiss={() => setModalVisible(false)}
         form={form}
         onChange={setField}
+        emptyError={emptyError}
         onSubmit={submit}
         saving={saving}
       />

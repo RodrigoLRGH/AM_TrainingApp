@@ -5,8 +5,17 @@ import { GymLocationCard } from './GymLocationCard';
 import { GymQrCard } from './GymQrCard';
 
 export function GymSetupView() {
-    const { config, loading, radius, setRadius, saving, saveCurrentLocation, generateQr } =
-        useGymSetup();
+    const {
+        config,
+        loading,
+        radius,
+        setRadius,
+        onRadiusBlur,
+        radiusError,
+        saving,
+        saveCurrentLocation,
+        generateQr,
+    } = useGymSetup();
 
     if (loading) {
         return (
@@ -17,11 +26,17 @@ export function GymSetupView() {
     }
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
+        <ScrollView
+            contentContainerStyle={styles.container}
+            keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="on-drag"
+        >
             <GymLocationCard
                 config={config}
                 radius={radius}
                 onRadiusChange={setRadius}
+                onRadiusBlur={onRadiusBlur}
+                radiusError={radiusError}
                 onSave={saveCurrentLocation}
                 saving={saving}
             />

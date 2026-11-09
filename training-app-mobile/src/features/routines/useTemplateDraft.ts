@@ -1,84 +1,58 @@
 import { useCallback, useState } from 'react';
-import { AppAlert } from '../../components/AppAlert';
-import type { NewExercise, Template } from '../../api/types';
+import type { NewExercise } from '../../api/types';
+import { useExerciseDrafts } from './useExerciseDrafts';
 
-export type ExerciseDraft = { name: string; sets: string; reps: string };
+export type { ExerciseDraft } from './useExerciseDrafts';
 export type TemplatePayload = { title: string; exercises: NewExercise[] };
 
-function emptyExercise(): ExerciseDraft {
-    return { name: '', sets: '', reps: '' };
-}
+type Source = { title: string; exercises: { name: string; sets: number; reps: number }[] };
 
-function toPositiveInt(value: string) {
-    return Math.max(1, Number.parseInt(value, 10) || 1);
+function titleError(value: string) {
+    const trimmed = value.trim();
+    if (trimmed === '') {
+        return 'El título es obligatorio.';
+    }
+    if (trimmed.length < 2) {
+        return 'El título debe tener al menos 2 caracteres.';
+    }
+    return undefined;
 }
 
 export function useTemplateDraft() {
     const [title, setTitle] = useState('');
-    const [exercises, setExercises] = useState<ExerciseDraft[]>([emptyExercise()]);
+    const [titleTouched, setTitleTouched] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
+    const drafts = useExerciseDrafts();
+    const { reset } = drafts;
 
-    const fill = useCallback((template: Template) => {
-        setTitle(template.title);
-        setExercises(
-            template.exercises.length > 0
-                ? template.exercises.map((exercise) => ({
-                    name: exercise.name,
-                    sets: String(exercise.sets),
-                    reps: String(exercise.reps),
-                }))
-                : [emptyExercise()],
-        );
-    }, []);
-
-    function addExercise() {
-        setExercises((prev) => [...prev, emptyExercise()]);
-    }
-
-    function updateExercise(index: number, field: keyof ExerciseDraft, value: string) {
-        setExercises((prev) =>
-            prev.map((exercise, i) => (i === index ? { ...exercise, [field]: value } : exercise)),
-        );
-    }
-
-    function removeExercise(index: number) {
-        setExercises((prev) => prev.filter((_, i) => i !== index));
-    }
+    const fill = useCallback(
+        (source: Source) => {
+            setTitle(source.title);
+            setTitleTouched(false);
+            setSubmitted(false);
+            reset(source.exercises);
+        },
+        [reset],
+    );
 
     function buildPayload(): TemplatePayload | null {
-        const trimmedTitle = title.trim();
-        if (trimmedTitle.length < 2) {
-            AppAlert.alert('El título debe tener al menos 2 caracteres.');
+        setSubmitted(true);
+        const exercises = drafts.build();
+        if (titleError(title) || !exercises) {
             return null;
         }
-
-        const filled = exercises.filter((exercise) => exercise.name.trim() !== '');
-        if (filled.length === 0) {
-            AppAlert.alert('Agrega al menos un ejercicio.');
-            return null;
-        }
-        if (filled.some((exercise) => exercise.name.trim().length < 2)) {
-            AppAlert.alert('El nombre de cada ejercicio debe tener al menos 2 caracteres.');
-            return null;
-        }
-
-        return {
-            title: trimmedTitle,
-            exercises: filled.map((exercise) => ({
-                name: exercise.name.trim(),
-                sets: toPositiveInt(exercise.sets),
-                reps: toPositiveInt(exercise.reps),
-            })),
-        };
+        return { title: title.trim(), exercises };
     }
 
     return {
         title,
         setTitle,
-        exercises,
+        onTitleBlur: () => setTitleTouched(true),
+        titleError: titleTouched || submitted ? titleError(title) : undefined,
+        drafts,
         fill,
-        addExercise,
-        updateExercise,
-        removeExercise,
         buildPayload,
     };
 }
+
+export type TemplateDraftApi = ReturnType<typeof useTemplateDraft>;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useSyncExternalStore } from 'react';
 import { StyleSheet } from 'react-native';
 import { Button, Dialog, Portal, Text, useTheme } from 'react-native-paper';
 
@@ -20,14 +20,23 @@ type AlertRequest = {
     options?: AppAlertOptions;
 };
 
-type Listener = (queue: AlertRequest[]) => void;
-
 let nextId = 1;
 let queue: AlertRequest[] = [];
-let listener: Listener | null = null;
+const listeners = new Set<() => void>();
 
 function emit() {
-    listener?.(queue);
+    listeners.forEach((listener) => listener());
+}
+
+function subscribe(listener: () => void) {
+    listeners.add(listener);
+    return () => {
+        listeners.delete(listener);
+    };
+}
+
+function getSnapshot() {
+    return queue;
 }
 
 /**
@@ -60,15 +69,7 @@ export const AppAlert = { alert };
 
 export function AppAlertHost() {
     const theme = useTheme();
-    const [items, setItems] = useState<AlertRequest[]>(queue);
-
-    useEffect(() => {
-        listener = setItems;
-        setItems(queue);
-        return () => {
-            listener = null;
-        };
-    }, []);
+    const items = useSyncExternalStore(subscribe, getSnapshot);
 
     const current = items[0];
     if (!current) {

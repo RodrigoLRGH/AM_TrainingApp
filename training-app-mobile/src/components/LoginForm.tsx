@@ -1,52 +1,46 @@
-import type { LoginMode } from '../features/auth/useLogin';
+import type { LoginApi } from '../features/auth/useLogin';
 import { FormField } from './FormField';
 
 type Props = {
-    mode: LoginMode;
-    email: string;
-    onEmailChange: (value: string) => void;
-    password: string;
-    onPasswordChange: (value: string) => void;
-    clientCode: string;
-    onClientCodeChange: (value: string) => void;
+    login: LoginApi;
 };
 
-export function LoginForm({
-    mode,
-    email,
-    onEmailChange,
-    password,
-    onPasswordChange,
-    clientCode,
-    onClientCodeChange,
-}: Props) {
-    if (mode === 'client') {
+export function LoginForm({ login }: Props) {
+    if (login.mode === 'client') {
+        const { values, setValue, handleBlur, errorFor } = login.clientForm;
         return (
             <FormField
                 label="Código de cliente"
                 placeholder="Ej. ABC123"
-                value={clientCode}
-                onChangeText={onClientCodeChange}
+                value={values.clientCode}
+                onChangeText={(value) => setValue('clientCode', value)}
+                onBlur={() => handleBlur('clientCode')}
+                error={errorFor('clientCode')}
                 autoCapitalize="characters"
             />
         );
     }
 
+    const { values, setValue, handleBlur, errorFor } = login.instructorForm;
     return (
         <>
             <FormField
                 label="Correo electrónico"
                 placeholder="tucorreo@ejemplo.com"
-                value={email}
-                onChangeText={onEmailChange}
+                value={values.email}
+                onChangeText={(value) => setValue('email', value)}
+                onBlur={() => handleBlur('email')}
+                error={errorFor('email')}
                 keyboardType="email-address"
                 autoCapitalize="none"
             />
             <FormField
                 label="Contraseña"
                 placeholder="Escribe tu contraseña"
-                value={password}
-                onChangeText={onPasswordChange}
+                value={values.password}
+                onChangeText={(value) => setValue('password', value)}
+                onBlur={() => handleBlur('password')}
+                error={errorFor('password')}
                 secure
                 autoCapitalize="none"
             />

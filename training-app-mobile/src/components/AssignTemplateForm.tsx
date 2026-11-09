@@ -1,36 +1,44 @@
 import { ScrollView, View, StyleSheet } from 'react-native';
 import { Text, Button, ActivityIndicator } from 'react-native-paper';
-import type { Client } from '../api/types';
+import type { AssignTemplateApi } from '../features/routines/useAssignTemplate';
 import { SectionHeader } from './SectionHeader';
 import { SelectRow } from './SelectRow';
 import { DateField } from './DateField';
+import { AdjustExercisesModal } from './AdjustExercisesModal';
 
 type Props = {
-    clients: Client[];
-    loadingClients: boolean;
-    selectedIds: string[];
-    onToggleClient: (id: string) => void;
-    date: Date;
-    onDateChange: (date: Date) => void;
-    minimumDate: Date;
-    onSubmit: () => void;
-    saving: boolean;
+    assign: AssignTemplateApi;
 };
 
-export function AssignTemplateForm({
-    clients,
-    loadingClients,
-    selectedIds,
-    onToggleClient,
-    date,
-    onDateChange,
-    minimumDate,
-    onSubmit,
-    saving,
-}: Props) {
+export function AssignTemplateForm({ assign }: Props) {
+    const {
+        clients,
+        loadingClients,
+        selectedIds,
+        toggleClient,
+        overrides,
+        templateExercises,
+        adjustingClient,
+        startAdjusting,
+        stopAdjusting,
+        saveOverride,
+        restoreTemplate,
+        date,
+        setDate,
+        minimumDate,
+        submit,
+        saving,
+    } = assign;
+
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <SectionHeader title="Clientes activos" />
+            {selectedIds.length > 0 ? (
+                <Text variant="bodySmall" style={styles.hint}>
+                    Puedes ajustar series, repeticiones o ejercicios para cada cliente sin cambiar la
+                    plantilla.
+                </Text>
+            ) : null}
             {loadingClients ? (
                 <ActivityIndicator style={styles.loader} />
             ) : clients.length === 0 ? (
@@ -38,30 +46,59 @@ export function AssignTemplateForm({
                     No tienes clientes activos todavía.
                 </Text>
             ) : (
-                clients.map((client) => (
-                    <SelectRow
-                        key={client.id}
-                        title={client.name}
-                        selected={selectedIds.includes(client.id)}
-                        onPress={() => onToggleClient(client.id)}
-                    />
-                ))
+                clients.map((client) => {
+                    const selected = selectedIds.includes(client.id);
+                    const customized = Boolean(overrides[client.id]);
+
+                    return (
+                        <View key={client.id}>
+                            <SelectRow
+                                title={client.name}
+                                subtitle={customized ? 'Ejercicios ajustados' : undefined}
+                                selected={selected}
+                                onPress={() => toggleClient(client.id)}
+                            />
+                            {selected ? (
+                                <Button
+                                    icon="tune-variant"
+                                    compact
+                                    onPress={() => startAdjusting(client.id)}
+                                    style={styles.adjust}
+                                >
+                                    {customized ? 'Editar ajuste' : 'Ajustar ejercicios'}
+                                </Button>
+                            ) : null}
+                        </View>
+                    );
+                })
             )}
 
             <View style={styles.dateSection}>
                 <SectionHeader title="Fecha" />
-                <DateField value={date} onChange={onDateChange} minimumDate={minimumDate} />
+                <DateField value={date} onChange={setDate} minimumDate={minimumDate} />
             </View>
 
             <Button
                 mode="contained"
-                onPress={onSubmit}
+                onPress={submit}
                 loading={saving}
                 disabled={saving || clients.length === 0}
                 style={styles.submit}
             >
                 Asignar rutina
             </Button>
+
+            {adjustingClient ? (
+                <AdjustExercisesModal
+                    key={adjustingClient.id}
+                    clientName={adjustingClient.name}
+                    initial={overrides[adjustingClient.id] ?? templateExercises}
+                    customized={Boolean(overrides[adjustingClient.id])}
+                    onSave={saveOverride}
+                    onRestore={restoreTemplate}
+                    onDismiss={stopAdjusting}
+                />
+            ) : null}
         </ScrollView>
     );
 }
@@ -71,11 +108,20 @@ const styles = StyleSheet.create({
         padding: 16,
         paddingBottom: 32,
     },
+    hint: {
+        color: '#666',
+        marginBottom: 12,
+    },
     loader: {
         marginVertical: 16,
     },
     empty: {
         color: '#999',
+    },
+    adjust: {
+        alignSelf: 'flex-end',
+        marginTop: -6,
+        marginBottom: 10,
     },
     dateSection: {
         marginTop: 20,

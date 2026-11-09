@@ -1,4 +1,9 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateRoutineDto } from './dto/create-routine.dto';
 import { UpdateRoutineDto } from './dto/update-routine.dto';
@@ -9,14 +14,27 @@ import { PushService } from '../push/push.service';
 export class RoutinesService {
   constructor(private prisma: PrismaService, private push: PushService) { }
 
-  create(instructorId: string, dto: CreateRoutineDto) {
-    return this.prisma.routine.create({
+  async create(instructorId: string, dto: CreateRoutineDto) {
+    const isTemplate = dto.isTemplate ?? false;
+
+    if (!isTemplate) {
+      if (!dto.clientId) {
+        throw new BadRequestException('Indica a qué cliente se asigna la rutina.');
+      }
+      if (!dto.date) {
+        throw new BadRequestException('La rutina debe tener una fecha.');
+      }
+      // RNF-05: solo se pueden crear rutinas para clientes propios y activos.
+      await this.assertOwnActiveClients(instructorId, [dto.clientId]);
+    }
+
+    const routine = await this.prisma.routine.create({
       data: {
         title: dto.title,
-        date: dto.isTemplate ? null : dto.date ? new Date(dto.date) : null,
-        isTemplate: dto.isTemplate ?? false,
+        date: isTemplate || !dto.date ? null : new Date(dto.date),
+        isTemplate,
         instructorId,
-        clientId: dto.isTemplate ? null : dto.clientId,
+        clientId: isTemplate ? null : dto.clientId,
         exercises: {
           create: dto.exercises.map((ex, index) => ({
             name: ex.name,
@@ -28,16 +46,26 @@ export class RoutinesService {
       },
       include: { exercises: true },
     });
+
+    if (!isTemplate && dto.clientId) {
+      await this.notifyNewRoutine([dto.clientId], routine.title);
+    }
+
+    return routine;
   }
 
-  findAllForInstructor(instructorId: string, isTemplate?: boolean) {
+  findAllForInstructor(instructorId: string, isTemplate?: boolean, clientId?: string) {
     return this.prisma.routine.findMany({
       where: {
         instructorId,
         ...(isTemplate !== undefined ? { isTemplate } : {}),
+        ...(clientId ? { clientId } : {}),
       },
-      include: { exercises: true, client: { select: { id: true, name: true } } },
-      orderBy: { createdAt: 'desc' },
+      include: {
+        exercises: { orderBy: { order: 'asc' } },
+        client: { select: { id: true, name: true } },
+      },
+      orderBy: clientId ? { date: 'desc' } : { createdAt: 'desc' },
     });
   }
 
@@ -104,14 +132,16 @@ export class RoutinesService {
       throw new ForbiddenException('Esta plantilla no pertenece a tu cuenta.');
     }
 
-    const ownClients = await this.prisma.user.count({
-      where: { id: { in: dto.clientIds }, instructorId, role: 'CLIENTE', active: true },
-    });
-    if (ownClients !== new Set(dto.clientIds).size) {
-      throw new ForbiddenException('Solo puedes asignar rutinas a tus clientes activos.');
+    await this.assertOwnActiveClients(instructorId, dto.clientIds);
+
+    const overrides = new Map((dto.overrides ?? []).map((o) => [o.clientId, o.exercises]));
+    for (const clientId of overrides.keys()) {
+      if (!dto.clientIds.includes(clientId)) {
+        throw new BadRequestException('Hay un ajuste para un cliente que no está seleccionado.');
+      }
     }
 
-    const exercisesToUse = dto.exercises ?? template.exercises;
+    const baseExercises = dto.exercises ?? template.exercises;
 
     const created = await this.prisma.$transaction(
       dto.clientIds.map((clientId) =>
@@ -123,7 +153,8 @@ export class RoutinesService {
             instructorId,
             clientId,
             exercises: {
-              create: exercisesToUse.map((ex, index) => ({
+              // RF-26: el ajuste individual no modifica la plantilla original.
+              create: (overrides.get(clientId) ?? baseExercises).map((ex, index) => ({
                 name: ex.name,
                 sets: ex.sets,
                 reps: ex.reps,
@@ -136,19 +167,33 @@ export class RoutinesService {
       ),
     );
 
+    await this.notifyNewRoutine(dto.clientIds, template.title);
+
+    return created;
+  }
+
+  private async assertOwnActiveClients(instructorId: string, clientIds: string[]) {
+    const unique = new Set(clientIds);
+    const ownClients = await this.prisma.user.count({
+      where: { id: { in: [...unique] }, instructorId, role: 'CLIENTE', active: true },
+    });
+    if (ownClients !== unique.size) {
+      throw new ForbiddenException('Solo puedes asignar rutinas a tus clientes activos.');
+    }
+  }
+
+  private async notifyNewRoutine(clientIds: string[], title: string) {
     const clients = await this.prisma.user.findMany({
-      where: { id: { in: dto.clientIds } },
+      where: { id: { in: clientIds } },
       select: { pushToken: true },
     });
 
     await this.push.sendToTokens(
       clients.map((c) => c.pushToken),
       'Nueva rutina asignada',
-      `Tu instructor te asigno: ${template.title}`,
+      `Tu instructor te asignó: ${title}`,
       { type: 'routine' },
     );
-
-    return created;
   }
 
   async setExerciseCompleted(clientId: string, exerciseId: string, completed: boolean) {

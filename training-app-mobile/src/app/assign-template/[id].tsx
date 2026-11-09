@@ -9,17 +9,7 @@ export default function AssignTemplateScreen() {
     return (
         <>
             <Stack.Screen options={{ title }} />
-            <AssignTemplateForm
-                clients={assign.clients}
-                loadingClients={assign.loadingClients}
-                selectedIds={assign.selectedIds}
-                onToggleClient={assign.toggleClient}
-                date={assign.date}
-                onDateChange={assign.setDate}
-                minimumDate={assign.minimumDate}
-                onSubmit={assign.submit}
-                saving={assign.saving}
-            />
+            <AssignTemplateForm assign={assign} />
         </>
     );
 }

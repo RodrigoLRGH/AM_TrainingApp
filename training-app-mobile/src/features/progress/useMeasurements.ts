@@ -5,6 +5,8 @@ import { getMyMeasurements, createMeasurement } from '../../api/measurements';
 import { getErrorMessage } from '../../api/errors';
 import type { MeasureKey, Measurement, NewMeasurement } from '../../api/types';
 import { METRICS, seriesFor } from './metrics';
+import { useForm, type Rules } from '../forms/useForm';
+import { optionalPositiveNumber } from '../forms/rules';
 
 export type MeasureForm = Record<MeasureKey, string>;
 
@@ -17,12 +19,17 @@ const EMPTY_FORM: MeasureForm = {
     legCm: '',
 };
 
+const RULES: Rules<MeasureForm> = Object.fromEntries(
+    METRICS.map((item) => [item.key, optionalPositiveNumber('Debe ser un número mayor a cero.')]),
+);
+
 export function useMeasurements() {
     const [measurements, setMeasurements] = useState<Measurement[]>([]);
     const [loading, setLoading] = useState(true);
     const [metric, setMetric] = useState<MeasureKey>('weightKg');
     const [modalVisible, setModalVisible] = useState(false);
-    const [form, setForm] = useState<MeasureForm>(EMPTY_FORM);
+    const form = useForm<MeasureForm>(EMPTY_FORM, RULES);
+    const [emptyError, setEmptyError] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
 
     const load = useCallback(async () => {
@@ -46,36 +53,39 @@ export function useMeasurements() {
     const series = useMemo(() => seriesFor(measurements, metric), [measurements, metric]);
 
     function setField(key: MeasureKey, value: string) {
-        setForm((prev) => ({ ...prev, [key]: value }));
+        form.setValue(key, value);
+        setEmptyError(null);
+    }
+
+    function openModal() {
+        form.reset();
+        setEmptyError(null);
+        setModalVisible(true);
     }
 
     async function submit() {
+        if (!form.validate()) {
+            return;
+        }
+
         const payload: NewMeasurement = {};
-
         for (const item of METRICS) {
-            const raw = form[item.key].trim();
-            if (!raw) {
-                continue;
+            const raw = form.values[item.key].trim();
+            if (raw) {
+                // Acepta coma o punto como separador decimal
+                payload[item.key] = Number(raw.replace(',', '.'));
             }
-
-            // Acepta coma o punto como separador decimal
-            const value = Number(raw.replace(',', '.'));
-            if (!Number.isFinite(value) || value <= 0) {
-                AppAlert.alert(`"${item.label}" debe ser un número mayor a cero.`);
-                return;
-            }
-            payload[item.key] = value;
         }
 
         if (Object.keys(payload).length === 0) {
-            AppAlert.alert('Escribe al menos una medida.');
+            setEmptyError('Escribe al menos una medida.');
             return;
         }
 
         setSaving(true);
         try {
             await createMeasurement(payload);
-            setForm(EMPTY_FORM);
+            form.reset();
             setModalVisible(false);
             await load();
         } catch (error) {
@@ -93,8 +103,10 @@ export function useMeasurements() {
         series,
         modalVisible,
         setModalVisible,
+        openModal,
         form,
         setField,
+        emptyError,
         saving,
         submit,
     };
