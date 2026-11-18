@@ -3,6 +3,7 @@ import { Text, ActivityIndicator } from 'react-native-paper';
 import { useRunHistory } from '../features/running/useRunHistory';
 import { RunCard } from './RunCard';
 import { RunDetailModal } from './RunDetailModal';
+import { RunHistorySummary } from './RunHistorySummary';
 
 export function RunHistoryView() {
     const { runs, loading, selected, openRun, closeRun } = useRunHistory();
@@ -21,6 +22,7 @@ export function RunHistoryView() {
                 data={runs}
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={styles.list}
+                ListHeaderComponent={runs.length > 0 ? <RunHistorySummary runs={runs} /> : undefined}
                 ListEmptyComponent={
                     <Text variant="bodyLarge" style={styles.empty}>
                         Todavía no tienes corridas registradas.
@@ -44,7 +46,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     list: {
-        padding: 16,
+        paddingHorizontal: 16,
+        paddingBottom: 16,
     },
     empty: {
         textAlign: 'center',
