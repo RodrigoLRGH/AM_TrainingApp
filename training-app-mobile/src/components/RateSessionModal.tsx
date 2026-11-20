@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
-import { Text, Portal, Modal, TextInput, Button, SegmentedButtons } from 'react-native-paper';
+import { Text, TextInput, Button, SegmentedButtons } from 'react-native-paper';
+import { FormModal } from './FormModal';
 import { EFFORT_LEVELS, effortLabel } from '../features/ratings/effort';
 
 type Props = {
@@ -29,8 +30,7 @@ export function RateSessionModal({
         effort === null ? 'Del 1 (muy ligero) al 5 (máximo esfuerzo)' : effortLabel(effort);
 
     return (
-        <Portal>
-            <Modal visible={visible} onDismiss={onDismiss} contentContainerStyle={styles.modal}>
+        <FormModal visible={visible} onDismiss={onDismiss} contentContainerStyle={styles.modal}>
                 <Text variant="titleMedium" style={styles.title}>
                     ¿Qué tan pesada te pareció?
                 </Text>
@@ -62,8 +62,7 @@ export function RateSessionModal({
                 <Button mode="contained" onPress={onSubmit} loading={saving} disabled={saving}>
                     Enviar calificación
                 </Button>
-            </Modal>
-        </Portal>
+        </FormModal>
     );
 }
 

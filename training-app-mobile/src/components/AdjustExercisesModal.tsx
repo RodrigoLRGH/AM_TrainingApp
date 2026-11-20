@@ -1,5 +1,6 @@
 import { ScrollView, View, StyleSheet } from 'react-native';
-import { Portal, Modal, Text, Button, useTheme } from 'react-native-paper';
+import { Text, Button, useTheme } from 'react-native-paper';
+import { FormModal } from './FormModal';
 import type { NewExercise } from '../api/types';
 import { useExerciseDrafts } from '../features/routines/useExerciseDrafts';
 import { ExerciseListEditor } from './ExerciseListEditor';
@@ -34,8 +35,7 @@ export function AdjustExercisesModal({
     }
 
     return (
-        <Portal>
-            <Modal
+        <FormModal
                 visible
                 onDismiss={onDismiss}
                 contentContainerStyle={[styles.modal, { backgroundColor: colors.surface }]}
@@ -65,8 +65,7 @@ export function AdjustExercisesModal({
                         Guardar
                     </Button>
                 </View>
-            </Modal>
-        </Portal>
+        </FormModal>
     );
 }
 

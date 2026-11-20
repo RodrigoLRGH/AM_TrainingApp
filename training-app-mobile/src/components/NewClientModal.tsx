@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
-import { Text, Portal, Modal, Button, useTheme } from 'react-native-paper';
+import { Text, Button, useTheme } from 'react-native-paper';
+import { FormModal } from './FormModal';
 import type { useForm } from '../features/forms/useForm';
 import { FormField } from './FormField';
 
@@ -15,8 +16,7 @@ export function NewClientModal({ visible, onDismiss, form, onSubmit, saving }: P
     const { colors } = useTheme();
 
     return (
-        <Portal>
-            <Modal
+        <FormModal
                 visible={visible}
                 onDismiss={onDismiss}
                 contentContainerStyle={[styles.modal, { backgroundColor: colors.surface }]}
@@ -42,8 +42,7 @@ export function NewClientModal({ visible, onDismiss, form, onSubmit, saving }: P
                 >
                     Crear
                 </Button>
-            </Modal>
-        </Portal>
+        </FormModal>
     );
 }
 

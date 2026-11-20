@@ -32,7 +32,12 @@ export function ExerciseFormRow({ exercise, errors, onChange, onBlur, onRemove }
                     mode="outlined"
                     label="Nombre"
                     value={exercise.name}
-                    onChangeText={(value) => onChange('name', value)}
+                    // Multilínea para que los nombres largos crezcan hacia abajo en lugar de
+                    // salirse del borde; Enter cierra el teclado y no se permiten saltos de línea.
+                    multiline
+                    submitBehavior="blurAndSubmit"
+                    returnKeyType="done"
+                    onChangeText={(value) => onChange('name', value.replace(/\s*\n+\s*/g, ' '))}
                     onBlur={() => onBlur('name')}
                     error={!!errors.name}
                     style={styles.name}
@@ -74,7 +79,7 @@ const styles = StyleSheet.create({
     },
     row: {
         flexDirection: 'row',
-        alignItems: 'center',
+        alignItems: 'flex-start',
     },
     name: {
         flex: 2,

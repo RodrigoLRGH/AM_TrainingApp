@@ -1,5 +1,6 @@
 import { ScrollView, View, StyleSheet } from 'react-native';
-import { Text, Portal, Modal, TextInput, Button, HelperText, useTheme } from 'react-native-paper';
+import { Text, TextInput, Button, HelperText, useTheme } from 'react-native-paper';
+import { FormModal } from './FormModal';
 import type { MeasureKey } from '../api/types';
 import { METRICS } from '../features/progress/metrics';
 import type { MeasureForm } from '../features/progress/useMeasurements';
@@ -27,8 +28,7 @@ export function NewMeasurementModal({
     const { colors } = useTheme();
 
     return (
-        <Portal>
-            <Modal visible={visible} onDismiss={onDismiss} contentContainerStyle={[styles.modal, { backgroundColor: colors.surface }]}>
+        <FormModal visible={visible} onDismiss={onDismiss} contentContainerStyle={[styles.modal, { backgroundColor: colors.surface }]}>
                 <Text variant="titleMedium" style={styles.title}>
                     Nueva medición
                 </Text>
@@ -61,8 +61,7 @@ export function NewMeasurementModal({
                 <Button mode="contained" onPress={onSubmit} loading={saving} disabled={saving}>
                     Guardar
                 </Button>
-            </Modal>
-        </Portal>
+        </FormModal>
     );
 }
 
