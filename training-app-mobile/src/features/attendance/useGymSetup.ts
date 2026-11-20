@@ -39,12 +39,29 @@ export function useGymSetup() {
         }, [load]),
     );
 
-    async function saveCurrentLocation() {
+    function saveCurrentLocation() {
         if (!radiusForm.validate()) {
             return;
         }
         const radiusMeters = Number(radiusForm.values.radius.trim());
+        const configured = config?.gymLatitude != null && config?.gymLongitude != null;
 
+        AppAlert.alert(
+            configured ? 'Cambiar ubicación del gimnasio' : 'Guardar ubicación del gimnasio',
+            configured
+                ? `Se reemplazará la ubicación actual por tu ubicación actual, con un radio de ${radiusMeters} m. La asistencia de tus clientes se validará con la nueva ubicación. ¿Quieres continuar?`
+                : `Se guardará tu ubicación actual como la del gimnasio, con un radio de ${radiusMeters} m. ¿Quieres continuar?`,
+            [
+                { text: 'Cancelar', style: 'cancel' },
+                {
+                    text: configured ? 'Cambiar ubicación' : 'Guardar',
+                    onPress: () => applyCurrentLocation(radiusMeters),
+                },
+            ],
+        );
+    }
+
+    async function applyCurrentLocation(radiusMeters: number) {
         setSaving(true);
         try {
             const { status } = await Location.requestForegroundPermissionsAsync();

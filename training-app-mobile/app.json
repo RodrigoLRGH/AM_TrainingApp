@@ -56,6 +56,12 @@
         "projectId": "c894912f-90db-4256-88fe-d5590f8afd2a"
       }
     },
-    "owner": "rodrigolr"
+    "owner": "rodrigolr",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/c894912f-90db-4256-88fe-d5590f8afd2a"
+    }
   }
 }
