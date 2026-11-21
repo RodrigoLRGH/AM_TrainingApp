@@ -20,7 +20,13 @@ const EMPTY_FORM: MeasureForm = {
 };
 
 const RULES: Rules<MeasureForm> = Object.fromEntries(
-    METRICS.map((item) => [item.key, optionalPositiveNumber('Debe ser un número mayor a cero.')]),
+    METRICS.map((item) => [
+        item.key,
+        optionalPositiveNumber('Debe ser un número mayor a cero.', {
+            value: item.max,
+            message: `Máximo ${item.max} ${item.unit}.`,
+        }),
+    ]),
 );
 
 export function useMeasurements() {

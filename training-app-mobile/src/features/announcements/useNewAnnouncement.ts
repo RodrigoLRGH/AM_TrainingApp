@@ -4,7 +4,8 @@ import { useRouter } from 'expo-router';
 import { createAnnouncement } from '../../api/announcements';
 import { getErrorMessage } from '../../api/errors';
 import { useForm } from '../forms/useForm';
-import { compose, minLength, required } from '../forms/rules';
+import { compose, maxLength, minLength, required } from '../forms/rules';
+import { LIMITS } from '../forms/limits';
 
 type AnnouncementValues = {
     title: string;
@@ -24,10 +25,18 @@ export function useNewAnnouncement() {
         title: compose(
             required('Escribe un título.'),
             minLength(2, 'El título debe tener al menos 2 caracteres.'),
+            maxLength(
+                LIMITS.announcementTitle,
+                `El título puede tener máximo ${LIMITS.announcementTitle} caracteres.`,
+            ),
         ),
         message: compose(
             required('Escribe el mensaje.'),
             minLength(2, 'El mensaje debe tener al menos 2 caracteres.'),
+            maxLength(
+                LIMITS.announcementMessage,
+                `El mensaje puede tener máximo ${LIMITS.announcementMessage} caracteres.`,
+            ),
         ),
     });
 

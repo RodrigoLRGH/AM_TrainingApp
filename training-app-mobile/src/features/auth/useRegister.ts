@@ -5,7 +5,8 @@ import { registerInstructor } from '../../api/auth';
 import { getErrorMessage } from '../../api/errors';
 import { useAuth } from '../../auth/AuthContext';
 import { useForm } from '../forms/useForm';
-import { compose, isEmail, matches, minLength, required } from '../forms/rules';
+import { compose, isEmail, matches, maxBytes, maxLength, minLength, required } from '../forms/rules';
+import { LIMITS } from '../forms/limits';
 
 type RegisterValues = {
     name: string;
@@ -30,6 +31,10 @@ export function useRegister() {
         name: compose(
             required('Escribe tu nombre.'),
             minLength(2, 'El nombre debe tener al menos 2 caracteres.'),
+            maxLength(
+                LIMITS.personName,
+                `El nombre puede tener máximo ${LIMITS.personName} caracteres.`,
+            ),
         ),
         email: compose(
             required('Escribe tu correo electrónico.'),
@@ -38,6 +43,8 @@ export function useRegister() {
         password: compose(
             required('Escribe una contraseña.'),
             minLength(8, 'La contraseña debe tener al menos 8 caracteres.'),
+            // El límite es en bytes: las letras con acento y los emojis cuentan doble o más.
+            maxBytes(LIMITS.passwordBytes, 'La contraseña es demasiado larga.'),
         ),
         confirmPassword: compose(
             required('Confirma tu contraseña.'),

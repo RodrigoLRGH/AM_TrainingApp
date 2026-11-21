@@ -1,4 +1,5 @@
-import { IsInt, IsLatitude, IsLongitude, Min } from 'class-validator';
+import { IsInt, IsLatitude, IsLongitude, Max, Min } from 'class-validator';
+import { LIMITS } from '../../common/limits';
 
 export class SetGymLocationDto {
   @IsLatitude()
@@ -9,5 +10,8 @@ export class SetGymLocationDto {
 
   @IsInt()
   @Min(10, { message: 'El radio debe ser de al menos 10 metros.' })
+  @Max(LIMITS.gymRadiusMeters, {
+    message: `El radio puede ser máximo ${LIMITS.gymRadiusMeters} metros.`,
+  })
   radiusMeters: number;
 }

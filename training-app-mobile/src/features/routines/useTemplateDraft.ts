@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import type { NewExercise } from '../../api/types';
 import { useExerciseDrafts } from './useExerciseDrafts';
+import { LIMITS } from '../forms/limits';
 
 export type { ExerciseDraft } from './useExerciseDrafts';
 export type TemplatePayload = { title: string; exercises: NewExercise[] };
@@ -14,6 +15,9 @@ function titleError(value: string) {
     }
     if (trimmed.length < 2) {
         return 'El título debe tener al menos 2 caracteres.';
+    }
+    if (trimmed.length > LIMITS.routineTitle) {
+        return `El título puede tener máximo ${LIMITS.routineTitle} caracteres.`;
     }
     return undefined;
 }

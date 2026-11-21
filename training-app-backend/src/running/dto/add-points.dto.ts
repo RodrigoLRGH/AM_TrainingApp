@@ -1,5 +1,13 @@
 import { Type } from 'class-transformer';
-import { IsArray, IsDateString, IsLatitude, IsLongitude, ValidateNested } from 'class-validator';
+import {
+  ArrayMaxSize,
+  IsArray,
+  IsDateString,
+  IsLatitude,
+  IsLongitude,
+  ValidateNested,
+} from 'class-validator';
+import { LIMITS } from '../../common/limits';
 
 class RunPointDto {
   @IsLatitude()
@@ -14,6 +22,7 @@ class RunPointDto {
 
 export class AddPointsDto {
   @IsArray()
+  @ArrayMaxSize(LIMITS.runPointsPerRequest)
   @ValidateNested({ each: true })
   @Type(() => RunPointDto)
   points: RunPointDto[];

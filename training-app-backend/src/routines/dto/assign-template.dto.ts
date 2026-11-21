@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+  ArrayMaxSize,
   ArrayMinSize,
   IsArray,
   IsDateString,
@@ -7,6 +8,7 @@ import {
   IsUUID,
   ValidateNested,
 } from 'class-validator';
+import { LIMITS } from '../../common/limits';
 import { ExerciseDto } from './exercise.dto';
 
 // Ejercicios ajustados para un cliente en particular (RF-26).
@@ -16,6 +18,9 @@ export class ClientExercisesDto {
 
   @IsArray()
   @ArrayMinSize(1, { message: 'Cada ajuste debe tener al menos un ejercicio.' })
+  @ArrayMaxSize(LIMITS.exercisesPerRoutine, {
+    message: `Una rutina puede tener máximo ${LIMITS.exercisesPerRoutine} ejercicios.`,
+  })
   @ValidateNested({ each: true })
   @Type(() => ExerciseDto)
   exercises: ExerciseDto[];
@@ -33,6 +38,9 @@ export class AssignTemplateDto {
   // Ajuste común para todos los clientes.
   @IsOptional()
   @IsArray()
+  @ArrayMaxSize(LIMITS.exercisesPerRoutine, {
+    message: `Una rutina puede tener máximo ${LIMITS.exercisesPerRoutine} ejercicios.`,
+  })
   @ValidateNested({ each: true })
   @Type(() => ExerciseDto)
   exercises?: ExerciseDto[];

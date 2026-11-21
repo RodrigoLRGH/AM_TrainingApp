@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+  ArrayMaxSize,
   ArrayMinSize,
   IsArray,
   IsBoolean,
@@ -7,14 +8,19 @@ import {
   IsOptional,
   IsString,
   IsUUID,
+  MaxLength,
   MinLength,
   ValidateNested,
 } from 'class-validator';
+import { LIMITS } from '../../common/limits';
 import { ExerciseDto } from './exercise.dto';
 
 export class CreateRoutineDto {
   @IsString()
   @MinLength(2, { message: 'El título debe tener al menos 2 caracteres.' })
+  @MaxLength(LIMITS.routineTitle, {
+    message: `El título puede tener máximo ${LIMITS.routineTitle} caracteres.`,
+  })
   title: string;
 
   @IsOptional()
@@ -31,6 +37,9 @@ export class CreateRoutineDto {
 
   @IsArray()
   @ArrayMinSize(1, { message: 'Agrega al menos un ejercicio.' })
+  @ArrayMaxSize(LIMITS.exercisesPerRoutine, {
+    message: `Una rutina puede tener máximo ${LIMITS.exercisesPerRoutine} ejercicios.`,
+  })
   @ValidateNested({ each: true })
   @Type(() => ExerciseDto)
   exercises: ExerciseDto[];

@@ -2,6 +2,7 @@ import { StyleSheet } from 'react-native';
 import { Text, TextInput, Button, SegmentedButtons } from 'react-native-paper';
 import { FormModal } from './FormModal';
 import { EFFORT_LEVELS, effortLabel } from '../features/ratings/effort';
+import { LIMITS } from '../features/forms/limits';
 
 type Props = {
     visible: boolean;
@@ -57,6 +58,7 @@ export function RateSessionModal({
                     label="Nota para tu instructor (opcional)"
                     value={note}
                     onChangeText={onNoteChange}
+                    maxLength={LIMITS.ratingNote}
                     multiline
                     style={styles.input}
                 />

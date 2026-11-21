@@ -4,6 +4,7 @@ import { Text, Button } from 'react-native-paper';
 import type { TemplateDraftApi } from '../features/routines/useTemplateDraft';
 import { ExerciseListEditor } from './ExerciseListEditor';
 import { FormField } from './FormField';
+import { LIMITS } from '../features/forms/limits';
 
 type Props = {
     draft: TemplateDraftApi;
@@ -31,6 +32,7 @@ export function TemplateForm({
         >
             <FormField
                 label="Título de la rutina"
+                maxLength={LIMITS.routineTitle}
                 value={draft.title}
                 onChangeText={draft.setTitle}
                 onBlur={draft.onTitleBlur}

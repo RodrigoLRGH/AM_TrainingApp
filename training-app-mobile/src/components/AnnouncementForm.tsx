@@ -2,6 +2,7 @@ import { ScrollView, StyleSheet } from 'react-native';
 import { Button } from 'react-native-paper';
 import type { NewAnnouncementApi } from '../features/announcements/useNewAnnouncement';
 import { FormField } from './FormField';
+import { LIMITS } from '../features/forms/limits';
 
 type Props = {
     announcement: NewAnnouncementApi;
@@ -23,6 +24,7 @@ export function AnnouncementForm({ announcement }: Props) {
                 onBlur={() => handleBlur('title')}
                 error={errorFor('title')}
                 autoCapitalize="sentences"
+                maxLength={LIMITS.announcementTitle}
             />
             <FormField
                 label="Mensaje"
@@ -31,6 +33,7 @@ export function AnnouncementForm({ announcement }: Props) {
                 onBlur={() => handleBlur('message')}
                 error={errorFor('message')}
                 autoCapitalize="sentences"
+                maxLength={LIMITS.announcementMessage}
                 multiline
             />
 

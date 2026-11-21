@@ -5,6 +5,7 @@ import type {
     ExerciseErrors,
     ExerciseField,
 } from '../features/routines/useExerciseDrafts';
+import { LIMITS } from '../features/forms/limits';
 
 type Props = {
     exercise: ExerciseDraft;
@@ -37,6 +38,7 @@ export function ExerciseFormRow({ exercise, errors, onChange, onBlur, onRemove }
                     multiline
                     submitBehavior="blurAndSubmit"
                     returnKeyType="done"
+                    maxLength={LIMITS.exerciseName}
                     onChangeText={(value) => onChange('name', value.replace(/\s*\n+\s*/g, ' '))}
                     onBlur={() => onBlur('name')}
                     error={!!errors.name}
@@ -47,6 +49,7 @@ export function ExerciseFormRow({ exercise, errors, onChange, onBlur, onRemove }
                     label="Series"
                     value={exercise.sets}
                     onChangeText={(value) => onChange('sets', value)}
+                    maxLength={String(LIMITS.sets).length}
                     onBlur={() => onBlur('sets')}
                     error={!!errors.sets}
                     keyboardType="number-pad"
@@ -57,6 +60,7 @@ export function ExerciseFormRow({ exercise, errors, onChange, onBlur, onRemove }
                     label="Reps"
                     value={exercise.reps}
                     onChangeText={(value) => onChange('reps', value)}
+                    maxLength={String(LIMITS.reps).length}
                     onBlur={() => onBlur('reps')}
                     error={!!errors.reps}
                     keyboardType="number-pad"

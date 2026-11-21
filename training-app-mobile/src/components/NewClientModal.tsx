@@ -3,6 +3,7 @@ import { Text, Button, useTheme } from 'react-native-paper';
 import { FormModal } from './FormModal';
 import type { useForm } from '../features/forms/useForm';
 import { FormField } from './FormField';
+import { LIMITS } from '../features/forms/limits';
 
 type Props = {
     visible: boolean;
@@ -32,6 +33,7 @@ export function NewClientModal({ visible, onDismiss, form, onSubmit, saving }: P
                     onBlur={() => form.handleBlur('name')}
                     error={form.errorFor('name')}
                     autoCapitalize="words"
+                    maxLength={LIMITS.personName}
                 />
                 <Button
                     mode="contained"

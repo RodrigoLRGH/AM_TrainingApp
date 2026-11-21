@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import type { NewExercise } from '../../api/types';
+import { LIMITS } from '../forms/limits';
 
 export type ExerciseField = 'name' | 'sets' | 'reps';
 export type ExerciseDraft = { id: string } & Record<ExerciseField, string>;
@@ -7,7 +8,6 @@ export type ExerciseErrors = Partial<Record<ExerciseField, string>>;
 
 type ExerciseSource = { name: string; sets: number; reps: number };
 
-const MAX_COUNT = 999;
 const INTEGER = /^\d+$/;
 const FIELDS: ExerciseField[] = ['name', 'sets', 'reps'];
 
@@ -34,7 +34,7 @@ function isBlank(draft: ExerciseDraft) {
     return FIELDS.every((field) => draft[field].trim() === '');
 }
 
-function countError(value: string) {
+function countError(value: string, max: number) {
     const trimmed = value.trim();
     if (trimmed === '') {
         return 'Requerido';
@@ -42,8 +42,8 @@ function countError(value: string) {
     if (!INTEGER.test(trimmed) || Number(trimmed) < 1) {
         return 'Mínimo 1';
     }
-    if (Number(trimmed) > MAX_COUNT) {
-        return `Máximo ${MAX_COUNT}`;
+    if (Number(trimmed) > max) {
+        return `Máximo ${max}`;
     }
     return undefined;
 }
@@ -60,13 +60,15 @@ export function validateExercise(draft: ExerciseDraft): ExerciseErrors {
         errors.name = 'Escribe el nombre';
     } else if (name.length < 2) {
         errors.name = 'Mínimo 2 caracteres';
+    } else if (name.length > LIMITS.exerciseName) {
+        errors.name = `Máximo ${LIMITS.exerciseName} caracteres`;
     }
 
-    const sets = countError(draft.sets);
+    const sets = countError(draft.sets, LIMITS.sets);
     if (sets) {
         errors.sets = sets;
     }
-    const reps = countError(draft.reps);
+    const reps = countError(draft.reps, LIMITS.reps);
     if (reps) {
         errors.reps = reps;
     }
@@ -91,7 +93,9 @@ export function useExerciseDrafts(initial?: ExerciseSource[]) {
     }, []);
 
     function addExercise() {
-        setExercises((prev) => [...prev, emptyExercise()]);
+        setExercises((prev) =>
+            prev.length >= LIMITS.exercisesPerRoutine ? prev : [...prev, emptyExercise()],
+        );
     }
 
     function updateExercise(id: string, field: ExerciseField, value: string) {
@@ -123,7 +127,13 @@ export function useExerciseDrafts(initial?: ExerciseSource[]) {
     }
 
     const filled = exercises.filter((exercise) => !isBlank(exercise));
-    const emptyListError = filled.length === 0 ? 'Agrega al menos un ejercicio.' : undefined;
+    const emptyListError =
+        filled.length === 0
+            ? 'Agrega al menos un ejercicio.'
+            : filled.length > LIMITS.exercisesPerRoutine
+              ? `Una rutina puede tener máximo ${LIMITS.exercisesPerRoutine} ejercicios.`
+              : undefined;
+    const canAddExercise = exercises.length < LIMITS.exercisesPerRoutine;
 
     /** Marca el formulario como enviado y regresa los ejercicios, o null si hay errores. */
     function build(): NewExercise[] | null {
@@ -142,6 +152,7 @@ export function useExerciseDrafts(initial?: ExerciseSource[]) {
     return {
         exercises,
         addExercise,
+        canAddExercise,
         updateExercise,
         removeExercise,
         markTouched,

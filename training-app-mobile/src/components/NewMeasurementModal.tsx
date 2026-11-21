@@ -53,6 +53,8 @@ export function NewMeasurementModal({
                                 onBlur={() => form.handleBlur(item.key)}
                                 error={!!error}
                                 keyboardType="decimal-pad"
+                                // 3 enteros, punto y 2 decimales (p. ej. 120.55)
+                                maxLength={6}
                             />
                             {error ? <HelperText type="error">{error}</HelperText> : null}
                         </View>

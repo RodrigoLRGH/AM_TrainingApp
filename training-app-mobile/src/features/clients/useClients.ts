@@ -5,7 +5,8 @@ import { getClients, createClient, setClientActive } from '../../api/clients';
 import { getErrorMessage } from '../../api/errors';
 import type { Client } from '../../api/types';
 import { useForm } from '../forms/useForm';
-import { compose, minLength, required } from '../forms/rules';
+import { compose, maxLength, minLength, required } from '../forms/rules';
+import { LIMITS } from '../forms/limits';
 
 export function useClients() {
     const [clients, setClients] = useState<Client[]>([]);
@@ -17,6 +18,10 @@ export function useClients() {
             name: compose(
                 required('Escribe el nombre del cliente.'),
                 minLength(2, 'El nombre debe tener al menos 2 caracteres.'),
+                maxLength(
+                    LIMITS.personName,
+                    `El nombre puede tener máximo ${LIMITS.personName} caracteres.`,
+                ),
             ),
         },
     );

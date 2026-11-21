@@ -8,6 +8,19 @@ export function minLength(length: number, message: string): Rule {
     return (value) => (value.trim().length < length ? message : null);
 }
 
+export function maxLength(length: number, message: string): Rule {
+    return (value) => (value.trim().length > length ? message : null);
+}
+
+/** Largo en bytes UTF-8 (una letra con acento o un emoji ocupa más de un byte). */
+export function utf8ByteLength(value: string) {
+    return new TextEncoder().encode(value).length;
+}
+
+export function maxBytes(bytes: number, message: string): Rule {
+    return (value) => (utf8ByteLength(value) > bytes ? message : null);
+}
+
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function isEmail(message: string): Rule {
@@ -40,14 +53,31 @@ export function integerAtLeast(min: number, message: string): Rule {
     };
 }
 
-/** Campo opcional: vacío es válido; si tiene algo, debe ser un número mayor a cero (acepta coma). */
-export function optionalPositiveNumber(message: string): Rule {
+export function integerBetween(min: number, max: number, message: string): Rule {
+    return (value) => {
+        const trimmed = value.trim();
+        const parsed = Number(trimmed);
+        return /^\d+$/.test(trimmed) && parsed >= min && parsed <= max ? null : message;
+    };
+}
+
+/**
+ * Campo opcional: vacío es válido; si tiene algo, debe ser un número mayor a cero (acepta coma)
+ * y, si se indica, no mayor a `max`.
+ */
+export function optionalPositiveNumber(
+    message: string,
+    max?: { value: number; message: string },
+): Rule {
     return (value) => {
         const trimmed = value.trim();
         if (trimmed === '') {
             return null;
         }
         const parsed = Number(trimmed.replace(',', '.'));
-        return Number.isFinite(parsed) && parsed > 0 ? null : message;
+        if (!Number.isFinite(parsed) || parsed <= 0) {
+            return message;
+        }
+        return max && parsed > max.value ? max.message : null;
     };
 }

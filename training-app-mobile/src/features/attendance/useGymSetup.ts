@@ -5,7 +5,8 @@ import * as Location from 'expo-location';
 import { getGymConfig, setGymLocation, generateGymQr } from '../../api/attendance';
 import type { GymConfig } from '../../api/types';
 import { useForm } from '../forms/useForm';
-import { integerAtLeast } from '../forms/rules';
+import { integerBetween } from '../forms/rules';
+import { LIMITS } from '../forms/limits';
 
 
 export function useGymSetup() {
@@ -13,7 +14,13 @@ export function useGymSetup() {
     const [loading, setLoading] = useState(true);
     const radiusForm = useForm(
         { radius: '100' },
-        { radius: integerAtLeast(10, 'El radio debe ser un número entero de al menos 10 metros.') },
+        {
+            radius: integerBetween(
+                10,
+                LIMITS.gymRadiusMeters,
+                `El radio debe ser un número entero entre 10 y ${LIMITS.gymRadiusMeters} metros.`,
+            ),
+        },
     );
     const [saving, setSaving] = useState(false);
 

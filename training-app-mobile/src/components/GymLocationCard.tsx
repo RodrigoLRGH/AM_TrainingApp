@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { Card, Text, TextInput, Button, HelperText } from 'react-native-paper';
 import type { GymConfig } from '../api/types';
+import { LIMITS } from '../features/forms/limits';
 
 type Props = {
     config: GymConfig | null;
@@ -40,6 +41,7 @@ export function GymLocationCard({
                     onBlur={onRadiusBlur}
                     error={!!radiusError}
                     keyboardType="number-pad"
+                    maxLength={String(LIMITS.gymRadiusMeters).length}
                 />
                 {radiusError ? <HelperText type="error">{radiusError}</HelperText> : null}
             </Card.Content>

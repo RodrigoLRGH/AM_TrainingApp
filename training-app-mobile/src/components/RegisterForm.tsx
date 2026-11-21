@@ -2,6 +2,7 @@ import { ScrollView, StyleSheet } from 'react-native';
 import { Text, Button } from 'react-native-paper';
 import type { RegisterApi } from '../features/auth/useRegister';
 import { FormField } from './FormField';
+import { LIMITS } from '../features/forms/limits';
 
 type Props = {
     register: RegisterApi;
@@ -27,6 +28,7 @@ export function RegisterForm({ register }: Props) {
                 onBlur={() => handleBlur('name')}
                 error={errorFor('name')}
                 autoCapitalize="words"
+                maxLength={LIMITS.personName}
             />
             <FormField
                 label="Correo electrónico"
@@ -36,6 +38,7 @@ export function RegisterForm({ register }: Props) {
                 error={errorFor('email')}
                 keyboardType="email-address"
                 autoCapitalize="none"
+                maxLength={LIMITS.email}
             />
             <FormField
                 label="Contraseña"
@@ -45,6 +48,7 @@ export function RegisterForm({ register }: Props) {
                 error={errorFor('password')}
                 secure
                 autoCapitalize="none"
+                maxLength={LIMITS.passwordBytes}
             />
             <FormField
                 label="Confirmar contraseña"
@@ -54,6 +58,7 @@ export function RegisterForm({ register }: Props) {
                 error={errorFor('confirmPassword')}
                 secure
                 autoCapitalize="none"
+                maxLength={LIMITS.passwordBytes}
             />
 
             <Button mode="contained" onPress={submit} loading={saving} disabled={saving} style={styles.submit}>

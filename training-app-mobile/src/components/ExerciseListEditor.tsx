@@ -1,6 +1,7 @@
 import { Button, HelperText } from 'react-native-paper';
 import type { ExerciseDraftsApi } from '../features/routines/useExerciseDrafts';
 import { ExerciseFormRow } from './ExerciseFormRow';
+import { LIMITS } from '../features/forms/limits';
 
 type Props = {
     drafts: ExerciseDraftsApi;
@@ -20,8 +21,10 @@ export function ExerciseListEditor({ drafts }: Props) {
                 />
             ))}
             {drafts.listError ? <HelperText type="error">{drafts.listError}</HelperText> : null}
-            <Button icon="plus" onPress={drafts.addExercise}>
-                Agregar ejercicio
+            <Button icon="plus" onPress={drafts.addExercise} disabled={!drafts.canAddExercise}>
+                {drafts.canAddExercise
+                    ? 'Agregar ejercicio'
+                    : `Máximo ${LIMITS.exercisesPerRoutine} ejercicios`}
             </Button>
         </>
     );

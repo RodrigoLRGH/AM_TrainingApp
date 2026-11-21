@@ -13,6 +13,8 @@ type Props = {
     multiline?: boolean;
     keyboardType?: KeyboardTypeOptions;
     autoCapitalize?: TextInputProps['autoCapitalize'];
+    /** Impide escribir (o pegar) más caracteres que este número. */
+    maxLength?: number;
 };
 
 export function FormField({
@@ -26,6 +28,7 @@ export function FormField({
     multiline = false,
     keyboardType,
     autoCapitalize,
+    maxLength,
 }: Props) {
     const [hidden, setHidden] = useState(secure);
 
@@ -44,6 +47,7 @@ export function FormField({
                 style={multiline ? styles.multiline : undefined}
                 keyboardType={keyboardType}
                 autoCapitalize={autoCapitalize}
+                maxLength={maxLength}
                 autoCorrect={false}
                 right={
                     secure ? (

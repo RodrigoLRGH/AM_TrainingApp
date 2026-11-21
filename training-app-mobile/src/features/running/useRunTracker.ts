@@ -5,6 +5,7 @@ import { startRun, addRunPoints, finishRun } from '../../api/running';
 import { getErrorMessage } from '../../api/errors';
 import type { Coordinate, RunPointInput, RunSession } from '../../api/types';
 import { totalDistance } from '../../utils/geo';
+import { LIMITS } from '../forms/limits';
 
 export type TrackerStatus = 'idle' | 'starting' | 'running' | 'finishing';
 
@@ -16,6 +17,22 @@ function toInput(position: Location.LocationObject): RunPointInput {
         longitude: position.coords.longitude,
         timestamp: new Date(position.timestamp).toISOString(),
     };
+}
+
+/**
+ * Envía los puntos en partes de máximo LIMITS.runPointsPerRequest (el límite de la API).
+ * Si una parte falla, regresa los puntos que no se enviaron para reintentarlos después,
+ * sin repetir las partes que ya se guardaron.
+ */
+async function sendPoints(sessionId: string, points: RunPointInput[]) {
+    for (let start = 0; start < points.length; start += LIMITS.runPointsPerRequest) {
+        try {
+            await addRunPoints(sessionId, points.slice(start, start + LIMITS.runPointsPerRequest));
+        } catch (error) {
+            return { unsent: points.slice(start), error };
+        }
+    }
+    return { unsent: [], error: null };
 }
 
 export function useRunTracker() {
@@ -52,10 +69,9 @@ export function useRunTracker() {
         const batch = pendingRef.current;
         pendingRef.current = [];
 
-        try {
-            await addRunPoints(sessionId, batch);
-        } catch (error) {
-            pendingRef.current = [...batch, ...pendingRef.current];
+        const { unsent } = await sendPoints(sessionId, batch);
+        if (unsent.length > 0) {
+            pendingRef.current = [...unsent, ...pendingRef.current];
         }
     }, []);
 
@@ -129,23 +145,22 @@ export function useRunTracker() {
         setStatus('finishing');
         const batch = pendingRef.current;
         pendingRef.current = [];
-        let sent = false;
+
+        const { unsent, error: sendError } = await sendPoints(sessionId, batch);
+        if (sendError) {
+            pendingRef.current = [...unsent, ...pendingRef.current];
+            setStatus('running');
+            AppAlert.alert(getErrorMessage(sendError, 'No se pudo terminar la corrida.'));
+            return;
+        }
 
         try {
-            if (batch.length > 0) {
-                await addRunPoints(sessionId, batch);
-                sent = true;
-            }
-
             const session = await finishRun(sessionId);
             stopWatching();
             sessionIdRef.current = null;
             setResult(session);
             setStatus('idle');
         } catch (error) {
-            if (!sent) {
-                pendingRef.current = [...batch, ...pendingRef.current];
-            }
             setStatus('running');
             AppAlert.alert(getErrorMessage(error, 'No se pudo terminar la corrida.'));
         }

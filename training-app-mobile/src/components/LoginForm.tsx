@@ -1,5 +1,6 @@
 import type { LoginApi } from '../features/auth/useLogin';
 import { FormField } from './FormField';
+import { LIMITS } from '../features/forms/limits';
 
 type Props = {
     login: LoginApi;
@@ -33,6 +34,7 @@ export function LoginForm({ login }: Props) {
                 error={errorFor('email')}
                 keyboardType="email-address"
                 autoCapitalize="none"
+                maxLength={LIMITS.email}
             />
             <FormField
                 label="Contraseña"
