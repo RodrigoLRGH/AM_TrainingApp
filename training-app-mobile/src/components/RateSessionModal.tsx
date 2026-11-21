@@ -44,6 +44,8 @@ export function RateSessionModal({
                     buttons={EFFORT_LEVELS.map((level) => ({
                         value: String(level.value),
                         label: String(level.value),
+                        // Paper le da minWidth 76 a cada botón; 5 botones no caben en el modal.
+                        style: styles.segment,
                     }))}
                     style={styles.selector}
                 />
@@ -82,6 +84,9 @@ const styles = StyleSheet.create({
     },
     selector: {
         marginBottom: 8,
+    },
+    segment: {
+        minWidth: 0,
     },
     hint: {
         textAlign: 'center',

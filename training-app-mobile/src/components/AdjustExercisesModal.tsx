@@ -74,7 +74,6 @@ const styles = StyleSheet.create({
         padding: 20,
         margin: 16,
         borderRadius: 16,
-        maxHeight: '85%',
     },
     hint: {
         marginTop: 4,

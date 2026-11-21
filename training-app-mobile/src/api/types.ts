@@ -126,6 +126,8 @@ export type SessionRating = {
     effort: number;
     note: string | null;
     createdAt: string;
+    /** Título de la rutina calificada. Solo lo envía la vista del instructor; null si se eliminó. */
+    routineTitle?: string | null;
 };
 
 export type NewSessionRating = {

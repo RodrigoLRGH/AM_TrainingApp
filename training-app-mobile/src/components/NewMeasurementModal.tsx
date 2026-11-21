@@ -28,39 +28,48 @@ export function NewMeasurementModal({
     const { colors } = useTheme();
 
     return (
-        <FormModal visible={visible} onDismiss={onDismiss} contentContainerStyle={[styles.modal, { backgroundColor: colors.surface }]}>
-                <Text variant="titleMedium" style={styles.title}>
-                    Nueva medición
-                </Text>
-                <Text variant="bodySmall" style={styles.hint}>
-                    Llena solo lo que te midas hoy.
-                </Text>
+        <FormModal
+            visible={visible}
+            onDismiss={onDismiss}
+            contentContainerStyle={[styles.modal, { backgroundColor: colors.surface }]}
+        >
+            <Text variant="titleMedium" style={styles.title}>
+                Nueva medición
+            </Text>
+            <Text variant="bodySmall" style={styles.hint}>
+                Llena solo lo que te midas hoy.
+            </Text>
 
-                <ScrollView keyboardShouldPersistTaps="handled" style={styles.fields}>
-                    {METRICS.map((item) => {
-                        const error = form.errorFor(item.key);
-                        return (
-                            <View key={item.key} style={styles.field}>
-                                <TextInput
-                                    mode="outlined"
-                                    label={`${item.label} (${item.unit})`}
-                                    value={form.values[item.key]}
-                                    onChangeText={(value) => onChange(item.key, value)}
-                                    onBlur={() => form.handleBlur(item.key)}
-                                    error={!!error}
-                                    keyboardType="decimal-pad"
-                                />
-                                {error ? <HelperText type="error">{error}</HelperText> : null}
-                            </View>
-                        );
-                    })}
-                </ScrollView>
+            <ScrollView keyboardShouldPersistTaps="handled" style={styles.fields}>
+                {METRICS.map((item) => {
+                    const error = form.errorFor(item.key);
+                    return (
+                        <View key={item.key} style={styles.field}>
+                            <TextInput
+                                mode="outlined"
+                                label={`${item.label} (${item.unit})`}
+                                value={form.values[item.key]}
+                                onChangeText={(value) => onChange(item.key, value)}
+                                onBlur={() => form.handleBlur(item.key)}
+                                error={!!error}
+                                keyboardType="decimal-pad"
+                            />
+                            {error ? <HelperText type="error">{error}</HelperText> : null}
+                        </View>
+                    );
+                })}
+            </ScrollView>
 
-                {emptyError ? <HelperText type="error">{emptyError}</HelperText> : null}
+            {emptyError ? <HelperText type="error">{emptyError}</HelperText> : null}
 
+            <View style={styles.actions}>
+                <Button onPress={onDismiss} disabled={saving}>
+                    Cancelar
+                </Button>
                 <Button mode="contained" onPress={onSubmit} loading={saving} disabled={saving}>
                     Guardar
                 </Button>
+            </View>
         </FormModal>
     );
 }
@@ -70,7 +79,6 @@ const styles = StyleSheet.create({
         padding: 24,
         margin: 24,
         borderRadius: 8,
-        maxHeight: '85%',
     },
     title: {
         marginBottom: 4,
@@ -84,5 +92,10 @@ const styles = StyleSheet.create({
     },
     field: {
         marginBottom: 8,
+    },
+    actions: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        gap: 8,
     },
 });

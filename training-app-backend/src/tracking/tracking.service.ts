@@ -50,11 +50,30 @@ export class TrackingService {
     });
   }
 
-  getSessionRatings(clientId: string) {
-    return this.prisma.sessionRating.findMany({
+  /** Calificaciones de un cliente, con el título de la rutina calificada (vista del instructor). */
+  async getSessionRatings(clientId: string) {
+    const ratings = await this.prisma.sessionRating.findMany({
       where: { clientId },
       orderBy: { createdAt: 'desc' },
     });
+
+    // SessionRating no tiene relación en Prisma con Routine, así que los títulos se buscan aparte.
+    const routineIds = [
+      ...new Set(ratings.map((rating) => rating.routineId).filter((id): id is string => id !== null)),
+    ];
+    const routines = routineIds.length
+      ? await this.prisma.routine.findMany({
+          where: { id: { in: routineIds } },
+          select: { id: true, title: true },
+        })
+      : [];
+    const titles = new Map(routines.map((routine) => [routine.id, routine.title]));
+
+    // routineTitle es null si la calificación no tiene rutina o si la rutina ya se eliminó.
+    return ratings.map((rating) => ({
+      ...rating,
+      routineTitle: rating.routineId ? (titles.get(rating.routineId) ?? null) : null,
+    }));
   }
 
   getMyRatings(clientId: string) {
