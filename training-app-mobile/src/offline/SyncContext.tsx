@@ -43,7 +43,9 @@ export function SyncProvider({ children }: ProviderProps) {
         try {
             const result = await flushQueue();
             setPending(result.remaining);
-            setFailing(result.remaining > 0);
+            // Que queden cambios en la cola no significa que el servidor falló: pudieron
+            // llegar mientras se enviaban los anteriores (y ya hay otro envío en camino).
+            setFailing(result.failed);
         } catch (error) {
             console.warn('No se pudo sincronizar.', error);
         }
