@@ -11,7 +11,10 @@ import { AppAlertHost } from '../components/AppAlert';
 const detailOptions = {
   headerShown: true,
   headerTransparent: false,
-};
+  // En iOS el botón de regresar muestra el título de la pantalla anterior; las pestañas
+  // están en los grupos (instructor)/(client), sin título, y se mostraba el nombre del grupo.
+  headerBackButtonDisplayMode: 'minimal',
+} as const;
 
 export default function RootLayout() {
   return (
