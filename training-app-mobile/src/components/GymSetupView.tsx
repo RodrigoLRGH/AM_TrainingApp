@@ -3,11 +3,14 @@ import { ActivityIndicator } from 'react-native-paper';
 import { useGymSetup } from '../features/attendance/useGymSetup';
 import { GymLocationCard } from './GymLocationCard';
 import { GymQrCard } from './GymQrCard';
+import { LoadErrorState } from './LoadErrorState';
 
 export function GymSetupView() {
     const {
         config,
         loading,
+        loadError,
+        reload,
         radius,
         setRadius,
         onRadiusBlur,
@@ -23,6 +26,10 @@ export function GymSetupView() {
                 <ActivityIndicator size="large" />
             </View>
         );
+    }
+
+    if (loadError && !config) {
+        return <LoadErrorState message={loadError} onRetry={reload} />;
     }
 
     return (

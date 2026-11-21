@@ -5,10 +5,14 @@ import { METRICS } from '../../features/progress/metrics';
 import { MetricChips } from '../../components/MetricChips';
 import { ProgressCard } from '../../components/ProgressCard';
 import { NewMeasurementModal } from '../../components/NewMeasurementModal';
+import { LoadErrorState } from '../../components/LoadErrorState';
 
 export default function ProgressScreen() {
   const {
+    measurements,
     loading,
+    loadError,
+    reload,
     metric,
     setMetric,
     series,
@@ -35,8 +39,14 @@ export default function ProgressScreen() {
   return (
     <View style={styles.container}>
       <ScrollView>
-        <MetricChips selected={metric} onSelect={setMetric} />
-        <ProgressCard metric={current} points={series} />
+        {loadError && measurements.length === 0 ? (
+          <LoadErrorState message={loadError} onRetry={reload} />
+        ) : (
+          <>
+            <MetricChips selected={metric} onSelect={setMetric} />
+            <ProgressCard metric={current} points={series} />
+          </>
+        )}
       </ScrollView>
 
       <View style={styles.footer}>

@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { AppAlert } from '../../components/AppAlert';
 import { useFocusEffect } from 'expo-router';
 import { getClients, createClient, setClientActive } from '../../api/clients';
-import { getErrorMessage } from '../../api/errors';
+import { getErrorMessage, loadErrorMessage } from '../../api/errors';
 import type { Client } from '../../api/types';
 import { useForm } from '../forms/useForm';
 import { compose, maxLength, minLength, required } from '../forms/rules';
@@ -11,6 +11,7 @@ import { LIMITS } from '../forms/limits';
 export function useClients() {
     const [clients, setClients] = useState<Client[]>([]);
     const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState<string | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
     const newClientForm = useForm(
         { name: '' },
@@ -29,11 +30,12 @@ export function useClients() {
 
     const load = useCallback(async () => {
         setLoading(true);
+        setLoadError(null);
         try {
             const data = await getClients();
             setClients(data);
         } catch (error) {
-            console.error(error);
+            setLoadError(loadErrorMessage(error, 'No se pudieron cargar tus clientes.'));
         } finally {
             setLoading(false);
         }
@@ -95,6 +97,8 @@ export function useClients() {
     return {
         clients,
         loading,
+        loadError,
+        reload: load,
         modalVisible,
         setModalVisible,
         openModal,

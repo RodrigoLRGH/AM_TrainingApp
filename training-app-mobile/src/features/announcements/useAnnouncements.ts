@@ -2,10 +2,12 @@ import { useCallback, useState } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { getInstructorAnnouncements, getMyAnnouncements } from '../../api/announcements';
 import type { Announcement } from '../../api/types';
+import { loadErrorMessage } from '../../api/errors';
 
 export function useAnnouncements(isInstructor: boolean) {
     const [announcements, setAnnouncements] = useState<Announcement[]>([]);
     const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState<string | null>(null);
     const [refreshing, setRefreshing] = useState(false);
 
     const fetchAll = useCallback(() => {
@@ -14,10 +16,11 @@ export function useAnnouncements(isInstructor: boolean) {
 
     const load = useCallback(async () => {
         setLoading(true);
+        setLoadError(null);
         try {
             setAnnouncements(await fetchAll());
         } catch (error) {
-            console.error(error);
+            setLoadError(loadErrorMessage(error, 'No se pudieron cargar los avisos.'));
         } finally {
             setLoading(false);
         }
@@ -25,10 +28,11 @@ export function useAnnouncements(isInstructor: boolean) {
 
     const refresh = useCallback(async () => {
         setRefreshing(true);
+        setLoadError(null);
         try {
             setAnnouncements(await fetchAll());
         } catch (error) {
-            console.error(error);
+            setLoadError(loadErrorMessage(error, 'No se pudieron cargar los avisos.'));
         } finally {
             setRefreshing(false);
         }
@@ -40,5 +44,5 @@ export function useAnnouncements(isInstructor: boolean) {
         }, [load]),
     );
 
-    return { announcements, loading, refreshing, refresh };
+    return { announcements, loading, loadError, reload: load, refreshing, refresh };
 }

@@ -4,11 +4,12 @@ import { useRouter } from 'expo-router';
 import { useTemplates } from '../../features/routines/useTemplates';
 import { TemplateCard } from '../../components/TemplateCard';
 import { SectionHeader } from '../../components/SectionHeader';
+import { LoadErrorState } from '../../components/LoadErrorState';
 import type { Template } from '../../api/types';
 
 export default function RoutinesScreen() {
   const router = useRouter();
-  const { templates, loading, confirmDelete } = useTemplates();
+  const { templates, loading, loadError, reload, confirmDelete } = useTemplates();
 
   function openAssign(template: Template) {
     router.push({
@@ -39,15 +40,19 @@ export default function RoutinesScreen() {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
         ListEmptyComponent={
-          <View style={styles.emptyBox}>
-            <Icon source="clipboard-text-outline" size={48} color="#9AA7A0" />
-            <Text variant="bodyLarge" style={styles.empty}>
-              Todavía no tienes plantillas.
-            </Text>
-            <Text variant="bodySmall" style={styles.emptyHint}>
-              Crea la primera con el botón de abajo.
-            </Text>
-          </View>
+          loadError ? (
+            <LoadErrorState message={loadError} onRetry={reload} />
+          ) : (
+            <View style={styles.emptyBox}>
+              <Icon source="clipboard-text-outline" size={48} color="#9AA7A0" />
+              <Text variant="bodyLarge" style={styles.empty}>
+                Todavía no tienes plantillas.
+              </Text>
+              <Text variant="bodySmall" style={styles.emptyHint}>
+                Crea la primera con el botón de abajo.
+              </Text>
+            </View>
+          )
         }
         renderItem={({ item }) => (
           <TemplateCard

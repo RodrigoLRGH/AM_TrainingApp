@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { AppAlert } from '../../components/AppAlert';
 import { useFocusEffect } from 'expo-router';
 import { getMyMeasurements, createMeasurement } from '../../api/measurements';
-import { getErrorMessage } from '../../api/errors';
+import { getErrorMessage, loadErrorMessage } from '../../api/errors';
 import type { MeasureKey, Measurement, NewMeasurement } from '../../api/types';
 import { METRICS, seriesFor } from './metrics';
 import { useForm, type Rules } from '../forms/useForm';
@@ -32,6 +32,7 @@ const RULES: Rules<MeasureForm> = Object.fromEntries(
 export function useMeasurements() {
     const [measurements, setMeasurements] = useState<Measurement[]>([]);
     const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState<string | null>(null);
     const [metric, setMetric] = useState<MeasureKey>('weightKg');
     const [modalVisible, setModalVisible] = useState(false);
     const form = useForm<MeasureForm>(EMPTY_FORM, RULES);
@@ -40,11 +41,12 @@ export function useMeasurements() {
 
     const load = useCallback(async () => {
         setLoading(true);
+        setLoadError(null);
         try {
             const data = await getMyMeasurements();
             setMeasurements(data);
         } catch (error) {
-            console.error(error);
+            setLoadError(loadErrorMessage(error, 'No se pudieron cargar tus mediciones.'));
         } finally {
             setLoading(false);
         }
@@ -104,6 +106,8 @@ export function useMeasurements() {
     return {
         measurements,
         loading,
+        loadError,
+        reload: load,
         metric,
         setMetric,
         series,

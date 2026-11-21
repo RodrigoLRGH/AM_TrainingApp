@@ -4,9 +4,10 @@ import { useRunHistory } from '../features/running/useRunHistory';
 import { RunCard } from './RunCard';
 import { RunDetailModal } from './RunDetailModal';
 import { RunHistorySummary } from './RunHistorySummary';
+import { LoadErrorState } from './LoadErrorState';
 
 export function RunHistoryView() {
-    const { runs, loading, selected, openRun, closeRun } = useRunHistory();
+    const { runs, loading, loadError, reload, selected, openRun, closeRun } = useRunHistory();
 
     if (loading) {
         return (
@@ -24,9 +25,13 @@ export function RunHistoryView() {
                 contentContainerStyle={styles.list}
                 ListHeaderComponent={runs.length > 0 ? <RunHistorySummary runs={runs} /> : undefined}
                 ListEmptyComponent={
-                    <Text variant="bodyLarge" style={styles.empty}>
-                        Todavía no tienes corridas registradas.
-                    </Text>
+                    loadError ? (
+                        <LoadErrorState message={loadError} onRetry={reload} />
+                    ) : (
+                        <Text variant="bodyLarge" style={styles.empty}>
+                            Todavía no tienes corridas registradas.
+                        </Text>
+                    )
                 }
                 renderItem={({ item }) => <RunCard run={item} onPress={openRun} />}
             />

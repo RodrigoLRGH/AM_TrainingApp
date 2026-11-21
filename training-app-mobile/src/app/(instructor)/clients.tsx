@@ -5,12 +5,15 @@ import { useClients } from '../../features/clients/useClients';
 import { ClientCard } from '../../components/ClientCard';
 import { NewClientModal } from '../../components/NewClientModal';
 import { SectionHeader } from '../../components/SectionHeader';
+import { LoadErrorState } from '../../components/LoadErrorState';
 import type { Client } from '../../api/types';
 
 export default function ClientsScreen() {
   const {
     clients,
     loading,
+    loadError,
+    reload,
     modalVisible,
     setModalVisible,
     openModal,
@@ -42,19 +45,23 @@ export default function ClientsScreen() {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
         ListEmptyComponent={
-          <View style={styles.emptyBox}>
-            <Icon source="account-group-outline" size={48} color="#9AA7A0" />
-            <Text variant="bodyLarge" style={styles.empty}>
-              Todavía no tienes clientes.
-            </Text>
-            <Text variant="bodySmall" style={styles.emptyHint}>
-              Crea el primero con el botón de abajo.
-            </Text>
-          </View>
+          loadError ? (
+            <LoadErrorState message={loadError} onRetry={reload} />
+          ) : (
+            <View style={styles.emptyBox}>
+              <Icon source="account-group-outline" size={48} color="#9AA7A0" />
+              <Text variant="bodyLarge" style={styles.empty}>
+                Todavía no tienes clientes.
+              </Text>
+              <Text variant="bodySmall" style={styles.emptyHint}>
+                Crea el primero con el botón de abajo.
+              </Text>
+            </View>
+          )
         }
         renderItem={({ item }) => (
           <ClientCard client={item} onOpen={openClient} onToggleActive={confirmToggle} />
-        )} 
+        )}
       />
 
       <View style={styles.footer}>

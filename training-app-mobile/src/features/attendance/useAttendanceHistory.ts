@@ -3,6 +3,7 @@ import { useFocusEffect } from 'expo-router';
 import { getAttendanceCalendar, type AttendanceRecord } from '../../api/attendance';
 import { getClients } from '../../api/clients';
 import type { Client } from '../../api/types';
+import { loadErrorMessage } from '../../api/errors';
 
 export type AttendanceSection = {
     title: string;
@@ -31,9 +32,11 @@ export function useAttendanceHistory() {
     const [clients, setClients] = useState<Client[]>([]);
     const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState<string | null>(null);
 
     const load = useCallback(async () => {
         setLoading(true);
+        setLoadError(null);
         try {
             const [recordsData, clientsData] = await Promise.all([
                 getAttendanceCalendar(selectedClientId ?? undefined),
@@ -42,7 +45,7 @@ export function useAttendanceHistory() {
             setRecords(recordsData);
             setClients(clientsData);
         } catch (error) {
-            console.error(error);
+            setLoadError(loadErrorMessage(error, 'No se pudo cargar la asistencia.'));
         } finally {
             setLoading(false);
         }
@@ -81,5 +84,7 @@ export function useAttendanceHistory() {
         selectedClientId,
         setSelectedClientId,
         loading,
+        loadError,
+        reload: load,
     };
 }

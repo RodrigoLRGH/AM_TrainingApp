@@ -2,20 +2,22 @@ import { useCallback, useState } from 'react';
 import { AppAlert } from '../../components/AppAlert';
 import { useFocusEffect } from 'expo-router';
 import { getTemplates, deleteTemplate } from '../../api/routines';
-import { getErrorMessage } from '../../api/errors';
+import { getErrorMessage, loadErrorMessage } from '../../api/errors';
 import type { Template } from '../../api/types';
 
 export function useTemplates() {
     const [templates, setTemplates] = useState<Template[]>([]);
     const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState<string | null>(null);
 
     const load = useCallback(async () => {
         setLoading(true);
+        setLoadError(null);
         try {
             const data = await getTemplates();
             setTemplates(data);
         } catch (error) {
-            console.error(error);
+            setLoadError(loadErrorMessage(error, 'No se pudieron cargar tus plantillas.'));
         } finally {
             setLoading(false);
         }
@@ -47,5 +49,5 @@ export function useTemplates() {
         );
     }
 
-    return { templates, loading, confirmDelete };
+    return { templates, loading, loadError, reload: load, confirmDelete };
 }

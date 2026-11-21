@@ -4,13 +4,15 @@ import { useRouter } from 'expo-router';
 import { useAuth } from '../auth/AuthContext';
 import { useAnnouncements } from '../features/announcements/useAnnouncements';
 import { AnnouncementCard } from '../components/AnnouncementCard';
+import { LoadErrorState } from '../components/LoadErrorState';
 
 export default function AnnouncementsScreen() {
     const router = useRouter();
     const { colors } = useTheme();
     const { session } = useAuth();
     const isInstructor = session?.role === 'INSTRUCTOR';
-    const { announcements, loading, refreshing, refresh } = useAnnouncements(isInstructor);
+    const { announcements, loading, loadError, reload, refreshing, refresh } =
+        useAnnouncements(isInstructor);
 
     if (loading) {
         return (
@@ -29,24 +31,35 @@ export default function AnnouncementsScreen() {
                 refreshing={refreshing}
                 onRefresh={refresh}
                 ListEmptyComponent={
-                    <View style={styles.emptyBox}>
-                        <Icon source="bell-outline" size={48} color={colors.outline} />
-                        <Text variant="bodyLarge" style={styles.empty}>
-                            Todavía no hay avisos.
-                        </Text>
-                        {isInstructor ? (
-                            <Text variant="bodySmall" style={{ color: colors.onSurfaceVariant }}>
-                                Publica el primero con el botón de abajo.
+                    loadError ? (
+                        <LoadErrorState message={loadError} onRetry={reload} />
+                    ) : (
+                        <View style={styles.emptyBox}>
+                            <Icon source="bell-outline" size={48} color={colors.outline} />
+                            <Text variant="bodyLarge" style={styles.empty}>
+                                Todavía no hay avisos.
                             </Text>
-                        ) : null}
-                    </View>
+                            {isInstructor ? (
+                                <Text
+                                    variant="bodySmall"
+                                    style={{ color: colors.onSurfaceVariant }}
+                                >
+                                    Publica el primero con el botón de abajo.
+                                </Text>
+                            ) : null}
+                        </View>
+                    )
                 }
                 renderItem={({ item }) => <AnnouncementCard announcement={item} />}
             />
 
             {isInstructor ? (
                 <View style={styles.footer}>
-                    <Button mode="contained" icon="send" onPress={() => router.push('/new-announcement')}>
+                    <Button
+                        mode="contained"
+                        icon="send"
+                        onPress={() => router.push('/new-announcement')}
+                    >
                         Nuevo aviso
                     </Button>
                 </View>

@@ -3,15 +3,18 @@ import { Text, ActivityIndicator } from 'react-native-paper';
 import { useDashboard } from '../../features/stats/useDashboard';
 import { PeriodSelector } from '../../components/PeriodSelector';
 import { StatCard } from '../../components/StatCard';
+import { LoadErrorState } from '../../components/LoadErrorState';
 
 export default function StatsScreen() {
-  const { stats, loading, days, setDays } = useDashboard();
+  const { stats, loading, loadError, reload, days, setDays } = useDashboard();
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <PeriodSelector days={days} onChange={setDays} />
 
-      {loading || !stats ? (
+      {!loading && !stats && loadError ? (
+        <LoadErrorState message={loadError} onRetry={reload} />
+      ) : loading || !stats ? (
         <View style={styles.center}>
           <ActivityIndicator size="large" />
         </View>

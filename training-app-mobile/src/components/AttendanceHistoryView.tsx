@@ -3,9 +3,10 @@ import { Text, ActivityIndicator, Icon, useTheme } from 'react-native-paper';
 import { useAttendanceHistory } from '../features/attendance/useAttendanceHistory';
 import { AttendanceRow } from './AttendanceRow';
 import { ClientFilterChips } from './ClientFilterChips';
+import { LoadErrorState } from './LoadErrorState';
 
 export function AttendanceHistoryView() {
-    const { sections, clients, selectedClientId, setSelectedClientId, loading } =
+    const { sections, clients, selectedClientId, setSelectedClientId, loading, loadError, reload } =
         useAttendanceHistory();
     const { colors } = useTheme();
     return (
@@ -26,26 +27,42 @@ export function AttendanceHistoryView() {
                     keyExtractor={(item) => item.id}
                     contentContainerStyle={styles.list}
                     renderSectionHeader={({ section }) => (
-                        <View style={[styles.sectionHeader, { backgroundColor: colors.secondaryContainer }]}>
+                        <View
+                            style={[
+                                styles.sectionHeader,
+                                { backgroundColor: colors.secondaryContainer },
+                            ]}
+                        >
                             <Text
                                 variant="titleSmall"
-                                style={[styles.sectionTitle, { color: colors.onSecondaryContainer }]}
+                                style={[
+                                    styles.sectionTitle,
+                                    { color: colors.onSecondaryContainer },
+                                ]}
                             >
                                 {section.title}
                             </Text>
-                            <Text variant="bodySmall" style={{ color: colors.onSecondaryContainer }}>
-                                {section.data.length} {section.data.length === 1 ? 'asistencia' : 'asistencias'}
+                            <Text
+                                variant="bodySmall"
+                                style={{ color: colors.onSecondaryContainer }}
+                            >
+                                {section.data.length}{' '}
+                                {section.data.length === 1 ? 'asistencia' : 'asistencias'}
                             </Text>
                         </View>
                     )}
                     renderItem={({ item }) => <AttendanceRow record={item} />}
                     ListEmptyComponent={
-                        <View style={styles.emptyBox}>
-                            <Icon source="calendar-blank-outline" size={48} color="#9AA7A0" />
-                            <Text variant="bodyLarge" style={styles.empty}>
-                                Todavía no hay asistencias registradas.
-                            </Text>
-                        </View>
+                        loadError ? (
+                            <LoadErrorState message={loadError} onRetry={reload} />
+                        ) : (
+                            <View style={styles.emptyBox}>
+                                <Icon source="calendar-blank-outline" size={48} color="#9AA7A0" />
+                                <Text variant="bodyLarge" style={styles.empty}>
+                                    Todavía no hay asistencias registradas.
+                                </Text>
+                            </View>
+                        )
                     }
                 />
             )}

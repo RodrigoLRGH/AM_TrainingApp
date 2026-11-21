@@ -2,21 +2,23 @@ import { useCallback, useState } from 'react';
 import { AppAlert } from '../../components/AppAlert';
 import { useFocusEffect } from 'expo-router';
 import { getRuns, getRun } from '../../api/running';
-import { getErrorMessage } from '../../api/errors';
+import { getErrorMessage, loadErrorMessage } from '../../api/errors';
 import type { RunSession } from '../../api/types';
 
 export function useRunHistory() {
     const [runs, setRuns] = useState<RunSession[]>([]);
     const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState<string | null>(null);
     const [selected, setSelected] = useState<RunSession | null>(null);
 
     const load = useCallback(async () => {
         setLoading(true);
+        setLoadError(null);
         try {
             const data = await getRuns();
             setRuns(data.filter((run) => run.endedAt !== null));
         } catch (error) {
-            console.error(error);
+            setLoadError(loadErrorMessage(error, 'No se pudieron cargar tus corridas.'));
         } finally {
             setLoading(false);
         }
@@ -41,5 +43,5 @@ export function useRunHistory() {
         setSelected(null);
     }
 
-    return { runs, loading, selected, openRun, closeRun };
+    return { runs, loading, loadError, reload: load, selected, openRun, closeRun };
 }

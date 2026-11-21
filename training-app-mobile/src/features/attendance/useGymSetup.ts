@@ -7,11 +7,13 @@ import type { GymConfig } from '../../api/types';
 import { useForm } from '../forms/useForm';
 import { integerBetween } from '../forms/rules';
 import { LIMITS } from '../forms/limits';
+import { loadErrorMessage } from '../../api/errors';
 
 
 export function useGymSetup() {
     const [config, setConfig] = useState<GymConfig | null>(null);
     const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState<string | null>(null);
     const radiusForm = useForm(
         { radius: '100' },
         {
@@ -31,10 +33,11 @@ export function useGymSetup() {
 
     const load = useCallback(async () => {
         setLoading(true);
+        setLoadError(null);
         try {
             await refresh();
         } catch (error) {
-            console.error(error);
+            setLoadError(loadErrorMessage(error, 'No se pudo cargar la configuración del gimnasio.'));
         } finally {
             setLoading(false);
         }
@@ -107,6 +110,8 @@ export function useGymSetup() {
     return {
         config,
         loading,
+        loadError,
+        reload: load,
         radius: radiusForm.values.radius,
         setRadius: (value: string) => radiusForm.setValue('radius', value),
         onRadiusBlur: () => radiusForm.handleBlur('radius'),
