@@ -43,6 +43,7 @@ export function ClientFilterChips({ clients, selectedClientId, onSelect }: Props
         <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
+            style={styles.scroll}
             contentContainerStyle={styles.row}
         >
             <FilterPill
@@ -63,9 +64,13 @@ export function ClientFilterChips({ clients, selectedClientId, onSelect }: Props
 }
 
 const styles = StyleSheet.create({
+    scroll: {
+        flexGrow: 0,
+    },
     row: {
         paddingHorizontal: 16,
         paddingVertical: 8,
+        alignItems: 'center',
     },
     pill: {
         borderWidth: 1,
