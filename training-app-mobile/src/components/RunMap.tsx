@@ -44,7 +44,13 @@ export function RunMap({ route, follow = false }: Props) {
     }, [route, follow]);
 
     return (
-        <MapView ref={mapRef} style={styles.map} showsUserLocation={follow} onMapReady={fitRoute}>
+        <MapView
+            ref={mapRef}
+            style={styles.map}
+            showsUserLocation={follow}
+            onMapReady={fitRoute}
+            onLayout={follow ? undefined : fitRoute}
+        >
             {route.length > 0 ? <Marker coordinate={route[0]} title="Inicio" /> : null}
             <Polyline coordinates={route} strokeColor="#2E5D4F" strokeWidth={5} />
         </MapView>

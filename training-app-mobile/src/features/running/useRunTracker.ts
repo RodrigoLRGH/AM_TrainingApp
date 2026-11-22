@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AppAlert } from '../../components/AppAlert';
 import * as Location from 'expo-location';
+import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
 import { startRun, addRunPoints, finishRun } from '../../api/running';
 import { getErrorMessage } from '../../api/errors';
 import type { Coordinate, RunPointInput, RunSession } from '../../api/types';
@@ -10,6 +11,9 @@ import { LIMITS } from '../forms/limits';
 export type TrackerStatus = 'idle' | 'starting' | 'running' | 'finishing';
 
 const FLUSH_EVERY_SECONDS = 15;
+const KEEP_AWAKE_TAG = 'run-tracker';
+/** Lecturas con un margen de error mayor a esto (en metros) se descartan. */
+const MAX_ACCURACY_METERS = 30;
 
 function toInput(position: Location.LocationObject): RunPointInput {
     return {
@@ -50,6 +54,11 @@ export function useRunTracker() {
     const distanceMeters = useMemo(() => totalDistance(route), [route]);
 
     function record(position: Location.LocationObject) {
+        const { accuracy } = position.coords;
+        if (accuracy != null && accuracy > MAX_ACCURACY_METERS) {
+            return;
+        }
+
         const point = toInput(position);
         setRoute((prev) => [...prev, { latitude: point.latitude, longitude: point.longitude }]);
         pendingRef.current.push(point);
@@ -58,6 +67,7 @@ export function useRunTracker() {
     function stopWatching() {
         subscriptionRef.current?.remove();
         subscriptionRef.current = null;
+        deactivateKeepAwake(KEEP_AWAKE_TAG);
     }
 
     const flush = useCallback(async () => {
@@ -95,6 +105,7 @@ export function useRunTracker() {
     useEffect(() => {
         return () => {
             subscriptionRef.current?.remove();
+            deactivateKeepAwake(KEEP_AWAKE_TAG);
         };
     }, []);
 
@@ -108,7 +119,7 @@ export function useRunTracker() {
         setStatus('starting');
         try {
             const first = await Location.getCurrentPositionAsync({
-                accuracy: Location.Accuracy.High,
+                accuracy: Location.Accuracy.BestForNavigation,
             });
             const session = await startRun();
 
@@ -123,12 +134,15 @@ export function useRunTracker() {
 
             subscriptionRef.current = await Location.watchPositionAsync(
                 {
-                    accuracy: Location.Accuracy.High,
+                    accuracy: Location.Accuracy.BestForNavigation,
                     distanceInterval: 5,
-                    timeInterval: 3000,
+                    timeInterval: 2000,
                 },
                 record,
             );
+            // Si la pantalla se bloquea, iOS/Android dejan de mandar ubicaciones a la app
+            // y la ruta queda con huecos dibujados como líneas rectas.
+            activateKeepAwakeAsync(KEEP_AWAKE_TAG).catch(() => undefined);
             setStatus('running');
         } catch (error) {
             AppAlert.alert(getErrorMessage(error, 'No se pudo iniciar la corrida.'));
