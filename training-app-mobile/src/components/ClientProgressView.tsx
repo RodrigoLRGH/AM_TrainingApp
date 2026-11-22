@@ -4,13 +4,15 @@ import { useClientMeasurements } from '../features/progress/useClientMeasurement
 import { METRICS } from '../features/progress/metrics';
 import { MetricChips } from './MetricChips';
 import { ProgressCard } from './ProgressCard';
+import { MeasurementHistory } from './MeasurementHistory';
 
 type Props = {
     clientId: string;
 };
 
 export function ClientProgressView({ clientId }: Props) {
-    const { loading, metric, setMetric, series } = useClientMeasurements(clientId);
+    const { measurements, loading, metric, setMetric, series } =
+        useClientMeasurements(clientId);
     const current = METRICS.find((item) => item.key === metric) ?? METRICS[0];
 
     if (loading) {
@@ -25,6 +27,7 @@ export function ClientProgressView({ clientId }: Props) {
         <ScrollView>
             <MetricChips selected={metric} onSelect={setMetric} />
             <ProgressCard metric={current} points={series} />
+            <MeasurementHistory measurements={measurements} />
         </ScrollView>
     );
 }

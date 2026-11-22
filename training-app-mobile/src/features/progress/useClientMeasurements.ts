@@ -31,5 +31,5 @@ export function useClientMeasurements(clientId: string) {
 
     const series = useMemo(() => seriesFor(measurements, metric), [measurements, metric]);
 
-    return { loading, metric, setMetric, series };
+    return { measurements, loading, metric, setMetric, series };
 }

@@ -152,20 +152,17 @@ El backend se puede publicar en cualquier servicio que ejecute Node, con una bas
 ### App
 
 1. Pon la URL pública del backend en `EXPO_PUBLIC_API_URL`, dentro de `training-app-mobile/.env`.
-2. Publica la actualización en el canal del build instalado:
+2. Publica la actualización en la rama `main` de EAS Update:
 
    ```bash
-   npx eas-cli@latest update --channel preview --message "Descripción del cambio"
+   npx eas-cli@latest update --branch main --message "Descripción del cambio"
    ```
 
-   - Usa `--channel production` si el build es de producción.
-   - No uses `--auto`: publica en una rama con el nombre de la rama de Git (`main`), y los builds escuchan los canales `preview` y `production`.
+3. Abre la actualización en [expo.dev](https://expo.dev) y comparte las ligas de **Preview** de iOS y Android. Se abren con Expo Go.
 
-`eas update` solo actualiza el código JavaScript. Si agregas una librería con código nativo o cambias de SDK, necesitas un build nuevo. Por ejemplo, para generar un APK de Android:
+Cada publicación genera ligas nuevas; las anteriores siguen abriendo la versión anterior.
 
-```bash
-npx eas-cli@latest build -p android --profile preview
-```
+El proyecto se distribuye por Expo Go y no incluye un APK. Un build propio de Android requeriría configurar antes `EXPO_PUBLIC_API_URL` en EAS, una clave de Google Maps y las credenciales de FCM para las notificaciones push.
 
 ## API
 

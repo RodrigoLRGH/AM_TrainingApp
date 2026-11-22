@@ -12,7 +12,7 @@
 **Fuentes de este documento:**
 - La conversación con Claude. Una parte se reconstruyó desde un resumen.
 - La sesión de Claude Code del 20 al 22 de noviembre.
-- Los 46 commits del repositorio.
+- Los 47 commits del repositorio hasta `5dd6f75`.
 
 > **Cómo leer este documento.** Cada afirmación lleva su evidencia:
 > - *conversación*: salió del chat con Claude;
@@ -34,7 +34,7 @@
 | Rol del autor | Decidir alcance y estilo, ejecutar y probar en dispositivo real, reportar errores (en la sesión del 20 nov, con capturas del iPhone) y hacer los commits. En la conversación, además, creaba los archivos y confirmaba cada paso. |
 | Qué generó la IA | Documentos de requisitos, plan de trabajo, backend completo, la app en Expo, scripts de prueba, correcciones de errores, los ajustes de diseño, validación y manejo de errores del 20 de noviembre, el README y la preparación para casos límite (21 y 22 de noviembre). |
 | Qué no pudo hacer la IA | Probar en el teléfono del autor, ver su red local ni entrar a Render o Neon. Todo lo que dependía de ello lo verificó el autor o quedó pendiente. |
-| Atribución en el repo | Ningún commit tiene línea `Co-Authored-By`; los 46 aparecen a nombre del autor, incluidos los 11 de la sesión del 20 al 22 de noviembre. Los archivos `AGENTS.md` y `CLAUDE.md` de `training-app-mobile` los trajo la plantilla de Expo (commit `782c146`), no los escribió el autor. |
+| Atribución en el repo | Ningún commit tiene línea `Co-Authored-By`; los 47 aparecen a nombre del autor, incluidos los 12 de la sesión del 20 al 22 de noviembre. Los archivos `AGENTS.md` y `CLAUDE.md` de `training-app-mobile` los trajo la plantilla de Expo (commit `782c146`), no los escribió el autor. |
 
 ### 1.2 Cronología de uso
 
@@ -79,7 +79,10 @@ Las fechas de la fase 1 salen de las marcas de tiempo de los archivos adjuntos a
 | B-35 | 21 nov | README | "Tenía este README, ¿está bien? Aplícalo y haz los cambios que creas necesarios" | Comparación del README con el código (rutas, variables de entorno, carpetas y scripts) y versión corregida | Hizo el commit, junto con la bitácora | Sesión + commit `212445b` |
 | B-36 | 21 nov | Auditoría de casos límite | Revisar si el proyecto cumple 9 casos límite: modo avión, campos vacíos, texto o negativo en números, texto largo, doble toque, girar el celular, salir y volver, negar permisos y listas vacías. "No hagas cambios aún". | Revisión caso por caso: 6 se cumplían y 3 de forma parcial (doble toque, salir y volver, permisos negados). Lista de 4 arreglos en orden de importancia. | Eligió aplicar solo los arreglos 1, 2 y 3 | Sesión |
 | B-37 | 22 nov | Arreglos de casos límite | Aplicar los arreglos 1, 2 y 3 | Botón "Abrir ajustes" para permisos negados, candados contra doble toque, y corrida guardada en el teléfono para continuarla o terminarla al volver | Hizo el commit | Sesión + commit `876d315` |
-| B-38 | 22 nov | Actualización de esta bitácora | Agregar los días 21 y 22 de noviembre | Esta versión del documento | Revisar y ajustar (ver 1.6) | Sesión |
+| B-38 | 22 nov | Actualización de esta bitácora | Agregar los días 21 y 22 de noviembre | Tercera versión de este documento | Hizo el commit | Sesión + commit `5dd6f75` |
+| B-39 | 22 nov | Publicación | Cómo aplicar los cambios a las ligas de Android e iOS, y si siempre habrá una liga nueva | Revisión de builds, actualizaciones y canales en EAS. Las ligas de Expo Go apuntan a una actualización específica. | Publicó la actualización en la rama `main` | Sesión |
+| B-40 | 22 nov | Revisión contra requisitos y entrega | Si ya cumplía con el PDF de requisitos, los entregables de Classroom y los casos límite | Comparación con el código. Faltantes: lista de mediciones (RF-19) y grupo muscular (4.2). Diferencias del PDF: RU-02, SDK, gráficas y pestañas. RNF-01 y RNF-02 sin medir. | Decidió no hacer APK y no pidió a la IA actualizar el PDF | Sesión |
+| B-41 | 22 nov | Cambios finales | Hacer los cambios del proyecto, sin tocar el PDF | Historial de mediciones para el instructor, README con la publicación real y esta actualización | Revisar, probar en dispositivo y hacer el commit | Sesión |
 
 ### 1.3 Tipos de ayuda recibida
 
@@ -100,7 +103,8 @@ Las fechas de la fase 1 salen de las marcas de tiempo de los archivos adjuntos a
   - qué datos no tenían límites;
   - si cambiar a Azure resolvía el error de sincronización;
   - cómo desplegar;
-  - si el proyecto cumplía 9 casos límite (21 nov).
+  - si el proyecto cumplía 9 casos límite (21 nov);
+  - si cumplía el PDF de requisitos y los entregables (22 nov).
 
   En estas preguntas la IA primero explicó la causa; el autor decidía si aplicar el cambio.
 - **Revisión y ajuste visual:** el autor describía lo que no le gustaba, o mandaba una captura, y la IA reescribía el componente.
@@ -129,6 +133,8 @@ Las fechas de la fase 1 salen de las marcas de tiempo de los archivos adjuntos a
 | El mensaje "máximo 72 caracteres" de la contraseña era engañoso con acentos *(20 nov)* | El límite de bcrypt es en bytes, no en caracteres | La IA lo detectó en su propia prueba y cambió el mensaje a "La contraseña es demasiado larga." |
 | `tsc` y el lint de la app se ejecutaron en la carpeta del backend *(22 nov)* | La IA asumió la carpeta de trabajo equivocada. `npx expo lint` respondió con un error de la versión antigua de expo-cli. | La IA lo notó por ese error y repitió las revisiones con la ruta completa de la app |
 | La primera versión de "Terminar" una corrida recuperada podía dejarla guardada para siempre *(22 nov)* | Si el servidor rechazaba los puntos (por ejemplo, porque la corrida ya estaba terminada), se volvía a guardar para reintentar | La IA lo detectó al revisar su propio código antes de entregar: un rechazo del servidor ahora borra la corrida guardada |
+| La IA recomendó publicar con `--channel preview` y lo escribió en el README *(21 nov)* | Asumió que había builds escuchando canales, sin revisar EAS. Solo había un APK sin `expo-updates` y ningún canal. | Al revisar EAS el 22 de noviembre lo informó y corrigió el README a `--branch main` |
+| La IA sugirió compilar un APK nuevo sin revisar todo lo que necesitaba *(22 nov)* | `.env` no se sube a EAS, y faltan la clave de Google Maps y las credenciales de FCM | Lo corrigió en la revisión contra requisitos. El autor decidió no hacer APK (D-44). |
 
 **Lección general:**
 - En la conversación, los errores casi siempre aparecían al armar el proyecto a mano a partir del código por pasos: archivos faltantes, rutas equivocadas o código pegado en otro lugar. Por eso se planteó correr `npx tsc --noEmit` como primera revisión. La conversación no registra el resultado de esa revisión.
@@ -150,6 +156,8 @@ Las fechas de la fase 1 salen de las marcas de tiempo de los archivos adjuntos a
 | Cambios de interfaz del 20 nov (modales, calificaciones, botón de regresar, filtros, tarjetas, estado sin conexión) | `tsc --noEmit` y lint en cada cambio | Sin errores nuevos. **La IA no los probó en un dispositivo**, y en la sesión no consta que el autor confirmara cada uno en el iPhone. |
 | Hora de término de una corrida (22 nov) | La IA compiló el backend, validó el nuevo campo `endedAt` y probó que la hora se limita entre el inicio y la hora actual | Acepta la petición sin el campo y con una fecha válida, rechaza una fecha inválida y limita las horas fuera de rango |
 | Casos límite: permisos, doble toque y corrida interrumpida (22 nov) | `tsc --noEmit` y lint en la app y el backend; la IA dejó pasos de prueba para el iPhone | Sin errores nuevos. **No probado en un dispositivo**; en la sesión no consta la prueba del autor. |
+| Historial de mediciones del instructor, RF-19 (22 nov) | `tsc --noEmit` y lint | Sin errores. **No probado en un dispositivo.** |
+| Liga de Expo en un celular ajeno (22 nov) | No verificado por la IA | **Pendiente.** Es la vía de entrega (D-44), así que debe probarse en iOS y Android antes de entregar. |
 | Despliegue en Render (20 al 22 nov) | No verificado por la IA (no tiene acceso al dashboard) | Pendiente de que el autor confirme el deploy del commit más reciente. Hasta entonces, una corrida recuperada cuenta también el tiempo que la app estuvo cerrada (D-42). |
 | Rendimiento (RNF-01 y RNF-02) | No medido | Pendiente |
 | Usabilidad (RU-01) | Probado solo en iPhone | Pendiente en otras plataformas |
@@ -161,7 +169,7 @@ Las fechas de la fase 1 salen de las marcas de tiempo de los archivos adjuntos a
 - La IA no hizo commits ni despliegues. Propuso el texto de los commits, y el autor los ejecutó y a veces los ajustó, por ejemplo uniendo dos commits sugeridos en `73dc6e6`.
 - **Antes de entregar, el autor debe revisar y completar:**
   1. Las entradas B-17, B-18 y B-19, que no constan en el chat, para declarar si hubo o no apoyo de IA.
-  2. Si probó en el iPhone los cambios de B-22 a B-33 y de B-37, para cambiar "sin confirmar" por el resultado en 1.5.
+  2. Si probó en el iPhone los cambios de B-22 a B-33, B-37 y B-41, para cambiar "sin confirmar" por el resultado en 1.5.
   3. Si la materia exige una declaración de uso de IA en un formato específico, ajustar este documento a ese formato.
   4. Si quiere atribución en Git, añadir `Co-Authored-By` en commits futuros. Los pasados no la tienen.
 - Este documento no sustituye los registros originales. Es una reconstrucción hecha a partir de un resumen de la conversación, de la sesión del 20 al 22 de noviembre y del historial del repositorio.
@@ -220,6 +228,8 @@ El campo "Evidencia" indica dónde consta cada decisión.
 | D-41 | Candados contra doble toque en `AppAlert` y en la corrida | 22 nov |
 | D-42 | Guardar la corrida en curso para continuarla o terminarla | 22 nov |
 | D-43 | Casos límite que se dejaron como están | 22 nov |
+| D-44 | Entregar por liga de Expo Go, sin APK | 22 nov |
+| D-45 | Historial de mediciones para el instructor (RF-19) | 22 nov |
 
 ---
 
@@ -662,12 +672,13 @@ El campo "Evidencia" indica dónde consta cada decisión.
 ### D-39. Publicar actualizaciones con `--channel` en lugar de `--auto`
 - **Contexto:** el README del autor indicaba publicar la app con `eas update --auto`.
 - **Problema detectado por la IA:** `--auto` publica en una rama de EAS con el nombre de la rama de Git (`main`). Los builds del proyecto escuchan los canales `preview` y `production` (`eas.json`), así que la actualización no les llegaría.
-- **Elección:** `npx eas-cli@latest update --channel preview` (o `production`, según el build), con una nota en el README de por qué no usar `--auto`.
+- **Elección inicial:** `npx eas-cli@latest update --channel preview` (o `production`, según el build), con una nota en el README de por qué no usar `--auto`.
+- **Corrección (22 nov):** esa recomendación no aplicaba. En EAS no había canales y el único build no tenía `expo-updates`. El README quedó con `npx eas-cli@latest update --branch main`, la forma en que el autor ya publicaba (ver D-44).
 - **Otros cambios al README en la misma revisión:**
   - se quitó `npm test`, porque el backend no tiene pruebas unitarias;
   - se agregaron las carpetas `common/` y `prisma/` a la arquitectura;
   - se agregaron la tabla de límites de datos y las decisiones de la sesión del 20 de noviembre.
-- **Consecuencias:** el README describe el despliegue que de verdad funciona con la configuración actual.
+- **Consecuencias:** las demás correcciones del README se conservaron; la instrucción de publicación se corrigió el 22 de noviembre.
 - **Quién decidió:** el autor pidió revisar y aplicar los cambios necesarios; la IA propuso cada corrección.
 - **Evidencia:** sesión + commit `212445b`.
 
@@ -731,6 +742,29 @@ El campo "Evidencia" indica dónde consta cada decisión.
 - **Quién decidió:** el autor ("solo los 1, 2 y 3").
 - **Evidencia:** sesión.
 
+### D-44. Entregar por liga de Expo Go, sin APK
+- **Contexto:** la tarea acepta una liga de Expo o un APK. El único APK era del 19 de noviembre, anterior a `expo-updates` y a los cambios de la sesión.
+- **Opciones:**
+  - compilar un APK nuevo, que primero requiere configurar `EXPO_PUBLIC_API_URL` en EAS, una clave de Google Maps y credenciales de FCM;
+  - entregar las ligas de Expo Go.
+- **Elección:** entregar las ligas de Expo Go de iOS y Android, publicadas con `eas update --branch main`.
+- **Razón:** evita configurar y probar un build nativo justo antes de la entrega.
+- **Consecuencias:**
+  - Cada publicación genera ligas nuevas, y hay que entregar las de la versión final.
+  - En Expo Go de Android no hay notificaciones push remotas (D-17), así que RF-15 se demuestra en iPhone.
+  - Falta comprobar que las ligas abran en un celular ajeno.
+- **Quién decidió:** el autor ("no haré el APK"), con la información de la IA.
+- **Evidencia:** sesión.
+
+### D-45. Historial de mediciones para el instructor (RF-19)
+- **Contexto:** el instructor veía la gráfica y el último valor de cada medida, pero no una lista cronológica.
+- **Opciones:** mostrar solo la medida seleccionada, o cada registro completo.
+- **Elección:** el componente `MeasurementHistory`, debajo de la gráfica, muestra cada registro con su fecha completa y sus valores, del más reciente al más antiguo.
+- **Razón:** el cliente puede llenar solo algunas medidas, y ver el registro completo muestra qué se midió cada día.
+- **Consecuencias:** no cambia el backend, que ya devolvía las mediciones. La vista del cliente no cambió.
+- **Quién decidió:** la IA señaló el faltante y el autor pidió aplicarlo.
+- **Evidencia:** sesión.
+
 ---
 
-*Documento generado el 19 de noviembre de 2026. Actualizado el 21 de noviembre (sesión del 20 de noviembre) y el 22 de noviembre de 2026 (README y casos límite).*
+*Documento generado el 19 de noviembre de 2026. Actualizado el 21 de noviembre (sesión del 20 de noviembre) y el 22 de noviembre de 2026 (README, casos límite, revisión de requisitos y cambios finales).*

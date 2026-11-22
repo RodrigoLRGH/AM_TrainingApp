@@ -37,6 +37,15 @@ export function formatDateTime(iso: string) {
     return `${day}, ${time}`;
 }
 
+/** Fecha completa con año, para historiales que pueden abarcar más de un año. */
+export function formatFullDate(iso: string) {
+    return new Date(iso).toLocaleDateString('es-MX', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+    });
+}
+
 export function startOfToday() {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), now.getDate());
