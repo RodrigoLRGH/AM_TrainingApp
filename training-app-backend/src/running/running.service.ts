@@ -2,6 +2,7 @@ import { BadRequestException, ForbiddenException, Injectable, NotFoundException 
 import { getPathLength } from 'geolib';
 import { PrismaService } from '../prisma/prisma.service';
 import { AddPointsDto } from './dto/add-points.dto';
+import { FinishRunDto } from './dto/finish-run.dto';
 
 @Injectable()
 export class RunningService {
@@ -38,7 +39,7 @@ export class RunningService {
     });
   }
 
-  async finishSession(clientId: string, sessionId: string) {
+  async finishSession(clientId: string, sessionId: string, dto: FinishRunDto = {}) {
     const session = await this.findOwnedSession(clientId, sessionId);
 
     if (session.endedAt) {
@@ -58,7 +59,12 @@ export class RunningService {
       points.map((p) => ({ latitude: p.latitude, longitude: p.longitude })),
     );
 
-    const endedAt = new Date();
+    // La hora que manda la app se limita a estar entre el inicio y ahora.
+    const now = new Date();
+    const requested = dto.endedAt ? new Date(dto.endedAt) : now;
+    const endedAt = new Date(
+      Math.min(now.getTime(), Math.max(session.startedAt.getTime(), requested.getTime())),
+    );
     const durationSeconds = Math.round(
       (endedAt.getTime() - session.startedAt.getTime()) / 1000,
     );

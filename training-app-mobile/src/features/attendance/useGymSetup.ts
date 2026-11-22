@@ -7,6 +7,7 @@ import type { GymConfig } from '../../api/types';
 import { useForm } from '../forms/useForm';
 import { integerBetween } from '../forms/rules';
 import { LIMITS } from '../forms/limits';
+import { alertPermissionDenied } from '../permissions/alertPermissionDenied';
 import { loadErrorMessage } from '../../api/errors';
 
 
@@ -74,9 +75,12 @@ export function useGymSetup() {
     async function applyCurrentLocation(radiusMeters: number) {
         setSaving(true);
         try {
-            const { status } = await Location.requestForegroundPermissionsAsync();
+            const { status, canAskAgain } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
-                AppAlert.alert('Necesitamos permiso de ubicación para guardar la ubicación del gimnasio.');
+                alertPermissionDenied(
+                    'Necesitamos permiso de ubicación para guardar la ubicación del gimnasio.',
+                    canAskAgain,
+                );
                 return;
             }
 

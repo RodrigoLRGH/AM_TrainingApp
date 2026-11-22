@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { Routine } from '../api/types';
+import { ACTIVE_RUN_KEY } from './activeRun';
 
 const QUEUE_KEY = 'offline.exerciseQueue';
 const ROUTINES_KEY = 'offline.routines';
@@ -81,5 +82,5 @@ export async function writeRoutinesCache(routines: Routine[]) {
 }
 
 export function clearOfflineStorage() {
-    return exclusive(() => AsyncStorage.multiRemove([QUEUE_KEY, ROUTINES_KEY]));
+    return exclusive(() => AsyncStorage.multiRemove([QUEUE_KEY, ROUTINES_KEY, ACTIVE_RUN_KEY]));
 }

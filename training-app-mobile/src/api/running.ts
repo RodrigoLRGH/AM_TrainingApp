@@ -11,8 +11,12 @@ export async function addRunPoints(sessionId: string, points: RunPointInput[]) {
     return data;
 }
 
-export async function finishRun(sessionId: string) {
-    const { data } = await api.post<RunSession>(`/running/${sessionId}/finish`);
+/** `endedAt` (ISO) solo se manda al terminar una corrida que se interrumpió. */
+export async function finishRun(sessionId: string, endedAt?: string) {
+    const { data } = await api.post<RunSession>(
+        `/running/${sessionId}/finish`,
+        endedAt ? { endedAt } : {},
+    );
     return data;
 }
 

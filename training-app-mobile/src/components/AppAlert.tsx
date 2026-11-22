@@ -49,6 +49,12 @@ function alert(
     buttons?: AppAlertButton[],
     options?: AppAlertOptions,
 ) {
+    // Un doble toque en el botón que abre la alerta (p. ej. "Eliminar") no debe
+    // encolar dos alertas iguales.
+    if (queue.some((item) => item.title === title && item.message === message)) {
+        return;
+    }
+
     const request: AlertRequest = {
         id: nextId++,
         title,
@@ -60,9 +66,14 @@ function alert(
     emit();
 }
 
+/** Quita la alerta de la cola. Regresa false si ya se había cerrado. */
 function close(id: number) {
+    if (!queue.some((item) => item.id === id)) {
+        return false;
+    }
     queue = queue.filter((item) => item.id !== id);
     emit();
+    return true;
 }
 
 export const AppAlert = { alert };
@@ -81,13 +92,19 @@ export function AppAlertHost() {
     // o si la alerta es informativa (sin acciones personalizadas).
     const dismissable = cancelButton !== undefined || current.buttons.every((b) => !b.onPress);
 
+    // Si la alerta ya se cerró (un segundo toque antes de que desaparezca),
+    // la acción no se vuelve a ejecutar.
     function handlePress(button: AppAlertButton) {
-        close(current.id);
+        if (!close(current.id)) {
+            return;
+        }
         button.onPress?.();
     }
 
     function handleDismiss() {
-        close(current.id);
+        if (!close(current.id)) {
+            return;
+        }
         if (cancelButton?.onPress) {
             cancelButton.onPress();
         } else {

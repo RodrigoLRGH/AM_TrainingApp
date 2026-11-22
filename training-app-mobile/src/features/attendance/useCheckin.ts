@@ -4,6 +4,7 @@ import * as Location from 'expo-location';
 import { useCameraPermissions } from 'expo-camera';
 import { checkinGeo, checkinQr } from '../../api/attendance';
 import { getErrorMessage } from '../../api/errors';
+import { alertPermissionDenied } from '../permissions/alertPermissionDenied';
 
 export function useCheckin() {
     const [permission, requestPermission] = useCameraPermissions();
@@ -20,9 +21,12 @@ export function useCheckin() {
         lockRef.current = true;
         setBusy(true);
         try {
-            const { status } = await Location.requestForegroundPermissionsAsync();
+            const { status, canAskAgain } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
-                AppAlert.alert('Necesitamos permiso de ubicación para registrar tu asistencia.');
+                alertPermissionDenied(
+                    'Necesitamos permiso de ubicación para registrar tu asistencia.',
+                    canAskAgain,
+                );
                 return;
             }
 
@@ -44,7 +48,10 @@ export function useCheckin() {
         if (!permission?.granted) {
             const result = await requestPermission();
             if (!result.granted) {
-                AppAlert.alert('Necesitamos permiso de la cámara para escanear el código QR.');
+                alertPermissionDenied(
+                    'Necesitamos permiso de la cámara para escanear el código QR.',
+                    result.canAskAgain,
+                );
                 return;
             }
         }

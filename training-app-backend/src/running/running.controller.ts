@@ -5,6 +5,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { CurrentUser, type AuthenticatedUser } from '../auth/decorators/current-user.decorator';
 import { RunningService } from './running.service';
 import { AddPointsDto } from './dto/add-points.dto';
+import { FinishRunDto } from './dto/finish-run.dto';
 
 @Controller('running')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -27,8 +28,12 @@ export class RunningController {
   }
 
   @Post(':id/finish')
-  finish(@CurrentUser() user: AuthenticatedUser, @Param('id') id: string) {
-    return this.runningService.finishSession(user.userId, id);
+  finish(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('id') id: string,
+    @Body() dto: FinishRunDto,
+  ) {
+    return this.runningService.finishSession(user.userId, id, dto);
   }
 
   @Get(':id')
