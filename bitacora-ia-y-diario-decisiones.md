@@ -6,17 +6,17 @@
 **Repositorio:** https://github.com/RodrigoLRGH/AM_TrainingApp
 **Herramientas de IA:**
 - Claude (Anthropic), en una conversación continua de planeación, backend y app (1 de septiembre al 19 de noviembre).
-- Claude Code (Anthropic), extensión de VS Code con acceso al repositorio, en la sesión del 20 de noviembre.
+- Claude Code (Anthropic), extensión de VS Code con acceso al repositorio, en una sesión del 20 al 22 de noviembre.
 
-**Periodo cubierto:** 1 de septiembre al 20 de noviembre de 2026
+**Periodo cubierto:** 1 de septiembre al 22 de noviembre de 2026
 **Fuentes de este documento:**
 - La conversación con Claude. Una parte se reconstruyó desde un resumen.
-- La sesión de Claude Code del 20 de noviembre.
-- Los 44 commits del repositorio.
+- La sesión de Claude Code del 20 al 22 de noviembre.
+- Los 46 commits del repositorio.
 
 > **Cómo leer este documento.** Cada afirmación lleva su evidencia:
 > - *conversación*: salió del chat con Claude;
-> - *sesión*: salió de la sesión de Claude Code del 20 de noviembre;
+> - *sesión*: salió de la sesión de Claude Code (20 al 22 de noviembre);
 > - *commit*: solo está en el historial de Git.
 >
 > Lo que aparece solo en commits, entre el 7 y el 19 de noviembre, no se puede atribuir a la IA ni al autor desde el chat. Está marcado como **sin registro en la conversación**.
@@ -30,11 +30,11 @@
 | Aspecto | Detalle |
 |---|---|
 | Rol de la IA (conversación, sep a nov) | Asesor de diseño y generador de código por pasos. Entregaba el código y los comandos, y el autor los pegaba, ejecutaba y probaba. |
-| Rol de la IA (sesión del 20 nov) | Agente con acceso al repositorio. Leía el código, diagnosticaba, editaba los archivos directamente y ejecutaba revisiones (`tsc`, lint, compilación del backend y simulaciones). También proponía el texto de cada commit. |
+| Rol de la IA (sesión del 20 al 22 nov) | Agente con acceso al repositorio. Leía el código, diagnosticaba, editaba los archivos directamente y ejecutaba revisiones (`tsc`, lint, compilación del backend y simulaciones). También proponía el texto de cada commit. |
 | Rol del autor | Decidir alcance y estilo, ejecutar y probar en dispositivo real, reportar errores (en la sesión del 20 nov, con capturas del iPhone) y hacer los commits. En la conversación, además, creaba los archivos y confirmaba cada paso. |
-| Qué generó la IA | Documentos de requisitos, plan de trabajo, backend completo, la app en Expo, scripts de prueba, correcciones de errores, y los ajustes de diseño, validación y manejo de errores del 20 de noviembre. |
+| Qué generó la IA | Documentos de requisitos, plan de trabajo, backend completo, la app en Expo, scripts de prueba, correcciones de errores, los ajustes de diseño, validación y manejo de errores del 20 de noviembre, el README y la preparación para casos límite (21 y 22 de noviembre). |
 | Qué no pudo hacer la IA | Probar en el teléfono del autor, ver su red local ni entrar a Render o Neon. Todo lo que dependía de ello lo verificó el autor o quedó pendiente. |
-| Atribución en el repo | Ningún commit tiene línea `Co-Authored-By`; los 44 aparecen a nombre del autor, incluidos los 9 de la sesión del 20 de noviembre. Los archivos `AGENTS.md` y `CLAUDE.md` de `training-app-mobile` los trajo la plantilla de Expo (commit `782c146`), no los escribió el autor. |
+| Atribución en el repo | Ningún commit tiene línea `Co-Authored-By`; los 46 aparecen a nombre del autor, incluidos los 11 de la sesión del 20 al 22 de noviembre. Los archivos `AGENTS.md` y `CLAUDE.md` de `training-app-mobile` los trajo la plantilla de Expo (commit `782c146`), no los escribió el autor. |
 
 ### 1.2 Cronología de uso
 
@@ -75,7 +75,11 @@ Las fechas de la fase 1 salen de las marcas de tiempo de los archivos adjuntos a
 | B-31 | 20 nov | Errores de axios sin conexión | Errores de axios como instructor en modo avión | Estado "Sin conexión" con botón Reintentar en 8 pantallas, sin `console.error` | Hizo el commit | Sesión + commit `ce54f1f` |
 | B-32 | 20 nov | Filtro de clientes en Asistencia | La fila de filtros ocupaba media pantalla | `flexGrow: 0` y `alignItems: 'center'` en `ClientFilterChips` | Reportó con captura. En el commit quitó los comentarios del código. | Sesión + commit `de44aed` |
 | B-33 | 20 nov | Tarjetas de estadísticas | "Un componente encima de otro" en Clientes activos | `StatCard` con una `View` en lugar del `Card` de Paper | Reportó con captura e hizo el commit | Sesión + commit `9446495` |
-| B-34 | 21 nov | Actualización de esta bitácora | Agregar lo hecho en la sesión del 20 de noviembre | Esta versión del documento | Revisar y ajustar (ver 1.6) | Sesión |
+| B-34 | 21 nov | Actualización de esta bitácora | Agregar lo hecho en la sesión del 20 de noviembre | Segunda versión de este documento | La revisó, eliminó la parte de pendientes e hizo el commit | Sesión + commit `212445b` |
+| B-35 | 21 nov | README | "Tenía este README, ¿está bien? Aplícalo y haz los cambios que creas necesarios" | Comparación del README con el código (rutas, variables de entorno, carpetas y scripts) y versión corregida | Hizo el commit, junto con la bitácora | Sesión + commit `212445b` |
+| B-36 | 21 nov | Auditoría de casos límite | Revisar si el proyecto cumple 9 casos límite: modo avión, campos vacíos, texto o negativo en números, texto largo, doble toque, girar el celular, salir y volver, negar permisos y listas vacías. "No hagas cambios aún". | Revisión caso por caso: 6 se cumplían y 3 de forma parcial (doble toque, salir y volver, permisos negados). Lista de 4 arreglos en orden de importancia. | Eligió aplicar solo los arreglos 1, 2 y 3 | Sesión |
+| B-37 | 22 nov | Arreglos de casos límite | Aplicar los arreglos 1, 2 y 3 | Botón "Abrir ajustes" para permisos negados, candados contra doble toque, y corrida guardada en el teléfono para continuarla o terminarla al volver | Hizo el commit | Sesión + commit `876d315` |
+| B-38 | 22 nov | Actualización de esta bitácora | Agregar los días 21 y 22 de noviembre | Esta versión del documento | Revisar y ajustar (ver 1.6) | Sesión |
 
 ### 1.3 Tipos de ayuda recibida
 
@@ -95,11 +99,12 @@ Las fechas de la fase 1 salen de las marcas de tiempo de los archivos adjuntos a
   - con base local, si una corrida funciona sin wifi;
   - qué datos no tenían límites;
   - si cambiar a Azure resolvía el error de sincronización;
-  - cómo desplegar.
+  - cómo desplegar;
+  - si el proyecto cumplía 9 casos límite (21 nov).
 
   En estas preguntas la IA primero explicó la causa; el autor decidía si aplicar el cambio.
 - **Revisión y ajuste visual:** el autor describía lo que no le gustaba, o mandaba una captura, y la IA reescribía el componente.
-- **Verificación automática (sesión del 20 nov):** la IA ejecutó `tsc --noEmit` y el lint después de cada cambio. Para los límites compiló el backend y probó los DTOs; para la cola de sincronización hizo una simulación.
+- **Verificación automática (sesión del 20 nov):** la IA ejecutó `tsc --noEmit` y el lint después de cada cambio. Para los límites y para la hora de término de una corrida compiló el backend y probó los DTOs; para la cola de sincronización hizo una simulación.
 
 ### 1.4 Errores y limitaciones de la IA, y cómo se corrigieron
 
@@ -122,6 +127,8 @@ Las fechas de la fase 1 salen de las marcas de tiempo de los archivos adjuntos a
 | Un script de edición convirtió `\n` de una expresión regular en un salto de línea real *(20 nov)* | Error de escape de la IA al editar con Python | `tsc` lo detectó y la IA lo corrigió antes de entregar |
 | Un script de edición se detuvo a la mitad por una sangría que no coincidía *(20 nov)* | El archivo había cambiado de formato en un paso anterior | La IA terminó a mano las 2 ediciones que faltaban y volvió a revisar con `tsc` |
 | El mensaje "máximo 72 caracteres" de la contraseña era engañoso con acentos *(20 nov)* | El límite de bcrypt es en bytes, no en caracteres | La IA lo detectó en su propia prueba y cambió el mensaje a "La contraseña es demasiado larga." |
+| `tsc` y el lint de la app se ejecutaron en la carpeta del backend *(22 nov)* | La IA asumió la carpeta de trabajo equivocada. `npx expo lint` respondió con un error de la versión antigua de expo-cli. | La IA lo notó por ese error y repitió las revisiones con la ruta completa de la app |
+| La primera versión de "Terminar" una corrida recuperada podía dejarla guardada para siempre *(22 nov)* | Si el servidor rechazaba los puntos (por ejemplo, porque la corrida ya estaba terminada), se volvía a guardar para reintentar | La IA lo detectó al revisar su propio código antes de entregar: un rechazo del servidor ahora borra la corrida guardada |
 
 **Lección general:**
 - En la conversación, los errores casi siempre aparecían al armar el proyecto a mano a partir del código por pasos: archivos faltantes, rutas equivocadas o código pegado en otro lugar. Por eso se planteó correr `npx tsc --noEmit` como primera revisión. La conversación no registra el resultado de esa revisión.
@@ -141,21 +148,23 @@ Las fechas de la fase 1 salen de las marcas de tiempo de los archivos adjuntos a
 | Límites de datos en el backend (20 nov) | La IA compiló el backend y validó los DTOs con datos dentro y fuera de rango | Rechaza los datos inválidos con el mensaje correcto y acepta los válidos |
 | Cola de sincronización (20 nov) | Simulación con el código real de la cola y un servidor falso con 300 ms de retraso: marcar rápido, marcar y desmarcar, y servidor caído | Los 3 escenarios se comportaron como se esperaba |
 | Cambios de interfaz del 20 nov (modales, calificaciones, botón de regresar, filtros, tarjetas, estado sin conexión) | `tsc --noEmit` y lint en cada cambio | Sin errores nuevos. **La IA no los probó en un dispositivo**, y en la sesión no consta que el autor confirmara cada uno en el iPhone. |
-| Despliegue en Render (20 nov) | No verificado por la IA (no tiene acceso al dashboard) | Pendiente de que el autor confirme el deploy del commit más reciente |
+| Hora de término de una corrida (22 nov) | La IA compiló el backend, validó el nuevo campo `endedAt` y probó que la hora se limita entre el inicio y la hora actual | Acepta la petición sin el campo y con una fecha válida, rechaza una fecha inválida y limita las horas fuera de rango |
+| Casos límite: permisos, doble toque y corrida interrumpida (22 nov) | `tsc --noEmit` y lint en la app y el backend; la IA dejó pasos de prueba para el iPhone | Sin errores nuevos. **No probado en un dispositivo**; en la sesión no consta la prueba del autor. |
+| Despliegue en Render (20 al 22 nov) | No verificado por la IA (no tiene acceso al dashboard) | Pendiente de que el autor confirme el deploy del commit más reciente. Hasta entonces, una corrida recuperada cuenta también el tiempo que la app estuvo cerrada (D-42). |
 | Rendimiento (RNF-01 y RNF-02) | No medido | Pendiente |
 | Usabilidad (RU-01) | Probado solo en iPhone | Pendiente en otras plataformas |
 
 ### 1.6 Responsabilidad y transparencia
 
-- La IA propuso y escribió buena parte del código. Hasta el 19 de noviembre, el autor lo integraba a mano. En la sesión del 20 de noviembre, la IA editó los archivos directamente y el autor revisó, probó en su iPhone y decidió qué subir en cada commit. Esa división está documentada en 1.2.
+- La IA propuso y escribió buena parte del código. Hasta el 19 de noviembre, el autor lo integraba a mano. En la sesión del 20 al 22 de noviembre, la IA editó los archivos directamente y el autor revisó, probó en su iPhone y decidió qué subir en cada commit. Esa división está documentada en 1.2.
 - Las decisiones de alcance, estilo y diseño de la sección 2 las tomó el autor. En cada una se indica quién propuso la opción.
 - La IA no hizo commits ni despliegues. Propuso el texto de los commits, y el autor los ejecutó y a veces los ajustó, por ejemplo uniendo dos commits sugeridos en `73dc6e6`.
 - **Antes de entregar, el autor debe revisar y completar:**
   1. Las entradas B-17, B-18 y B-19, que no constan en el chat, para declarar si hubo o no apoyo de IA.
-  2. Si probó en el iPhone los cambios de interfaz de B-22 a B-33, para cambiar "sin confirmar" por el resultado en 1.5.
+  2. Si probó en el iPhone los cambios de B-22 a B-33 y de B-37, para cambiar "sin confirmar" por el resultado en 1.5.
   3. Si la materia exige una declaración de uso de IA en un formato específico, ajustar este documento a ese formato.
   4. Si quiere atribución en Git, añadir `Co-Authored-By` en commits futuros. Los pasados no la tienen.
-- Este documento no sustituye los registros originales. Es una reconstrucción hecha a partir de un resumen de la conversación, de la sesión del 20 de noviembre y del historial del repositorio.
+- Este documento no sustituye los registros originales. Es una reconstrucción hecha a partir de un resumen de la conversación, de la sesión del 20 al 22 de noviembre y del historial del repositorio.
 
 ---
 
@@ -206,6 +215,11 @@ El campo "Evidencia" indica dónde consta cada decisión.
 | D-36 | Estado "Sin conexión" con Reintentar en lugar de `console.error` | 20 nov |
 | D-37 | Tarjetas de estadísticas con `View` en lugar del `Card` de Paper | 20 nov |
 | D-38 | Conservar ESLint en la app | 20 nov |
+| D-39 | Publicar actualizaciones con `--channel` en lugar de `--auto` | 21 nov |
+| D-40 | Ofrecer "Abrir ajustes" cuando un permiso quedó negado | 22 nov |
+| D-41 | Candados contra doble toque en `AppAlert` y en la corrida | 22 nov |
+| D-42 | Guardar la corrida en curso para continuarla o terminarla | 22 nov |
+| D-43 | Casos límite que se dejaron como están | 22 nov |
 
 ---
 
@@ -645,6 +659,78 @@ El campo "Evidencia" indica dónde consta cada decisión.
 - **Quién decidió:** la IA lo recomendó y el autor lo incluyó en el commit.
 - **Evidencia:** sesión + commit `47a828b`.
 
+### D-39. Publicar actualizaciones con `--channel` en lugar de `--auto`
+- **Contexto:** el README del autor indicaba publicar la app con `eas update --auto`.
+- **Problema detectado por la IA:** `--auto` publica en una rama de EAS con el nombre de la rama de Git (`main`). Los builds del proyecto escuchan los canales `preview` y `production` (`eas.json`), así que la actualización no les llegaría.
+- **Elección:** `npx eas-cli@latest update --channel preview` (o `production`, según el build), con una nota en el README de por qué no usar `--auto`.
+- **Otros cambios al README en la misma revisión:**
+  - se quitó `npm test`, porque el backend no tiene pruebas unitarias;
+  - se agregaron las carpetas `common/` y `prisma/` a la arquitectura;
+  - se agregaron la tabla de límites de datos y las decisiones de la sesión del 20 de noviembre.
+- **Consecuencias:** el README describe el despliegue que de verdad funciona con la configuración actual.
+- **Quién decidió:** el autor pidió revisar y aplicar los cambios necesarios; la IA propuso cada corrección.
+- **Evidencia:** sesión + commit `212445b`.
+
+### D-40. Ofrecer "Abrir ajustes" cuando un permiso quedó negado
+- **Contexto:** al auditar los casos límite (B-36), la IA encontró este problema:
+  - Si el usuario negaba un permiso de forma permanente, el sistema ya no volvía a mostrar la pregunta.
+  - La app repetía "Necesitamos permiso…" sin explicar cómo activarlo.
+  - El usuario quedaba atorado en la cámara del QR, la asistencia, el gimnasio y la corrida.
+- **Opciones:** solo mejorar el texto, o llevar al usuario a los ajustes.
+- **Elección:** un helper común, `alertPermissionDenied`.
+  - Si el sistema todavía puede preguntar, muestra el mensaje de siempre.
+  - Si ya no puede (`canAskAgain` es falso), muestra "Permiso desactivado" con un botón **Abrir ajustes** (`Linking.openSettings()`).
+- **Razón:** es la única forma de recuperar el permiso, y un solo helper deja el mismo comportamiento en las 4 pantallas.
+- **Consecuencias:** la asistencia automática no cambió: ya respetaba un "Ahora no" y no vuelve a preguntar.
+- **Quién decidió:** el autor eligió aplicar este arreglo de la lista propuesta por la IA.
+- **Evidencia:** sesión + commit `876d315`.
+
+### D-41. Candados contra doble toque en `AppAlert` y en la corrida
+- **Contexto:** casi todos los botones de guardar ya se desactivaban con `disabled={saving}`. La auditoría encontró 3 huecos:
+  - "Iniciar corrida" pedía el permiso antes de marcar el estado "iniciando", así que dos toques rápidos podían crear **dos corridas**;
+  - dos toques en un botón que abre una confirmación abrían dos confirmaciones;
+  - un doble toque en un botón de `AppAlert` podía ejecutar la acción dos veces.
+- **Opciones:** un candado en cada formulario, o candados en los puntos comunes.
+- **Elección:**
+  - `AppAlert` ignora una alerta si ya hay una abierta con el mismo título y mensaje.
+  - Un segundo toque en un botón de una alerta ya cerrada no ejecuta la acción.
+  - Iniciar, terminar y retomar una corrida usan un candado con `useRef`, el mismo patrón que ya tenía el registro de asistencia.
+- **Razón:** el estado de React tarda un render en desactivar el botón, y la ref se actualiza al instante. Corregir `AppAlert` cubre de una vez todas las confirmaciones de la app.
+- **Consecuencias:** dos alertas idénticas seguidas se muestran una sola vez, lo cual también evita mensajes de error repetidos.
+- **Quién decidió:** el autor eligió aplicar este arreglo; la IA propuso dónde poner los candados.
+- **Evidencia:** sesión + commit `876d315`.
+
+### D-42. Guardar la corrida en curso para continuarla o terminarla
+- **Contexto:** si el sistema cerraba la app durante una corrida:
+  - los puntos pendientes se perdían, porque estaban en memoria;
+  - la sesión quedaba abierta en el backend, sin aparecer en el historial y sin forma de retomarla.
+- **Opciones:**
+  - registrar en segundo plano: requiere un build propio y el permiso "Siempre" (ver D-03);
+  - guardar la corrida en el teléfono y recuperarla al volver.
+- **Elección:**
+  - La app guarda la corrida activa en `AsyncStorage`: id, inicio, puntos pendientes y hora del último punto. Se guarda al iniciar, cada 5 segundos, después de cada envío y al salir de la app.
+  - Al abrir la pantalla Correr, si hay una corrida guardada, se ofrece **Continuar** o **Terminar**.
+  - **Terminar** envía la hora del último punto registrado. Para eso, `POST /running/:id/finish` acepta un `endedAt` opcional, que el servidor limita a quedar entre el inicio y la hora actual.
+  - Si no hay conexión, la corrida sigue guardada. Si el servidor la rechaza, se borra y se muestra el motivo.
+- **Razón:** sin la hora del último punto, la duración incluiría todo el tiempo que la app estuvo cerrada. Es compatible con D-03 porque no requiere el segundo plano.
+- **Consecuencias:**
+  - **Continuar** cuenta el tiempo desde el inicio original, incluido el rato en que la app estuvo cerrada.
+  - El GPS sigue sin registrar mientras la app está en segundo plano.
+  - Hasta desplegar el backend, el servidor descarta `endedAt`, porque la validación global quita los campos desconocidos.
+  - La corrida guardada se borra al cerrar sesión.
+- **Quién decidió:** el autor eligió aplicar este arreglo; la IA propuso el diseño, incluido el cambio en el backend.
+- **Evidencia:** sesión + commit `876d315`.
+
+### D-43. Casos límite que se dejaron como están
+- **Contexto:** de la auditoría de B-36 quedaron puntos que el autor decidió no cambiar.
+- **Elección:**
+  - **Girar el celular:** la app queda fija en vertical (`"orientation": "portrait"` en `app.json`). Es una decisión de diseño, no una falta de soporte.
+  - **Pantallas de detalle de un cliente sin conexión:** siguen mostrando una alerta en cada carga fallida, en lugar del estado con Reintentar de D-36. Era el arreglo 4, opcional, y el autor no lo eligió.
+  - **Formularios a medio escribir:** se pierden si el sistema cierra la app. Si solo se cambia de app y se regresa, se conservan.
+- **Razón:** el autor priorizó los 3 arreglos con más impacto: permisos, doble toque y corrida.
+- **Quién decidió:** el autor ("solo los 1, 2 y 3").
+- **Evidencia:** sesión.
+
 ---
 
-*Documento generado el 19 de noviembre de 2026 y actualizado el 21 de noviembre de 2026 con la sesión del 20 de noviembre.*
+*Documento generado el 19 de noviembre de 2026. Actualizado el 21 de noviembre (sesión del 20 de noviembre) y el 22 de noviembre de 2026 (README y casos límite).*
