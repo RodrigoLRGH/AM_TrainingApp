@@ -12,7 +12,7 @@
 **Fuentes de este documento:**
 - La conversación con Claude. Una parte se reconstruyó desde un resumen.
 - La sesión de Claude Code del 20 al 22 de noviembre.
-- Los 49 commits del repositorio hasta `fb037a8`.
+- Los 50 commits del repositorio hasta `2f112a7`.
 
 > **Cómo leer este documento.** Cada afirmación lleva su evidencia:
 > - *conversación*: salió del chat con Claude;
@@ -34,7 +34,7 @@
 | Rol del autor | Decidir alcance y estilo, ejecutar y probar en dispositivo real, reportar errores (en la sesión del 20 nov, con capturas del iPhone) y hacer los commits. En la conversación, además, creaba los archivos y confirmaba cada paso. |
 | Qué generó la IA | Documentos de requisitos, plan de trabajo, backend completo, la app en Expo, scripts de prueba, correcciones de errores, los ajustes de diseño, validación y manejo de errores del 20 de noviembre, el README y la preparación para casos límite (21 y 22 de noviembre). |
 | Qué no pudo hacer la IA | Probar en el teléfono del autor, ver su red local ni entrar a Render o Neon. Todo lo que dependía de ello lo verificó el autor o quedó pendiente. |
-| Atribución en el repo | Ningún commit tiene línea `Co-Authored-By`; los 49 aparecen a nombre del autor, incluidos los 14 de la sesión del 20 al 22 de noviembre. Los archivos `AGENTS.md` y `CLAUDE.md` de `training-app-mobile` los trajo la plantilla de Expo (commit `782c146`), no los escribió el autor. |
+| Atribución en el repo | Ningún commit tiene línea `Co-Authored-By`; los 50 aparecen a nombre del autor, incluidos los 15 de la sesión del 20 al 22 de noviembre. Los archivos `AGENTS.md` y `CLAUDE.md` de `training-app-mobile` los trajo la plantilla de Expo (commit `782c146`), no los escribió el autor. |
 
 ### 1.2 Cronología de uso
 
@@ -86,7 +86,9 @@ Las fechas de la fase 1 salen de las marcas de tiempo de los archivos adjuntos a
 | B-42 | 22 nov | Prueba de las ligas de Expo Go | Publicar la versión final y compartirla | Solución al fallo de exportación web publicando por plataforma, y revisión de las ligas de iOS y Android | Una amiga abrió la liga de iOS y recibió un error 403: su cuenta no tenía acceso al proyecto | Sesión |
 | B-43 | 22 nov | Alternativas de entrega | Invitar al docente a Expo o usar Snack | Comparación de opciones. Snack no listaba SDK 58 y la app requeriría una copia adaptada. | Intentó la importación en Snack y eligió entregar el APK | Sesión |
 | B-44 | 22 nov | APK de Android | Hacer el APK sin clave de Google Maps | Aviso en lugar del mapa en el APK y revisión del archivo generado | Configuró la URL en EAS, compiló el APK y lo abrió en el emulador | Sesión + commit `fb037a8` |
-| B-45 | 22 nov | Corrección final de documentos | Alinear el README y la bitácora con la entrega por APK | README y esta versión de la bitácora | Revisar y hacer el commit | Sesión |
+| B-45 | 22 nov | Corrección final de documentos | Alinear el README y la bitácora con la entrega por APK | README y bitácora corregidos | Hizo el commit | Sesión + commit `2f112a7` |
+| B-46 | 22 nov | Entrega en Classroom | Revisar si lo entregado estaba bien | Comprobó que el repositorio es público y tiene los documentos finales. Señaló que la liga del build caduca en 13 días. | Entregó la liga de GitHub, el archivo `TrainingApp.apk` y la liga del build | Sesión + captura de Classroom |
+| B-47 | 22 nov | Actualización de esta bitácora | Registrar la entrega | Esta versión del documento | Revisar y hacer el commit | Sesión |
 
 ### 1.3 Tipos de ayuda recibida
 
@@ -165,6 +167,7 @@ Las fechas de la fase 1 salen de las marcas de tiempo de los archivos adjuntos a
 | Liga de Expo en un celular ajeno (22 nov) | Una amiga abrió la liga de iOS en Expo Go | **Falló con error 403**: solo abre con una cuenta que tenga acceso al proyecto. Por eso no es la vía de entrega (D-46). |
 | Contenido del APK (22 nov) | La IA descargó el APK sin sesión y revisó su paquete | Se descarga, apunta al backend de Render e incluye el aviso del mapa y el historial de mediciones. |
 | Ejecución del APK (22 nov) | El autor lo abrió en un emulador Android | **Sin confirmar** en la sesión el inicio de sesión ni una corrida completa. |
+| Entrega en Classroom (22 nov) | Captura con estado "Entregado". La IA revisó el repositorio en GitHub. | Incluye repositorio, `TrainingApp.apk` y liga del build. El repositorio es público y contiene el README y la bitácora de la entrega (`2f112a7`). |
 | Despliegue en Render (20 al 22 nov) | No verificado por la IA (no tiene acceso al dashboard) | Pendiente de que el autor confirme el deploy del commit más reciente. Hasta entonces, una corrida recuperada cuenta también el tiempo que la app estuvo cerrada (D-42). |
 | Rendimiento (RNF-01 y RNF-02) | No medido | Pendiente |
 | Usabilidad (RU-01) | Probado solo en iPhone | Pendiente en otras plataformas |
@@ -174,7 +177,7 @@ Las fechas de la fase 1 salen de las marcas de tiempo de los archivos adjuntos a
 - La IA propuso y escribió buena parte del código. Hasta el 19 de noviembre, el autor lo integraba a mano. En la sesión del 20 al 22 de noviembre, la IA editó los archivos directamente y el autor revisó, probó en su iPhone y decidió qué subir en cada commit. Esa división está documentada en 1.2.
 - Las decisiones de alcance, estilo y diseño de la sección 2 las tomó el autor. En cada una se indica quién propuso la opción.
 - La IA no hizo commits ni despliegues. Propuso el texto de los commits, y el autor los ejecutó y a veces los ajustó, por ejemplo uniendo dos commits sugeridos en `73dc6e6`.
-- **Antes de entregar, el autor debe revisar y completar:**
+- **La tarea ya se entregó. Quedan por revisar o completar por el autor:**
   1. Las entradas B-17, B-18 y B-19, que no constan en el chat, para declarar si hubo o no apoyo de IA.
   2. Si probó en el iPhone los cambios de B-22 a B-33, B-37, B-41 y B-44, para cambiar "sin confirmar" por el resultado en 1.5.
   3. Si la materia exige una declaración de uso de IA en un formato específico, ajustar este documento a ese formato.
@@ -789,9 +792,10 @@ El campo "Evidencia" indica dónde consta cada decisión.
   - El APK no cumple RF-16 ni RF-17 (mapa) ni RF-15 (push); la ruta, la distancia y el tiempo sí se registran.
   - Esas funciones se demuestran en el iPhone del autor con Expo Go.
   - El APK solo cubre Android.
+  - La liga del build en Expo está disponible 13 días; por eso el archivo `TrainingApp.apk` se adjuntó directamente en Classroom.
 - **Quién decidió:** el autor, con las opciones presentadas por la IA.
-- **Evidencia:** sesión + commit `fb037a8`.
+- **Evidencia:** sesión + commit `fb037a8` + captura de la entrega en Classroom.
 
 ---
 
-*Documento generado el 19 de noviembre de 2026. Actualizado el 21 de noviembre (sesión del 20 de noviembre) y el 22 de noviembre de 2026 (README, casos límite, revisión de requisitos, cambios finales y entrega por APK).*
+*Documento generado el 19 de noviembre de 2026. Actualizado el 21 de noviembre (sesión del 20 de noviembre) y el 22 de noviembre de 2026 (README, casos límite, revisión de requisitos, cambios finales, entrega por APK y registro de la entrega).*
