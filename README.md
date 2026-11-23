@@ -14,6 +14,12 @@ El repositorio tiene dos proyectos:
 | [`training-app-backend`](./training-app-backend) | API REST | NestJS, Prisma, PostgreSQL, JWT |
 | [`training-app-mobile`](./training-app-mobile) | App móvil | Expo SDK 58, Expo Router, React Native Paper, TypeScript |
 
+## Descargar la app
+
+**[APK de Android](https://expo.dev/artifacts/eas/q_9e6CFATxrhXywiMJApH1M7lkrFxAgKTF1XdLuzWLk.apk)**
+
+Esta versión no incluye el mapa de las corridas ni notificaciones push; la ruta, la distancia y el tiempo sí se registran. Ambas funciones se demuestran en iPhone con Expo Go.
+
 ## Funcionalidades
 
 **Instructor**
@@ -151,18 +157,32 @@ El backend se puede publicar en cualquier servicio que ejecute Node, con una bas
 
 ### App
 
-1. Pon la URL pública del backend en `EXPO_PUBLIC_API_URL`, dentro de `training-app-mobile/.env`.
-2. Publica la actualización en la rama `main` de EAS Update:
+**APK de Android (versión de entrega)**
+
+1. Guarda la URL pública del backend en EAS, porque `.env` no se sube al build:
 
    ```bash
-   npx eas-cli@latest update --branch main --message "Descripción del cambio"
+   npx eas-cli@latest env:set --name EXPO_PUBLIC_API_URL --value "https://tu-backend.example.com" --environment preview --visibility plaintext
    ```
 
-3. Abre la actualización en [expo.dev](https://expo.dev) y comparte las ligas de **Preview** de iOS y Android. Se abren con Expo Go.
+2. Compila desde `training-app-mobile`:
 
-Cada publicación genera ligas nuevas; las anteriores siguen abriendo la versión anterior.
+   ```bash
+   npx eas-cli@latest build -p android --profile preview
+   ```
 
-El proyecto se distribuye por Expo Go y no incluye un APK. Un build propio de Android requeriría configurar antes `EXPO_PUBLIC_API_URL` en EAS, una clave de Google Maps y las credenciales de FCM para las notificaciones push.
+Sin una clave de Google Maps, el APK muestra un aviso en lugar del mapa para evitar que la app se cierre. Sin credenciales de FCM, no recibe notificaciones push.
+
+**Expo Go (desarrollo y demostración)**
+
+Publica una actualización por plataforma. Se exporta por separado porque la versión web no forma parte del proyecto:
+
+```bash
+npx eas-cli@latest update --branch main --platform ios --environment production --message "Descripción del cambio"
+npx eas-cli@latest update --branch main --platform android --environment production --message "Descripción del cambio"
+```
+
+Estas ligas solo abren en Expo Go con una cuenta que tenga acceso al proyecto; a otras personas les responde un error 403. Cada publicación genera ligas nuevas.
 
 ## API
 
